@@ -1,0 +1,14 @@
+{
+    "name": "oneai",
+    "main": "lib/index.js",
+    "version": "0.0.3",
+    "scripts": {
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "typescript": "^4.5.4"
+    },
+    "dependencies": {
+        "axios": "^0.24.0"
+    }
+}
