@@ -1,20 +1,21 @@
 import axios from 'axios'
 
 
-class Skill {
-    name!: string
-    iswriting?: boolean
-    params?: object
+
+interface Skill {
+    readonly name: string
+    readonly iswriting?: boolean
+    readonly params?: object
 }
 
-export const init = (key: string) => ({
+export const init= (key: string) => ({
     Skill: Skill,
 
-    export class Label {
-        type: string
-        name: string
-        span: number[]
-        value: number
+    export interface Label {
+        readonly type: string
+        readonly name: string
+        readonly span: number[]
+        readonly value: number
     }
 
     export interface LabeledText {
