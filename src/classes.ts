@@ -4,6 +4,8 @@ export interface Skill {
     name: string
     is_generator?: boolean
     params?: object
+    label_type?: string
+    output_field?: string
 }
 
 export interface Input {
@@ -53,7 +55,7 @@ export interface Label {
     value: number
 }
 
-export interface LabeledText {
+export interface Output {
     text: string
-    labels: Label[]
+    [key: string]: (Output | Label[] | string)
 }
