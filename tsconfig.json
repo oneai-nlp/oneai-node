@@ -5,7 +5,8 @@
       "declaration": true,
       "outDir": "./lib",
       "strict": true,
-      "lib": ["ES2015", "DOM"]
+      "lib": ["ES2015", "DOM"],
+      "allowJs": true
     },
     "include": ["src"],
     "exclude": ["node_modules", "**/__tests__/*"]

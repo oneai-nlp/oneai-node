@@ -36,3 +36,5 @@ export class Pipeline {
         return Promise.all(texts.map(text => this.run(text)))
     }
 }
+
+export { Skill, LabeledText, Input, Document, Conversation } from './classes'
