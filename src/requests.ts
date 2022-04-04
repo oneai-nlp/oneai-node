@@ -1,5 +1,9 @@
 import axios from 'axios'
 import { Skill, Input, Output, Label } from './classes'
+import { stdout, stderr } from 'process'
+
+
+const MAX_CONCURRENT_REQUESTS = 4
 
 function prep_input(skills: Skill[]): object[] {
     let input = 0
@@ -56,6 +60,51 @@ export async function send_request(input: string | Input, skills: Skill[], api_k
     }).then(response => prep_output(skills, response.data))
 }
 
-export async function send_batch_request(params: Iterable<string | Input>) {
-    // todo
+function time_format(time: number) {
+    let millies = Math.floor(time % 1000)
+    let seconds = Math.floor(time / 1000)
+    let minutes = Math.floor(seconds / 60)
+    return `${(minutes > 0) ? minutes + 'm ' : ''}${seconds % 60}s ${millies}ms`
+}
+
+export async function send_batch_request(
+    inputs: Iterable<string | Input>,
+    skills: Skill[],
+    api_key: string,
+    print_progress=true
+): Promise<Map<string | Input, Output>> {
+    let outputs = new Map<string | Input, Output>() 
+    
+    let generator = function*() {
+        yield* inputs
+    }()
+
+    let errors = 0
+    let time_total = 0
+    async function batch_worker() {
+        let { value, done } = generator.next()
+        let time_start = Date.now()
+        while (!done) {
+            try {
+                outputs.set(value!, await send_request(value!, skills, api_key))
+            } catch (e) {
+                errors++
+                if (print_progress) stderr.write(`\r\033[KInput ${outputs.size + errors}:`)
+                console.error(e)
+            } finally {
+                let time_delta = Date.now() - time_start
+                time_total += time_delta
+                time_start += time_delta
+                if (print_progress) stdout.write(`Input ${outputs.size + errors} - ${time_format(time_delta)}/input - ${time_format(time_total)} total - ${outputs.size} successful - ${errors} failed\r`)
+            }
+            ({ value, done } = generator.next())
+        }
+    }
+
+    if (print_progress) stdout.write(`Starting processing batch with ${MAX_CONCURRENT_REQUESTS} workers\r`)
+    let workers = [...Array(MAX_CONCURRENT_REQUESTS).keys()].map(_ => batch_worker())
+    return Promise.all(workers).then(() => {
+        if (print_progress) stdout.write(`Processed ${outputs.size + errors} - ${time_format(time_total / outputs.size + errors)}/input - ${time_format(time_total)} total - ${outputs.size} successful - ${errors} failed\n`)
+        return outputs
+    })
 }

@@ -6,7 +6,8 @@
       "outDir": "./lib",
       "strict": true,
       "lib": ["ES2015", "DOM"],
-      "allowJs": true
+      "allowJs": true,
+      "downlevelIteration": true
     },
     "include": ["src"],
     "exclude": ["node_modules", "**/__tests__/*"]
