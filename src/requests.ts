@@ -9,7 +9,7 @@ function prep_input(skills: Skill[]): object[] {
     let input = 0
     return skills.map((skill, id) => {
         let prepped = {
-            'skill': skill.name,
+            'skill': skill.api_name,
             'id': id,
             'input': input,
             'params': skill.params
@@ -21,25 +21,55 @@ function prep_input(skills: Skill[]): object[] {
 
 function prep_output(
     skills: Skill[],
-    output: any,
-    output_index=0,
-    skill_index=0
+    output: any
 ): Output {
-    if (skill_index === 0 && skills[0].is_generator) {
-        let result: Output = { text: output['input_text'] }
-        result[skills[0].output_field || skills[0].name] = prep_output(skills, output, output_index, skill_index + 1)
-        return result
-    } else {
-        let result: Output = { text: output['output'][output_index]['text'] }
-        let labels: Label[] = output['output'][output_index]['labels']
-        
-        for (let i = skill_index; i < skills.length; i++) {
-            let field = skills[i].output_field || skills[i].name
-            result[field] = (skills[i].is_generator) 
-                ? prep_output(skills, output, output_index + 1, i + 1) 
-                : labels.filter(label => label.type === skills[i].label_type)
+    function split_pipeline(skills: Skill[], i: number): Skill[][] {
+        // split pipeline at a generator Skill
+        let first = skills.slice(0, i + 1)
+        let second = skills.slice(i + 1)
+        if (skills[i].output_field1) {
+            // handle skills that create both text and labels
+            let clone = {...skills[i]}
+            clone.is_generator = false
+            clone.output_field = clone.output_field1
+            second.unshift(clone)
+        }
+        return [first, second]
+    }
+
+    function build(output_index: number, skills: Skill[]): Output {
+        let result: Output = { text: output.output[output_index].text }
+        let labels: Label[] = output.output[output_index].labels
+
+        let i = 0
+        for (let skill of skills) {
+            let field = skill.output_field || skill.api_name
+            if (skill.is_generator) {
+                let [_, next_skills] = split_pipeline(skills, i)
+                result[field] = build(output_index + 1, next_skills)
+                break
+            } else {
+                result[field] = labels.filter(label => label.type === skills[i].label_type)
+                i++
+            }
         }
 
+        return result
+    }
+
+    let generator = (output.output[0]['text_generated_by_step_id'] || 0) - 1
+    if (generator < 0) return build(0, skills)
+    else {
+        // edge case- first Skill is a generator, or a generator preceded by Skills that didn't generate output
+        // in this case the API will skip these Skills,
+        // so we need to create filler objects to match the expected structure
+        let [current_skills, next_skills] = split_pipeline(skills, generator)
+        let result: Output = { text: output.input_text }
+        
+        for (let skill of current_skills) {
+            let field = skill.output_field || skill.api_name
+            result[field] = (skill.is_generator) ? build(0, next_skills) : []
+        }
         return result
     }
 }

@@ -1,11 +1,12 @@
 import { parseConversation } from './parsing'
 
 export interface Skill {
-    name: string
+    api_name: string
     is_generator?: boolean
     params?: object
     label_type?: string
     output_field?: string
+    output_field1?: string
 }
 
 export interface Input {
