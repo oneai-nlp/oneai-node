@@ -1,6 +1,11 @@
 import { Skill, Input, Output } from './classes'
 import { send_batch_request, send_request } from './requests'
 
+/**
+ * A Language Skill is a package of trained NLP models. Skills accept text and respond with processed texts and extracted metadata.
+ * 
+ * Process texts with Skills using `Pipeline`s
+ */
 export const skills = {
     summarize: (params?: { min_length?: number, max_length?: number, find_origins?: boolean }): Skill => {
         let skill: Skill = ({
@@ -65,8 +70,10 @@ export const skills = {
     htmlExtractText: (): Skill => ({ api_name: 'html-extract-text' }),
 }
 
-export var api_key: string  // the API key to use, get one at https://studio.oneai.com/settings/api-keys
-export var PRINT_PROGRESS = true  // whether to log progress when processing batches
+/** the default API key to use, get one at https://studio.oneai.com/settings/api-keys */
+export var api_key: string
+/** whether to log progress when processing batches */
+export var PRINT_PROGRESS = true
 
 export class Pipeline {
     steps: Skill[]
