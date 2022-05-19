@@ -2,7 +2,7 @@
   <a href="https://customer.io">
     <img src="https://studio.oneai.com/static/media/logo-gray.d978e495.svg" height="60">
   </a>
-  <p align="center">Language-as-a-service</p>
+  <p align="center">NLP-as-a-service</p>
 </p>
 
 # One AI Node.js SDK
@@ -89,6 +89,18 @@ When the pipeline is invoked, it is invoked with an original text you submit. If
 ```node
 const pipeline = new oneai.Pipeline(
     oneai.skills.summarize(),
+    oneai.skills.keywords(),
+    oneai.skills.emotions(),
+);
+const output = await pipeline.run('analyze this text');
+console.log(output);
+```
+
+### Configuring Skills
+Many skills are configurable as you can find out in the [docs](https://oneai.com/docs). Let's use the exact same example, this time however, we'll limit the summary length to 50 words.
+```node
+const pipeline = new oneai.Pipeline(
+    oneai.skills.summarize({max_length: 50}),
     oneai.skills.keywords(),
     oneai.skills.emotions(),
 );
