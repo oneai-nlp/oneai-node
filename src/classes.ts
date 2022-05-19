@@ -1,4 +1,4 @@
-import { parseConversation } from './parsing'
+import parseConversation from './parsing';
 
 export interface Skill {
     api_name: string
@@ -15,16 +15,17 @@ export interface Input {
 }
 
 export class Document implements Input {
-    type: string = 'article'
-    text: string
+  type: string = 'article';
 
-    constructor(text: string) {
-        this.text = text
-    }
+  text: string;
 
-    get_text(): string {
-        return this.text
-    }
+  constructor(text: string) {
+    this.text = text;
+  }
+
+  get_text(): string {
+    return this.text;
+  }
 }
 
 export interface Utterance {
@@ -33,20 +34,21 @@ export interface Utterance {
 }
 
 export class Conversation implements Input {
-    type: string = 'conversation'
-    utterances: Utterance[]
+  type: string = 'conversation';
 
-    constructor(utterances: Utterance[]) {
-        this.utterances = utterances
-    }
+  utterances: Utterance[];
 
-    get_text(): string {
-        return JSON.stringify(this.utterances)
-    }
+  constructor(utterances: Utterance[]) {
+    this.utterances = utterances;
+  }
 
-    static parse(text: string): Conversation {
-        return new Conversation(parseConversation(text))
-    }
+  get_text(): string {
+    return JSON.stringify(this.utterances);
+  }
+
+  static parse(text: string): Conversation {
+    return new Conversation(parseConversation(text));
+  }
 }
 
 export interface Label {
