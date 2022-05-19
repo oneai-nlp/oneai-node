@@ -11,7 +11,7 @@ OneAI is a NLP as a service platform. Our API enables language comprehension in 
 This SDK provides safe and convenient access to OneAI's API from a node.js environment.
 
 ## Documentation
-See the [One AI documentation](https://oneai.com/docs)
+See the [One AI documentation](https://studio.oneai.com/docs?utm_source=open_source&utm_medium=node_sdk_readme)
 
 ## Getting started
 
@@ -19,7 +19,7 @@ See the [One AI documentation](https://oneai.com/docs)
 `npm install oneai`
 
 ### Authentication
-You will need a valid API key for all requests. Register and create a key for your project [in OneAI Studio](https://studio.oneai.com/). As a security measure we only show the key once, so make sure to keep it somewhere safe.
+You will need a valid API key for all requests. Register and create a key for your project [in OneAI Studio](https://studio.oneai.com/?utm_source=open_source&utm_medium=node_sdk_readme). As a security measure we only show the key once, so make sure to keep it somewhere safe.
 
 #### Example
 ```node
@@ -41,7 +41,7 @@ The pipeline API enables analyzing and transforming text using various skills. A
 
 ### OneAI Studio
 
-The best way to create a pipeline is to use our [studio](https://studio.oneai.com/) where you can craft a pipeline using an easy graphical interface and then paste the generated code back into your repository. 
+The best way to create a pipeline is to use our [studio](https://studio.oneai.com/?utm_source=open_source&utm_medium=node_sdk_readme) where you can craft a pipeline using an easy graphical interface and then paste the generated code back into your repository. 
 
 ### Basic Example
 
@@ -97,7 +97,7 @@ console.log(output);
 ```
 
 ### Configuring Skills
-Many skills are configurable as you can find out in the [docs](https://oneai.com/docs). Let's use the exact same example, this time however, we'll limit the summary length to 50 words.
+Many skills are configurable as you can find out in the [docs](https://studio.oneai.com/docs?utm_source=open_source&utm_medium=node_sdk_readme). Let's use the exact same example, this time however, we'll limit the summary length to 50 words.
 ```node
 const pipeline = new oneai.Pipeline(
     oneai.skills.summarize({max_length: 50}),
