@@ -4,7 +4,7 @@ import {
   Skill, Input, Output, Label,
 } from './classes';
 
-const MAX_CONCURRENT_REQUESTS = 4;
+const MAX_CONCURRENT_REQUESTS = 2;
 
 function prepInput(skills: Skill[]): object[] {
   let input = 0;
