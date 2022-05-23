@@ -1,9 +1,10 @@
 {
     "name": "oneai",
     "main": "lib/index.js",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "tests": "npm run build && npm link && cd ./tests && npm link oneai"
     },
     "devDependencies": {
         "@types/node": "^17.0.23",

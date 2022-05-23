@@ -136,7 +136,7 @@ export default function parseConversation(text, strict = false) {
     result.push(previousObject);
     waitForTextLine = !currentLineInfo.hasText;
   });
-  if (previousObject != null && isEmptyOrWhitespace(previousObject.TEXT)) {
+  if (previousObject != null && isEmptyOrWhitespace(previousObject.utterance)) {
     result.pop();
   }
   // if (waitForTextLine)  return {"error":"last_utterance_empty","line":i};

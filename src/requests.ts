@@ -118,7 +118,7 @@ export async function sendBatchRequest(
     let timeStart = Date.now();
     while (!done) {
       try {
-        /* eslint-disable no-await-in-loop */ // since we send requests sequentially)
+        /* eslint-disable no-await-in-loop */ // (since we send requests sequentially)
         outputs.set(value!, await sendRequest(value!, skills, apiKey));
       } catch (e: any) {
         errors++;
