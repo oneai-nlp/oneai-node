@@ -10,12 +10,12 @@ function prepInput(skills: Skill[]): object[] {
   let input = 0;
   return skills.map((skill, id) => {
     const prepped = {
-      skill: skill.api_name,
+      skill: skill.apiName,
       id,
       input,
       params: skill.params,
     };
-    if (skill.is_generator) input++;
+    if (skill.isGenerator) input++;
     return prepped;
   });
 }
@@ -28,11 +28,11 @@ function prepOutput(
     // split pipeline at a generator Skill
     const first = skills.slice(0, i + 1);
     const second = skills.slice(i + 1);
-    if (skills[i].output_field1) {
+    if (skills[i].outputField1) {
       // handle skills that create both text and labels
       const clone = { ...skills[i] };
-      clone.is_generator = false;
-      clone.output_field = clone.output_field1;
+      clone.isGenerator = false;
+      clone.outputField = clone.outputField1;
       second.unshift(clone);
     }
     return [first, second];
@@ -43,13 +43,13 @@ function prepOutput(
     const { labels } = output.output[outputIndex];
 
     skills.some((skill, i) => {
-      const field = skill.output_field || skill.api_name;
-      if (skill.is_generator) {
+      const field = skill.outputField || skill.apiName;
+      if (skill.isGenerator) {
         const [, nextSkills] = splitPipeline(skills, i);
         result[field] = build(outputIndex + 1, nextSkills);
         return true;
       }
-      result[field] = labels.filter((label: Label) => label.type === skill.label_type);
+      result[field] = labels.filter((label: Label) => label.type === skill.labelType);
       return false;
     });
 
@@ -66,8 +66,8 @@ function prepOutput(
   const result: Output = { text: output.input_text };
 
   currentSkills.forEach((skill) => {
-    const field = skill.output_field || skill.api_name;
-    result[field] = (skill.is_generator) ? build(0, nextSkills) : [];
+    const field = skill.outputField || skill.apiName;
+    result[field] = (skill.isGenerator) ? build(0, nextSkills) : [];
   });
   return result;
 }
@@ -85,10 +85,12 @@ export async function sendRequest(
       'Content-Type': 'application/json',
     },
     data: JSON.stringify({
-      text: (typeof (input) === 'string') ? input : input.get_text(),
+      input: (typeof (input) === 'string') ? input : input.getText(),
       input_type: (typeof (input) === 'string') ? 'article' : input.type,
+      encoding: (typeof (input) === 'string') ? undefined : input.encoding,
+      content_type: (typeof (input) === 'string') ? undefined : input.contentType,
       steps: prepInput(skills),
-    }),
+    }, (_, value) => value ?? undefined),
   }).then((response) => prepOutput(skills, response.data));
 }
 

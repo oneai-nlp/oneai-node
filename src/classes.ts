@@ -1,21 +1,28 @@
+import * as path from 'path';
+import * as fs from 'fs';
 import parseConversation from './parsing';
 
 export interface Skill {
-    api_name: string
-    is_generator?: boolean
+    apiName: string
+    isGenerator?: boolean
     params?: object
-    label_type?: string
-    output_field?: string
-    output_field1?: string
+    labelType?: string
+    outputField?: string
+    outputField1?: string
 }
 
+type inputType = 'article' | 'conversation' | undefined;
+type encoding = 'utf8' | 'base64';
+
 export interface Input {
-    type: string
-    get_text(): string
+    type: inputType
+    contentType?: string
+    encoding?: encoding
+    getText(): string
 }
 
 export class Document implements Input {
-  type: string = 'article';
+  type: inputType = 'article';
 
   text: string;
 
@@ -23,7 +30,7 @@ export class Document implements Input {
     this.text = text;
   }
 
-  get_text(): string {
+  getText(): string {
     return this.text;
   }
 }
@@ -34,7 +41,7 @@ export interface Utterance {
 }
 
 export class Conversation implements Input {
-  type: string = 'conversation';
+  type: inputType = 'conversation';
 
   utterances: Utterance[];
 
@@ -42,12 +49,70 @@ export class Conversation implements Input {
     this.utterances = utterances;
   }
 
-  get_text(): string {
+  getText(): string {
     return JSON.stringify(this.utterances);
   }
 
   static parse(text: string): Conversation {
     return new Conversation(parseConversation(text));
+  }
+}
+
+export class File implements Input {
+  type: inputType;
+
+  contentType?: string;
+
+  encoding?: encoding;
+
+  data: string;
+
+  constructor(filePath: string, type?: inputType) {
+    this.type = type;
+
+    const ext = path.extname(filePath);
+    const buffer = fs.readFileSync(filePath);
+    switch (ext) {
+      case '.json':
+        this.data = JSON.stringify(JSON.parse(buffer.toString()));
+        this.encoding = 'utf8';
+        this.contentType = 'application/json';
+        break;
+      case '.txt':
+        this.data = buffer.toString();
+        this.encoding = 'utf8';
+        this.contentType = 'text/plain';
+        break;
+      case '.srt':
+        this.data = Conversation.parse(buffer.toString()).getText();
+        break;
+      case '.jpg':
+      case '.jpeg':
+        this.data = buffer.toString('base64');
+        this.encoding = 'base64';
+        this.contentType = 'image/jpeg';
+        break;
+      // case '.mp3':
+      //   this.data = buffer.toString('base64');
+      //   this.encoding = 'base64';
+      //   this.contentType = 'audio/mpeg';
+      //   break;
+      case '.wav':
+        this.data = buffer.toString('base64');
+        this.encoding = 'base64';
+        this.contentType = 'audio/wav';
+        break;
+      case '.html':
+        this.data = buffer.toString();
+        this.encoding = 'utf8';
+        this.contentType = 'text/html';
+      default:
+        throw new Error(`Unsupported file type: ${ext}`);
+    }
+  }
+
+  getText(): string {
+    return this.data;
   }
 }
 

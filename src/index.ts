@@ -12,65 +12,119 @@ export const skills = {
     params?: { min_length?: number, max_length?: number, find_origins?: boolean },
   ): Skill => {
     const skill: Skill = ({
-      api_name: 'summarize',
-      is_generator: true,
+      apiName: 'summarize',
+      isGenerator: true,
       params,
-      output_field: 'summary',
+      outputField: 'summary',
     });
     if (params?.find_origins !== false) {
-      skill.params = { ...params, find_origins: true };
-      skill.label_type = 'origin';
-      skill.output_field1 = 'origins';
+      skill.params = { ...params };
+      skill.labelType = 'origin';
+      skill.outputField1 = 'origins';
     }
     return skill;
   },
 
+  /** @deprecated since v. 0.0.9- use `names` or `numbers` instead */
   entities: (): Skill => ({
-    api_name: 'entities',
-    label_type: 'entity',
+    apiName: 'entities',
+    labelType: 'entity',
   }),
 
   emotions: (): Skill => ({
-    api_name: 'emotions',
-    label_type: 'emotion',
+    apiName: 'emotions',
+    labelType: 'emotion',
   }),
 
+  /** @deprecated since v. 0.0.9- use `proofread` instead */
   enhanceTranscription: (): Skill => ({
-    api_name: 'enhance',
-    is_generator: true,
-    label_type: 'replacement',
-    output_field: 'enhanced',
-    output_field1: 'replacements',
+    apiName: 'enhance',
+    isGenerator: true,
+    labelType: 'replacement',
+    outputField: 'enhanced',
+    outputField1: 'replacements',
   }),
 
   keywords: (): Skill => ({
-    api_name: 'keywords',
-    label_type: 'keyword',
+    apiName: 'keywords',
+    labelType: 'keyword',
   }),
 
+  /** @deprecated since v. 0.0.9- use `splitBySentence` instead */
   sentences: (): Skill => ({
-    api_name: 'sentences',
-    label_type: 'sentence',
+    apiName: 'sentences',
+    labelType: 'sentence',
   }),
 
   highlights: (): Skill => ({
-    api_name: 'highlights',
-    label_type: 'highlight',
+    apiName: 'highlights',
+    labelType: 'highlight',
   }),
 
   topics: (): Skill => ({
-    api_name: 'article-topics',
-    label_type: 'topic',
-    output_field: 'topics',
+    apiName: 'article-topics',
+    labelType: 'topic',
+    outputField: 'topics',
   }),
 
   sentiments: (): Skill => ({
-    api_name: 'sentiments',
-    label_type: 'sentiment',
+    apiName: 'sentiments',
+    labelType: 'sentiment',
   }),
 
-  htmlExtractArticle: (): Skill => ({ api_name: 'extract-html' }),
-  htmlExtractText: (): Skill => ({ api_name: 'html-extract-text' }),
+  /** @deprecated since v. 0.0.9- use `htmlToArticle` instead */
+  htmlExtractArticle: (): Skill => ({ apiName: 'extract-html' }),
+  /** @deprecated since v. 0.0.9- use `htmlAllText` instead */
+  htmlExtractText: (): Skill => ({ apiName: 'html-extract-text' }),
+
+  htmlToArticle: (): Skill => ({ apiName: 'extract-html' }),
+  htmlAllText: (): Skill => ({ apiName: 'html-extract-text' }),
+
+  proofread: (): Skill => ({
+    apiName: 'enhance',
+    isGenerator: true,
+    labelType: 'replacement',
+    outputField: 'proofread',
+    outputField1: 'replacements',
+  }),
+
+  actionItems: (): Skill => ({
+    apiName: 'action-items',
+    labelType: 'action-item',
+    outputField: 'actionItems',
+  }),
+  
+  anonymize: (): Skill => ({
+    apiName: 'anonymize',
+    isGenerator: true,
+    labelType: 'anonymized',
+    outputField: 'anonymizations',
+  }),
+
+  names: (): Skill => ({
+    apiName: 'names',
+    labelType: 'name',
+  }),
+  numbers: (): Skill => ({
+    apiName: 'numbers',
+    labelType: 'number',
+  }),
+
+  splitBySentence: (): Skill => ({
+    apiName: 'sentences',
+    labelType: 'sentence',
+  }),
+  splitByTopic: (): Skill => ({
+    apiName: 'dialogue-segmentation',
+    labelType: 'dialogue-segment',
+    outputField: 'segments',
+  }),
+
+  salesInsights: (): Skill => ({
+    apiName: 'sales-insights',
+    labelType: 'sales-insights',
+    outputField: 'salesInsights',
+  }),
 };
 
 /* eslint-disable import/no-mutable-exports */
@@ -89,17 +143,17 @@ export class Pipeline {
   }
 
   async run(text: Input | string, key: string | undefined = undefined): Promise<Output> {
-    return sendRequest(text, this.steps, key || api_key);
+    return sendRequest(text, this.steps, key || apiKey || api_key);
   }
 
   async run_batch(
     texts: Iterable<Input | string>,
     key: string | undefined = undefined,
   ): Promise<Map<Input | string, Output>> {
-    return sendBatchRequest(texts, this.steps, key || api_key, PRINT_PROGRESS);
+    return sendBatchRequest(texts, this.steps, key || apiKey || api_key, PRINT_PROGRESS);
   }
 }
 
 export {
-  Skill, Output, Input, Document, Conversation,
+  Skill, Output, Input, Document, Conversation, File,
 } from './classes';
