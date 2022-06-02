@@ -581,4 +581,4 @@ In plain English, we extract entities from the text, then summarize it, and then
 ```
 ### Support
 
-Feel free to submit issues in this repo, contact us at devrel@oneai.com, or chat with us on [Disocrd](https://discord.gg/ArpMha9n8H)
+Feel free to submit issues in this repo, contact us at devrel@oneai.com, or chat with us on [Discord](https://discord.gg/ArpMha9n8H)
