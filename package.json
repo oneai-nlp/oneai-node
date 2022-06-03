@@ -1,7 +1,7 @@
 {
     "name": "oneai",
     "main": "lib/index.js",
-    "version": "0.0.9",
+    "version": "0.1.0",
     "repository": "github:power-of-language/oneai-sdk-node",
     "scripts": {
         "build": "tsc",
