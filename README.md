@@ -27,7 +27,7 @@ import oneai from 'oneai';
 oneai.api_key = '<YOUR-API-KEY>';
 
 const pipeline = new oneai.Pipeline(
-    oneai.skills.entities(),
+    oneai.skills.names(),
     oneai.skills.summarize({ min_length: 20 }),
     oneai.skills.highlights()
 );
@@ -115,454 +115,42 @@ Let's say we run this code
 ```node
 const text = "The Hitchhiker's Guide to the Galaxy is a science fiction comedy radio series written by Douglas Adams ";
 const pipeline = new oneai.Pipeline(
-    oneai.skills.entities(),
+    oneai.skills.names(),
     oneai.skills.summarize({ min_length: 20 }),
-    oneai.skills.entities(),
+    oneai.skills.names(),
 );
 const output = await pipeline.run(text);
 console.log(output);
 ```
 
-In plain English, we extract entities from the text, then summarize it, and then extract entities from the summary. Here's what the reponse would look like (the important thing to notice, whenever a generator skill runs, `summarize` in this case, all following skills responses will be embedded within the generator result as it changes the text the skill processes:
+In plain English, we extract names from the text, then summarize it, and then extract names from the summary. Here's what the reponse would look like (the important thing to notice, whenever a generator skill runs, `summarize` in this case, all following skills responses will be embedded within the generator result as it changes the text the skill processes:
 
 ```json
 {
    "text":"The Hitchhiker's Guide to the Galaxy is a science fiction comedy radio series written by Douglas Adams ",
-   "entities":[ // This array will contain the entities extracted from the original text
+   "names":[ // This array will contain the names detected in the original text
       {
-         "type":"entity",
-         "skill":"entities",
-         "name":"WORK_OF_ART",
-         "span":[
-            0,
-            36
-         ],
-         "value":"The Hitchhiker's Guide to the Galaxy",
-         "output_spans":[
+         "type":"name", // label type
+         "name":"WORK_OF_ART", // label class
+         "value":"The Hitchhiker's Guide to the Galaxy", // label value
+         "output_spans":[ // label spans (where the name was detected in the text)
             {
                "section":0,
                "start":0,
                "end":36
             }
          ],
-         "input_spans":null,
-         "span_text":"The Hitchhiker's Guide to the Galaxy",
-         "data":null
       },
-      {
-         "type":"entity",
-         "skill":"entities",
-         "name":"PERSON",
-         "span":[
-            89,
-            102
-         ],
-         "value":"Douglas Adams",
-         "output_spans":[
-            {
-               "section":0,
-               "start":89,
-               "end":102
-            }
-         ],
-         "input_spans":null,
-         "span_text":"Douglas Adams",
-         "data":null
-      }
+      ...
    ],
-   "summary":{ // this will contain the summary itself...
+   "summary":{
+      // this actual summary
       "text":"The Hitchhiker's Guide to the Galaxy is a science fiction comedy",
-      "origins":[
+      // the names detected in the summary
+      "names":[
          {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               0,
-               3
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":0,
-                  "end":3
-               }
-            ],
-            "input_spans":null,
-            "span_text":"The",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               0,
-               3
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":0,
-                  "end":3
-               }
-            ],
-            "input_spans":null,
-            "span_text":"The",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               10,
-               14
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":10,
-                  "end":14
-               }
-            ],
-            "input_spans":null,
-            "span_text":"iker",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               14,
-               16
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":14,
-                  "end":16
-               }
-            ],
-            "input_spans":null,
-            "span_text":"'s",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               16,
-               22
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":16,
-                  "end":22
-               }
-            ],
-            "input_spans":null,
-            "span_text":" Guide",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               16,
-               22
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":16,
-                  "end":22
-               }
-            ],
-            "input_spans":null,
-            "span_text":" Guide",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               22,
-               25
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":22,
-                  "end":25
-               }
-            ],
-            "input_spans":null,
-            "span_text":" to",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               25,
-               29
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":25,
-                  "end":29
-               }
-            ],
-            "input_spans":null,
-            "span_text":" the",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               29,
-               36
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":29,
-                  "end":36
-               }
-            ],
-            "input_spans":null,
-            "span_text":" Galaxy",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               29,
-               36
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":29,
-                  "end":36
-               }
-            ],
-            "input_spans":null,
-            "span_text":" Galaxy",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               29,
-               36
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":29,
-                  "end":36
-               }
-            ],
-            "input_spans":null,
-            "span_text":" Galaxy",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               39,
-               41
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":39,
-                  "end":41
-               }
-            ],
-            "input_spans":null,
-            "span_text":" a",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               39,
-               41
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":39,
-                  "end":41
-               }
-            ],
-            "input_spans":null,
-            "span_text":" a",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               41,
-               49
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":41,
-                  "end":49
-               }
-            ],
-            "input_spans":null,
-            "span_text":" science",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               41,
-               49
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":41,
-                  "end":49
-               }
-            ],
-            "input_spans":null,
-            "span_text":" science",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               49,
-               57
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":49,
-                  "end":57
-               }
-            ],
-            "input_spans":null,
-            "span_text":" fiction",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               49,
-               57
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":49,
-                  "end":57
-               }
-            ],
-            "input_spans":null,
-            "span_text":" fiction",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               57,
-               64
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":57,
-                  "end":64
-               }
-            ],
-            "input_spans":null,
-            "span_text":" comedy",
-            "data":null
-         },
-         {
-            "type":"origin",
-            "skill":"origin",
-            "name":null,
-            "span":[
-               57,
-               64
-            ],
-            "value":null,
-            "output_spans":[
-               {
-                  "section":0,
-                  "start":57,
-                  "end":64
-               }
-            ],
-            "input_spans":null,
-            "span_text":" comedy",
-            "data":null
-         }
-      ],
-      "entities":[ // ...and the entities generated from the summary
-         {
-            "type":"entity",
-            "skill":"entities",
+            "type":"name",
             "name":"WORK_OF_ART",
-            "span":[
-               0,
-               36
-            ],
             "value":"The Hitchhiker's Guide to the Galaxy",
             "output_spans":[
                {
@@ -571,14 +159,27 @@ In plain English, we extract entities from the text, then summarize it, and then
                   "end":36
                }
             ],
-            "input_spans":null,
-            "span_text":"The Hitchhiker's Guide to the Galaxy",
-            "data":null
-         }
+         },
+         ...
       ]
    }
 }
 ```
+
+### File Uploads
+Our API supports the following file extensions:
+* `.txt`- text content
+* `.json`- conversations in the One AI conversation format
+* `.srt`- analyze captions as conversations
+* `.wav`- audio files to be transcribed & analyzed
+* `.jpg`- detect text in pictures via OCR
+Upload a file via the `oneai.File` class, i.e
+```node
+const input = new oneai.File('./example.txt');
+const pipeline = new oneai.Pipeline(...);
+const output = await pipeline.run(input);
+```
+
 ### Support
 
 Feel free to submit issues in this repo, contact us at devrel@oneai.com, or chat with us on [Discord](https://discord.gg/ArpMha9n8H)
