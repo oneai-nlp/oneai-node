@@ -76,6 +76,7 @@ export async function sendRequest(
   input: string | Input,
   skills: Skill[],
   apiKey: string,
+  timeout?: number,
 ): Promise<Output> {
   return axios({
     method: 'POST',
@@ -91,6 +92,7 @@ export async function sendRequest(
       content_type: (typeof (input) === 'string') ? undefined : input.contentType,
       steps: prepInput(skills),
     }, (_, value) => value ?? undefined),
+    timeout,
   }).then((response) => prepOutput(skills, response.data));
 }
 
@@ -105,6 +107,7 @@ export async function sendBatchRequest(
   inputs: Iterable<string | Input>,
   skills: Skill[],
   apiKey: string,
+  timeout?: number,
   printProgress = true,
 ): Promise<Map<string | Input, Output>> {
   const outputs = new Map<string | Input, Output>();
@@ -121,7 +124,7 @@ export async function sendBatchRequest(
     while (!done) {
       try {
         /* eslint-disable no-await-in-loop */ // (since we send requests sequentially)
-        outputs.set(value!, await sendRequest(value!, skills, apiKey));
+        outputs.set(value!, await sendRequest(value!, skills, apiKey, timeout));
       } catch (e: any) {
         errors++;
         if (printProgress) stderr.write(`\r\033[KInput ${outputs.size + errors}:`);
