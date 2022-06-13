@@ -75,9 +75,10 @@ function prepOutput(
 export async function sendRequest(
   input: string | Input,
   skills: Skill[],
-  apiKey: string,
+  apiKey?: string,
   timeout?: number,
 ): Promise<Output> {
+  if (!apiKey) throw new Error('API key is required');
   return axios({
     method: 'POST',
     url: 'https://api.oneai.com/api/v0/pipeline',
@@ -106,7 +107,7 @@ function timeFormat(time: number) {
 export async function sendBatchRequest(
   inputs: Iterable<string | Input>,
   skills: Skill[],
-  apiKey: string,
+  apiKey?: string,
   timeout?: number,
   printProgress = true,
 ): Promise<Map<string | Input, Output>> {
