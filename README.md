@@ -172,7 +172,7 @@ Our API supports the following file extensions:
 * `.txt`- text content
 * `.json`- conversations in the One AI conversation format
 * `.srt`- analyze captions as conversations
-* `.wav`- audio files to be transcribed & analyzed
+* `.wav`, `.mp3`- audio files to be transcribed & analyzed
 * `.jpg`- detect text in pictures via OCR
 Upload a file via the `oneai.File` class, i.e
 ```node

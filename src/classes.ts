@@ -92,11 +92,11 @@ export class File implements Input {
         this.encoding = 'base64';
         this.contentType = 'image/jpeg';
         break;
-      // case '.mp3':
-      //   this.data = buffer.toString('base64');
-      //   this.encoding = 'base64';
-      //   this.contentType = 'audio/mpeg';
-      //   break;
+      case '.mp3':
+        this.data = buffer.toString('base64');
+        this.encoding = 'base64';
+        this.contentType = 'audio/mpeg';
+        break;
       case '.wav':
         this.data = buffer.toString('base64');
         this.encoding = 'base64';
