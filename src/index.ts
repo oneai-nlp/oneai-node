@@ -142,16 +142,15 @@ export class Pipeline {
     this.steps = steps;
   }
 
-  async run(text: Input | string, key: string | undefined = undefined, params?: { timeout?: number }): Promise<Output> {
-    return sendRequest(text, this.steps, key || apiKey || api_key, params?.timeout);
+  async run(text: Input | string, params?: { apiKey?: string, timeout?: number }): Promise<Output> {
+    return sendRequest(text, this.steps, params?.apiKey || apiKey || api_key, params?.timeout);
   }
 
   async run_batch(
     texts: Iterable<Input | string>,
-    key: string | undefined = undefined,
-    params?: { timeout?: number },
+    params?: { apiKey?: string, timeout?: number },
   ): Promise<Map<Input | string, Output>> {
-    return sendBatchRequest(texts, this.steps, key || apiKey || api_key, params?.timeout, PRINT_PROGRESS);
+    return sendBatchRequest(texts, this.steps, params?.apiKey || apiKey || api_key, params?.timeout, PRINT_PROGRESS);
   }
 }
 
