@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
   Skill, Input, Output, Label,
@@ -6,6 +8,18 @@ import {
 import { version } from '../package.json';
 
 const MAX_CONCURRENT_REQUESTS = 2;
+
+const uuid = (() => {
+  const filePath = `${__dirname}/.uuid`;
+  let result = '';
+  if (fs.existsSync(filePath)) {
+    result = fs.readFileSync(filePath, 'utf8');
+  } else {
+    result = uuidv4().replace(/-/g, '');
+    fs.writeFileSync(filePath, result);
+  }
+  return result;
+})();
 
 function prepInput(skills: Skill[]): object[] {
   let input = 0;
@@ -86,7 +100,7 @@ export async function sendRequest(
     headers: {
       'api-key': apiKey,
       'Content-Type': 'application/json',
-      'User-Agent': `node-sdk/${version}`,
+      'User-Agent': `node-sdk/${version}/${uuid}`,
     },
     data: JSON.stringify({
       input: (typeof (input) === 'string') ? input : input.getText(),

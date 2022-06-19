@@ -1,7 +1,7 @@
 {
     "name": "oneai",
-    "main": "lib/index.js",
-    "version": "0.1.6",
+    "main": "lib/src/index.js",
+    "version": "0.1.7",
     "repository": "github:power-of-language/oneai-sdk-node",
     "scripts": {
         "build": "tsc",
@@ -9,6 +9,7 @@
     },
     "devDependencies": {
         "@types/node": "^17.0.23",
+        "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.25.0",
         "@typescript-eslint/parser": "^5.25.0",
         "eslint": "^8.15.0",
@@ -17,6 +18,7 @@
         "typescript": "^4.5.4"
     },
     "dependencies": {
-        "axios": "^0.24.0"
+        "axios": "^0.24.0",
+        "uuid": "^8.3.2"
     }
 }
