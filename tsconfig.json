@@ -7,7 +7,8 @@
       "strict": true,
       "lib": ["ES2015", "DOM"],
       "allowJs": true,
-      "downlevelIteration": true
+      "downlevelIteration": true,
+      "resolveJsonModule": true
     },
     "include": ["src"],
     "exclude": ["node_modules", "**/__tests__/*"]

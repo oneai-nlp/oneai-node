@@ -3,6 +3,7 @@ import { stdout, stderr } from 'process';
 import {
   Skill, Input, Output, Label,
 } from './classes';
+import { version } from '../package.json';
 
 const MAX_CONCURRENT_REQUESTS = 2;
 
@@ -85,6 +86,7 @@ export async function sendRequest(
     headers: {
       'api-key': apiKey,
       'Content-Type': 'application/json',
+      'User-Agent': `node-sdk/${version}`,
     },
     data: JSON.stringify({
       input: (typeof (input) === 'string') ? input : input.getText(),
