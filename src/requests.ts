@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label,
+  Skill, Input, Output, Label, Conversation,
 } from './classes';
 import { version } from '../package.json';
 
@@ -38,6 +38,7 @@ function prepInput(skills: Skill[]): object[] {
 function prepOutput(
   steps: Skill[],
   output: any,
+  parse: (raw: string) => Input | string
 ): Output {
   function splitPipeline(skills: Skill[], i: number): Skill[][] {
     // split pipeline at a generator Skill
@@ -53,7 +54,7 @@ function prepOutput(
     return [first, second];
   }
 
-  function build(outputIndex: number, skills: Skill[]): Output {
+  function build(outputIndex: number, skills: Skill[], parse: (raw: string) => Input | string): Output {
     const result: Output = { text: output.output[outputIndex].text };
     const { labels } = output.output[outputIndex];
 
@@ -61,7 +62,7 @@ function prepOutput(
       const field = skill.outputField || skill.apiName;
       if (skill.isGenerator) {
         const [, nextSkills] = splitPipeline(skills, i);
-        result[field] = build(outputIndex + 1, nextSkills);
+        result[field] = build(outputIndex + 1, nextSkills, parse);
         return true;
       }
       result[field] = labels.filter((label: Label) => label.type === skill.labelType);
@@ -72,7 +73,7 @@ function prepOutput(
   }
 
   const generator = (output.output[0].text_generated_by_step_id || 0) - 1;
-  if (generator < 0) return build(0, steps);
+  if (generator < 0) return build(0, steps, parse);
 
   // edge case- first Skill is a generator, or a generator preceded by
   // Skills that didn't generate output. In this case the API will skip these Skills,
@@ -82,7 +83,7 @@ function prepOutput(
 
   currentSkills.forEach((skill) => {
     const field = skill.outputField || skill.apiName;
-    result[field] = (skill.isGenerator) ? build(0, nextSkills) : [];
+    result[field] = (skill.isGenerator) ? build(0, nextSkills, parse) : [];
   });
   return result;
 }
@@ -110,7 +111,7 @@ export async function sendRequest(
       steps: prepInput(skills),
     }, (_, value) => value ?? undefined),
     timeout,
-  }).then((response) => prepOutput(skills, response.data));
+  }).then((response) => prepOutput(skills, response.data, String));
 }
 
 function timeFormat(time: number) {

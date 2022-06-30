@@ -1,11 +1,10 @@
-<p align="center">
-  <a href="https://customer.io">
-    <img src="https://studio.oneai.com/static/media/logo-gray.d978e495.svg" height="60">
+<p align="left">
+  <a href="https://oneai.com?utm_source=open_source&utm_medium=node_sdk_readme">
+    <img src="./oneai_logo_light_cropped.svg" height="60">
   </a>
-  <p align="center">NLP-as-a-service</p>
 </p>
 
-# One AI Node.js SDK
+# Node.js SDK
 OneAI is a NLP as a service platform. Our API enables language comprehension in context, transforming texts from any source into structured data to use in code.
 
 This SDK provides safe and convenient access to OneAI's API from a node.js environment.
