@@ -5,9 +5,9 @@
 </p>
 
 # Node.js SDK
-OneAI is a NLP as a service platform. Our API enables language comprehension in context, transforming texts from any source into structured data to use in code.
+One AI is a NLP as a service platform. Our API enables language comprehension in context, transforming texts from any source into structured data to use in code.
 
-This SDK provides safe and convenient access to OneAI's API from a node.js environment.
+This SDK provides safe and convenient access to One AI's APIs from a node.js environment.
 
 ## Documentation
 See the [One AI documentation](https://studio.oneai.com/docs?utm_source=open_source&utm_medium=node_sdk_readme)
@@ -18,7 +18,7 @@ See the [One AI documentation](https://studio.oneai.com/docs?utm_source=open_sou
 `npm install oneai`
 
 ### Authentication
-You will need a valid API key for all requests. Register and create a key for your project [in OneAI Studio](https://studio.oneai.com/?utm_source=open_source&utm_medium=node_sdk_readme). As a security measure we only show the key once, so make sure to keep it somewhere safe.
+You will need a valid API key for all requests. Register and create a key for your project [in One AI Studio](https://studio.oneai.com/?utm_source=open_source&utm_medium=node_sdk_readme). As a security measure we only show the key once, so make sure to keep it somewhere safe.
 
 #### Example
 ```node
