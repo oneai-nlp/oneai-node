@@ -3,3 +3,4 @@ lib
 tests/file_tests.js
 tests/7fee15f7-8dba-41ed-a4c0-94821ce798a6.wav
 tests/test_conv.json
+.vscode/settings.json
