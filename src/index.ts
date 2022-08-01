@@ -128,6 +128,12 @@ class OneAI {
       labelType: 'sales-insights',
       outputField: 'salesInsights',
     }),
+
+    transcribe: (): Skill => ({
+      apiName: 'transcribe',
+      isGenerator: true,
+      outputField: 'transcription',
+    }),
   };
 
   File = File;
