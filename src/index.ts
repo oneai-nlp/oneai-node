@@ -184,13 +184,20 @@ class OneAI {
 
       async run_batch(
         texts: Iterable<Input | string>,
-        params?: { apiKey?: string, timeout?: number },
+        params?: {
+          apiKey?: string,
+          timeout?: number,
+          onOutput?: (input: Input | string, output: Output) => void,
+          onError?: (input: Input | string, error: any) => void,
+        },
       ): Promise<Map<Input | string, Output>> {
         return sendBatchRequest(
           texts,
           this.steps,
           params?.apiKey || client.apiKey,
           params?.timeout,
+          params?.onOutput,
+          params?.onError,
           client.printProgress,
         );
       }

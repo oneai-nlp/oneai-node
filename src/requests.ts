@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label, Conversation,
+  Skill, Input, Output, Label,
 } from './classes';
 import { version } from '../package.json';
 
@@ -38,7 +38,7 @@ function prepInput(skills: Skill[]): object[] {
 function prepOutput(
   steps: Skill[],
   output: any,
-  parse: (raw: string) => Input | string
+  inputParse: (raw: string) => Input | string,
 ): Output {
   function splitPipeline(skills: Skill[], i: number): Skill[][] {
     // split pipeline at a generator Skill
@@ -54,7 +54,11 @@ function prepOutput(
     return [first, second];
   }
 
-  function build(outputIndex: number, skills: Skill[], parse: (raw: string) => Input | string): Output {
+  function build(
+    outputIndex: number,
+    skills: Skill[],
+    parse: (raw: string) => Input | string,
+  ): Output {
     const result: Output = { text: output.output[outputIndex].text };
     const { labels } = output.output[outputIndex];
 
@@ -73,7 +77,7 @@ function prepOutput(
   }
 
   const generator = (output.output[0].text_generated_by_step_id || 0) - 1;
-  if (generator < 0) return build(0, steps, parse);
+  if (generator < 0) return build(0, steps, inputParse);
 
   // edge case- first Skill is a generator, or a generator preceded by
   // Skills that didn't generate output. In this case the API will skip these Skills,
@@ -83,7 +87,7 @@ function prepOutput(
 
   currentSkills.forEach((skill) => {
     const field = skill.outputField || skill.apiName;
-    result[field] = (skill.isGenerator) ? build(0, nextSkills, parse) : [];
+    result[field] = (skill.isGenerator) ? build(0, nextSkills, inputParse) : [];
   });
   return result;
 }
@@ -126,6 +130,8 @@ export async function sendBatchRequest(
   skills: Skill[],
   apiKey?: string,
   timeout?: number,
+  onOutput?: (input: Input | string, output: Output) => void,
+  onError?: (input: Input | string, error: any) => void,
   printProgress = true,
 ): Promise<Map<string | Input, Output>> {
   const outputs = new Map<string | Input, Output>();
@@ -142,11 +148,17 @@ export async function sendBatchRequest(
     while (!done) {
       try {
         /* eslint-disable no-await-in-loop */ // (since we send requests sequentially)
-        outputs.set(value!, await sendRequest(value!, skills, apiKey, timeout));
+        const output = await sendRequest(value!, skills, apiKey, timeout);
+        if (onOutput) onOutput(value!, output);
+        else outputs.set(value!, output);
       } catch (e: any) {
         errors++;
-        if (printProgress) stderr.write(`\r\033[KInput ${outputs.size + errors}:`);
-        stderr.write(e?.message);
+        if (printProgress) {
+          stderr.write(`\r\033[KInput ${outputs.size + errors}:`);
+          stderr.write(e?.message);
+        }
+        if (onError) onError(value!, e);
+        else outputs.set(value!, e);
       } finally {
         const timeDelta = Date.now() - timeStart;
         timeTotal += timeDelta;
