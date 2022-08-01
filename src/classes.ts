@@ -106,6 +106,7 @@ export class File implements Input {
         this.data = buffer.toString();
         this.encoding = 'utf8';
         this.contentType = 'text/html';
+        break;
       default:
         throw new Error(`Unsupported file type: ${ext}`);
     }
