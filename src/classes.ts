@@ -117,11 +117,22 @@ export class File implements Input {
   }
 }
 
+interface Span {
+  start: number,
+  end: number,
+  section: number,
+}
+
 export interface Label {
     type: string
     name: string
+    /** @deprecated since version 0.2.0, use `outputSpans` instead */
     span: number[]
-    value: number
+    span_text: string
+    outputSpans: Span[]
+    inputSpans: Span[]
+    value: number | string
+    data: object
 }
 
 export interface Output {
