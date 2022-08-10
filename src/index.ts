@@ -2,6 +2,7 @@ import {
   Skill, Input, Output, File, Document, Conversation,
 } from './classes';
 import { sendBatchRequest, sendRequest } from './requests';
+import { skills } from './skills';
 
 class OneAI {
 /**
@@ -10,131 +11,9 @@ class OneAI {
  *
  * Process texts with Skills using `Pipeline`s
  */
-  readonly skills = {
-    summarize: (
-      params?: { min_length?: number, max_length?: number, find_origins?: boolean },
-    ): Skill => {
-      const skill: Skill = ({
-        apiName: 'summarize',
-        isGenerator: true,
-        params,
-        outputField: 'summary',
-      });
-      if (params?.find_origins !== false) {
-        skill.params = { ...params };
-        skill.labelType = 'origin';
-        skill.outputField1 = 'origins';
-      }
-      return skill;
-    },
+  readonly skills = skills;
 
-    /** @deprecated since v. 0.0.9- use `names` or `numbers` instead */
-    entities: (): Skill => ({
-      apiName: 'entities',
-      labelType: 'entity',
-    }),
-
-    emotions: (): Skill => ({
-      apiName: 'emotions',
-      labelType: 'emotion',
-    }),
-
-    /** @deprecated since v. 0.0.9- use `proofread` instead */
-    enhanceTranscription: (): Skill => ({
-      apiName: 'enhance',
-      isGenerator: true,
-      labelType: 'replacement',
-      outputField: 'enhanced',
-      outputField1: 'replacements',
-    }),
-
-    keywords: (): Skill => ({
-      apiName: 'keywords',
-      labelType: 'keyword',
-    }),
-
-    /** @deprecated since v. 0.0.9- use `splitBySentence` instead */
-    sentences: (): Skill => ({
-      apiName: 'sentences',
-      labelType: 'sentence',
-    }),
-
-    highlights: (): Skill => ({
-      apiName: 'highlights',
-      labelType: 'highlight',
-    }),
-
-    topics: (): Skill => ({
-      apiName: 'article-topics',
-      labelType: 'topic',
-      outputField: 'topics',
-    }),
-
-    sentiments: (): Skill => ({
-      apiName: 'sentiments',
-      labelType: 'sentiment',
-    }),
-
-    /** @deprecated since v. 0.0.9- use `htmlToArticle` instead */
-    htmlExtractArticle: (): Skill => ({ apiName: 'extract-html' }),
-    /** @deprecated since v. 0.0.9- use `htmlAllText` instead */
-    htmlExtractText: (): Skill => ({ apiName: 'html-extract-text' }),
-
-    htmlToArticle: (): Skill => ({ apiName: 'extract-html' }),
-    htmlAllText: (): Skill => ({ apiName: 'html-extract-text' }),
-
-    proofread: (): Skill => ({
-      apiName: 'enhance',
-      isGenerator: true,
-      labelType: 'replacement',
-      outputField: 'proofread',
-      outputField1: 'replacements',
-    }),
-
-    actionItems: (): Skill => ({
-      apiName: 'action-items',
-      labelType: 'action-item',
-      outputField: 'actionItems',
-    }),
-
-    anonymize: (): Skill => ({
-      apiName: 'anonymize',
-      isGenerator: true,
-      labelType: 'anonymized',
-      outputField: 'anonymizations',
-    }),
-
-    names: (): Skill => ({
-      apiName: 'names',
-      labelType: 'name',
-    }),
-    numbers: (): Skill => ({
-      apiName: 'numbers',
-      labelType: 'number',
-    }),
-
-    splitBySentence: (): Skill => ({
-      apiName: 'sentences',
-      labelType: 'sentence',
-    }),
-    splitByTopic: (): Skill => ({
-      apiName: 'dialogue-segmentation',
-      labelType: 'dialogue-segment',
-      outputField: 'segments',
-    }),
-
-    salesInsights: (): Skill => ({
-      apiName: 'sales-insights',
-      labelType: 'sales-insights',
-      outputField: 'salesInsights',
-    }),
-
-    transcribe: (): Skill => ({
-      apiName: 'transcribe',
-      isGenerator: true,
-      outputField: 'transcription',
-    }),
-  };
+  static skills = skills;
 
   File = File;
 
@@ -211,11 +90,6 @@ class OneAI {
   }
 
   private static instance = new OneAI();
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get skills() {
-    return OneAI.instance.skills;
-  }
 
   /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
   static get apiKey() {
