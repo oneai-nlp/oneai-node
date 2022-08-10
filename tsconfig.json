@@ -8,7 +8,8 @@
       "lib": ["ES2015", "DOM"],
       "allowJs": true,
       "downlevelIteration": true,
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
+      "esModuleInterop": true
     },
     "include": ["src"],
     "exclude": ["node_modules", "**/__tests__/*"]
