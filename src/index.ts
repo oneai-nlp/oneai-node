@@ -1,5 +1,5 @@
 import {
-  Skill, Input, Output, File, Document, Conversation,
+  Skill, Input, Output, File, Document, Conversation, TextContent,
 } from './classes';
 import { sendBatchRequest, sendRequest } from './requests';
 import { skills } from './skills';
@@ -17,8 +17,10 @@ class OneAI {
 
   File = File;
 
+  /** @deprecated since version 0.2.0, use `TextContent` object literal instead */
   Conversation = Conversation;
 
+  /** @deprecated since version 0.2.0, use `TextContent` object literal instead */
   Document = Document;
 
   /** the default API key to use, get one at https://studio.oneai.com/settings/api-keys */
@@ -58,7 +60,7 @@ class OneAI {
       }
 
       async run(
-        text: Input | string,
+        text: TextContent | Input,
         params?: {
           apiKey?: string,
           timeout?: number
@@ -68,14 +70,14 @@ class OneAI {
       }
 
       async run_batch(
-        texts: Iterable<Input | string>,
+        texts: Iterable<TextContent | Input>,
         params?: {
           apiKey?: string,
           timeout?: number,
-          onOutput?: (input: Input | string, output: Output) => void,
-          onError?: (input: Input | string, error: any) => void,
+          onOutput?: (input: TextContent | Input, output: Output) => void,
+          onError?: (input: TextContent | Input, error: any) => void,
         },
-      ): Promise<Map<Input | string, Output>> {
+      ): Promise<Map<TextContent | Input, Output>> {
         return sendBatchRequest(
           texts,
           this.steps,

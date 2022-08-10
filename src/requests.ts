@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label,
+  Skill, Input, Output, Label, TextContent,
 } from './classes';
 import { version } from '../package.json';
 
@@ -35,10 +35,21 @@ function prepInput(skills: Skill[]): object[] {
   });
 }
 
+type PipelineInput = TextContent | Input;
+
+const wrapContent = (content: PipelineInput): Input => (
+  ((content as Input).text !== undefined
+  || (content as Input).getText !== undefined) ? content as Input : {
+    text: content as TextContent,
+    contentType: (typeof content === 'string') ? 'text/plain' : 'application/json',
+    type: (typeof content === 'string') ? 'article' : 'conversation',
+  }
+);
+
 function prepOutput(
   steps: Skill[],
   output: any,
-  inputParse: (raw: string) => Input | string,
+  inputParse: (raw: string) => PipelineInput,
 ): Output {
   function splitPipeline(skills: Skill[], i: number): Skill[][] {
     // split pipeline at a generator Skill
@@ -57,7 +68,7 @@ function prepOutput(
   function build(
     outputIndex: number,
     skills: Skill[],
-    parse: (raw: string) => Input | string,
+    parse: (raw: string) => PipelineInput,
   ): Output {
     const result: Output = { text: output.output[outputIndex].text };
     const { labels } = output.output[outputIndex];
@@ -93,12 +104,13 @@ function prepOutput(
 }
 
 export async function sendRequest(
-  input: string | Input,
+  input: PipelineInput,
   skills: Skill[],
   apiKey?: string,
   timeout?: number,
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
+  const inputWrapped = wrapContent(input);
   return axios({
     method: 'POST',
     url: 'https://api.oneai.com/api/v0/pipeline',
@@ -108,10 +120,10 @@ export async function sendRequest(
       'User-Agent': `node-sdk/${version}/${uuid}`,
     },
     data: JSON.stringify({
-      input: (typeof (input) === 'string') ? input : input.getText(),
-      input_type: (typeof (input) === 'string') ? 'article' : input.type,
-      encoding: (typeof (input) === 'string') ? undefined : input.encoding,
-      content_type: (typeof (input) === 'string') ? undefined : input.contentType,
+      input: inputWrapped.text || inputWrapped.getText!(),
+      input_type: inputWrapped.type,
+      encoding: inputWrapped.encoding,
+      content_type: inputWrapped.contentType,
       steps: prepInput(skills),
     }, (_, value) => value ?? undefined),
     timeout,
@@ -126,15 +138,15 @@ function timeFormat(time: number) {
 }
 
 export async function sendBatchRequest(
-  inputs: Iterable<string | Input>,
+  inputs: Iterable<PipelineInput>,
   skills: Skill[],
   apiKey?: string,
   timeout?: number,
-  onOutput?: (input: Input | string, output: Output) => void,
-  onError?: (input: Input | string, error: any) => void,
+  onOutput?: (input: PipelineInput, output: Output) => void,
+  onError?: (input: PipelineInput, error: any) => void,
   printProgress = true,
-): Promise<Map<string | Input, Output>> {
-  const outputs = new Map<string | Input, Output>();
+): Promise<Map<PipelineInput, Output>> {
+  const outputs = new Map<PipelineInput, Output>();
 
   const generator = (function* dist() {
     yield* inputs;

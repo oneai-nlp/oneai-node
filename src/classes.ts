@@ -1,24 +1,33 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import parseConversation from './parsing';
+import type { OutputFields } from './skills';
 
 export interface Skill {
-    apiName: string
-    isGenerator?: boolean
-    params?: object
-    labelType?: string
-    outputField?: string
-    outputField1?: string
+  apiName: string
+  isGenerator?: boolean
+  params?: object
+  labelType?: string
+  outputField?: string
+  outputField1?: string
 }
 
 type inputType = 'article' | 'conversation' | undefined;
 type encoding = 'utf8' | 'base64';
 
+export type TextContent = string | {
+  speaker: string,
+  utterance: string,
+}[];
+
 export interface Input {
-    type: inputType
-    contentType?: string
-    encoding?: encoding
-    getText(): string
+  text?: TextContent;
+  type?: inputType;
+  contentType?: string;
+  encoding?: encoding;
+
+  /** @deprecated since version 0.2.0, use property `text` instead */
+  getText?(): string;
 }
 
 export class Document implements Input {
@@ -36,8 +45,8 @@ export class Document implements Input {
 }
 
 export interface Utterance {
-    speaker: string,
-    utterance: string
+  speaker: string,
+  utterance: string
 }
 
 export class Conversation implements Input {
@@ -65,7 +74,7 @@ export class File implements Input {
 
   encoding?: encoding;
 
-  data: string;
+  text: TextContent;
 
   constructor(filePath: string, type?: inputType) {
     this.type = type;
@@ -74,36 +83,38 @@ export class File implements Input {
     const buffer = fs.readFileSync(filePath);
     switch (ext) {
       case '.json':
-        this.data = JSON.stringify(JSON.parse(buffer.toString()));
+        this.text = JSON.parse(buffer.toString());
         this.encoding = 'utf8';
         this.contentType = 'application/json';
         break;
       case '.txt':
-        this.data = buffer.toString();
+        this.text = buffer.toString();
         this.encoding = 'utf8';
         this.contentType = 'text/plain';
         break;
       case '.srt':
-        this.data = Conversation.parse(buffer.toString()).getText();
+        this.text = parseConversation(buffer.toString());
+        this.encoding = 'utf8';
+        this.contentType = 'application/json';
         break;
       case '.jpg':
       case '.jpeg':
-        this.data = buffer.toString('base64');
+        this.text = buffer.toString('base64');
         this.encoding = 'base64';
         this.contentType = 'image/jpeg';
         break;
       case '.mp3':
-        this.data = buffer.toString('base64');
+        this.text = buffer.toString('base64');
         this.encoding = 'base64';
         this.contentType = 'audio/mp3';
         break;
       case '.wav':
-        this.data = buffer.toString('base64');
+        this.text = buffer.toString('base64');
         this.encoding = 'base64';
         this.contentType = 'audio/wav';
         break;
       case '.html':
-        this.data = buffer.toString();
+        this.text = buffer.toString();
         this.encoding = 'utf8';
         this.contentType = 'text/html';
         break;
@@ -113,7 +124,7 @@ export class File implements Input {
   }
 
   getText(): string {
-    return this.data;
+    return this.text.toString();
   }
 }
 
@@ -135,7 +146,7 @@ export interface Label {
     data: object
 }
 
-export interface Output {
-    text: string
-    [key: string]: (Output | Label[] | string)
+export interface Output extends Input, OutputFields {
+    text: TextContent
+    [key: string]: (Output | Label[] | TextContent | any)
 }
