@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
-import OneAI from '../src/index';
+const { expect } = require('chai');
+const { describe, it } = require('mocha');
+const OneAI = require('../lib/src/index');
 
 // TODO: start w/ real server responses, build fake server later
 // Input -> Language Object, Output -> PipelineOutput?
@@ -14,18 +14,14 @@ const pipeline = new oneai.Pipeline(
   oneai.skills.emotions(),
 );
 
-function validateOutput(input) {
-  return () => {
-    const output = pipeline.run(input);
-
-    expect(output).to.have.property('topics');
-    expect(output).to.have.property('numbers');
-    expect(output).to.have.property('summary');
-  };
-}
-
 describe('Pipeline', () => {
   describe('string input', () => {
-    it('single input', validateOutput('hello world'));
+    it('single input', async () => {
+      const output = await pipeline.run('hello world');
+
+      expect(output).to.have.property('topics');
+      expect(output).to.have.property('numbers');
+      expect(output).to.have.property('summary');
+    });
   });
 });

@@ -1,11 +1,11 @@
-const oneai = require('oneai');
+const { parseConversation } = require('../lib/src/index');
 
 function runTests(inputTests) {
   inputTests.forEach((t, i) => {
     console.log(`test 2.${i} - ${t.desc}`);
     let parsed;
     try {
-      parsed = oneai.Conversation.parse(t.text);
+      parsed = parseConversation(t.text);
     } catch (e) {
       parsed = { error: e };
     }

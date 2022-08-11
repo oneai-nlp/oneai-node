@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsc",
         "tests": "npm run build && npm link && cd ./tests && npm link oneai",
-        "test-mocha": "mocha --reporter spec"
+        "test-mocha": "mocha --reporter spec --timeout 50000"
     },
     "devDependencies": {
         "@types/chai": "^4.3.3",
