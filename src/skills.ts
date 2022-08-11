@@ -124,6 +124,12 @@ export const skills = {
     isGenerator: true,
     outputField: 'transcription',
   }),
+
+  detectLanguage: (): Skill => ({
+    apiName: 'detect-language',
+    labelType: 'detect-language',
+    outputField: 'language',
+  }),
 };
 
 export interface OutputFields {
