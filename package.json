@@ -5,9 +5,12 @@
     "repository": "github:power-of-language/oneai-sdk-node",
     "scripts": {
         "build": "tsc",
-        "tests": "npm run build && npm link && cd ./tests && npm link oneai"
+        "tests": "npm run build && npm link && cd ./tests && npm link oneai",
+        "test-mocha": "mocha --reporter spec"
     },
     "devDependencies": {
+        "@types/chai": "^4.3.3",
+        "@types/mocha": "^9.1.1",
         "@types/node": "^17.0.23",
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.25.0",
