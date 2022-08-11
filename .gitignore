@@ -1,8 +1,3 @@
 node_modules
 lib
-test/file_tests.ts
-test/7fee15f7-8dba-41ed-a4c0-94821ce798a6.wav
-test/How I create long hours of Deep Work - PhD student.mp3
-test/How I create long hours of Deep Work - PhD student.wav
-test/test_conv.json
 .vscode/settings.json

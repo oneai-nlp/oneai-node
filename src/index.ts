@@ -17,10 +17,8 @@ class OneAI {
 
   File = File;
 
-  /** @deprecated since version 0.2.0, use `TextContent` object literal instead */
   Conversation = Conversation;
 
-  /** @deprecated since version 0.2.0, use `TextContent` object literal instead */
   Document = Document;
 
   /** the default API key to use, get one at https://studio.oneai.com/settings/api-keys */
