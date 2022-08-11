@@ -151,4 +151,5 @@ export interface OutputFields {
     segments?: Label[]
     salesInsights?: Label[]
     transcription?: Output
+    language?: Label[]
 }
