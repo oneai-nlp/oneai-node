@@ -31,7 +31,14 @@
         "@typescript-eslint/no-shadow": ["error"],
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": ["error"],
-        "no-use-before-define": "off"
+        "no-use-before-define": "off",
+        "no-redeclare": "off",
+        "@typescript-eslint/no-redeclare": [
+            "error",
+            {
+              "ignoreDeclarationMerge": true
+            }
+        ]
     },
     "settings": {
         "import/resolver": {

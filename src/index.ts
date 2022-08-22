@@ -1,6 +1,10 @@
 import {
   Skill, Input, Output, File, Document, Conversation, TextContent,
 } from './classes';
+import {
+  Cluster,
+  Collection, getCollections, Item, Phrase,
+} from './clustering';
 import { sendBatchRequest, sendRequest } from './requests';
 import { skills } from './skills';
 
@@ -67,6 +71,7 @@ class OneAI {
         return sendRequest(text, this.steps, params?.apiKey || client.apiKey, params?.timeout);
       }
 
+      /** @deprecated since version 0.2.1, use property `runBatch` instead */
       async run_batch(
         texts: Iterable<TextContent | Input>,
         params?: {
@@ -76,9 +81,9 @@ class OneAI {
           onError?: (input: TextContent | Input, error: any) => void,
         },
       ): Promise<Map<TextContent | Input, Output>> {
-         return this.runBatch(texts, params);  
+        return this.runBatch(texts, params);
       }
-      
+
       async runBatch(
         texts: Iterable<TextContent | Input>,
         params?: {
@@ -100,6 +105,18 @@ class OneAI {
       }
     };
   }
+
+  clustering = {
+    collection: (name: string, apiKey?: string) => new Collection(name, (apiKey || this.apiKey)!),
+    getCollections: (
+      apiKey?: string,
+      limit?: number,
+    ) => getCollections((apiKey || this.apiKey)!, limit),
+    Collection,
+    Cluster,
+    Phrase,
+    Item,
+  };
 
   private static instance = new OneAI();
 
