@@ -1,14 +1,16 @@
 {
+  "apiKey": "8beaa5cc-02b6-46cf-baea-2c9f5828f382",
+  
   "document": "Einstein is considered the greatest of theorists, alongside Isaac Newton, the father of classical mechanics.\nHis name has become synonymous with genius. He gained worldwide fame in the first quarter of the 20th century thanks to the theory of relativity he developed (special relativity and general relativity), which changed everything that was known until then about the nature of time, space, mass, motion and gravity.",
 
   "conversation": [
     {
       "speaker": "speaker1",
-      "utterance": "Hello, how are you?"
+      "utterance": "Hurry up! I don't like this!"
     },
     {
       "speaker": "speaker2",
-      "utterance": "I'm fine. where are you planning to arive?"
+      "utterance": "Yeah! We got him . . . good going, Artoo."
     },
     {
       "speaker": "speaker1",
@@ -19,6 +21,8 @@
       "utterance": "Awesome, eager to meet you."
     }
   ],
+
+  "wavPath": "./test/topics.wav",
 
   "conversationParsingTests": [
     {

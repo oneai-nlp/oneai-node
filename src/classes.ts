@@ -135,18 +135,18 @@ interface Span {
 }
 
 export interface Label {
-    type: string
-    name: string
-    /** @deprecated since version 0.2.0, use `outputSpans` instead */
-    span: number[]
-    span_text: string
-    outputSpans: Span[]
-    inputSpans: Span[]
-    value: number | string
-    data: object
+  type: string
+  name: string
+  /** @deprecated since version 0.2.0, use `outputSpans` instead */
+  span: number[]
+  span_text: string
+  outputSpans: Span[]
+  inputSpans: Span[]
+  value: number | string
+  data: object
 }
 
 export interface Output extends Input, OutputFields {
-    text: TextContent
-    [key: string]: (Output | Label[] | TextContent | any)
+  text: TextContent
+  [key: string]: (Output | Label[] | TextContent | any)
 }

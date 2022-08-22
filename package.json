@@ -1,12 +1,11 @@
 {
     "name": "oneai",
     "main": "lib/src/index.js",
-    "version": "0.1.9",
+    "version": "0.2.0",
     "repository": "github:power-of-language/oneai-sdk-node",
     "scripts": {
         "build": "tsc",
-        "tests": "npm run build && npm link && cd ./tests && npm link oneai",
-        "test-mocha": "mocha --reporter spec --timeout 50000"
+        "test": "mocha --reporter spec --timeout 50000"
     },
     "devDependencies": {
         "@types/chai": "^4.3.3",

@@ -18,24 +18,9 @@ export const skills = {
     return skill;
   },
 
-  /** @deprecated since v. 0.0.9- use `names` or `numbers` instead */
-  entities: (): Skill => ({
-    apiName: 'entities',
-    labelType: 'entity',
-  }),
-
   emotions: (): Skill => ({
     apiName: 'emotions',
     labelType: 'emotion',
-  }),
-
-  /** @deprecated since v. 0.0.9- use `proofread` instead */
-  enhanceTranscription: (): Skill => ({
-    apiName: 'enhance',
-    isGenerator: true,
-    labelType: 'replacement',
-    outputField: 'enhanced',
-    outputField1: 'replacements',
   }),
 
   keywords: (): Skill => ({
@@ -65,13 +50,20 @@ export const skills = {
     labelType: 'sentiment',
   }),
 
-  /** @deprecated since v. 0.0.9- use `htmlToArticle` instead */
-  htmlExtractArticle: (): Skill => ({ apiName: 'extract-html' }),
-  /** @deprecated since v. 0.0.9- use `htmlAllText` instead */
-  htmlExtractText: (): Skill => ({ apiName: 'html-extract-text' }),
-
-  htmlToArticle: (): Skill => ({ apiName: 'extract-html' }),
-  htmlAllText: (): Skill => ({ apiName: 'html-extract-text' }),
+  htmlToArticle: (): Skill => ({ 
+    apiName: 'extract-html',
+    isGenerator: true,
+    labelType: 'extract-html',
+    outputField: 'htmlArticle',
+    outputField1: 'htmlFields',
+  }),
+  htmlAllText: (): Skill => ({
+    apiName: 'html-extract-text',
+    isGenerator: true,
+    labelType: 'html-extract-text',
+    outputField: 'htmlText',
+    outputField1: 'htmlFields',
+  }),
 
   proofread: (): Skill => ({
     apiName: 'enhance',
