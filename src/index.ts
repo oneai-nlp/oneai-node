@@ -76,6 +76,18 @@ class OneAI {
           onError?: (input: TextContent | Input, error: any) => void,
         },
       ): Promise<Map<TextContent | Input, Output>> {
+         return this.runBatch(texts, params);  
+      }
+      
+      async runBatch(
+        texts: Iterable<TextContent | Input>,
+        params?: {
+          apiKey?: string,
+          timeout?: number,
+          onOutput?: (input: TextContent | Input, output: Output) => void,
+          onError?: (input: TextContent | Input, error: any) => void,
+        },
+      ): Promise<Map<TextContent | Input, Output>> {
         return sendBatchRequest(
           texts,
           this.steps,
