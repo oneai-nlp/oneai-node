@@ -1,11 +1,11 @@
+import pipeline from './pipeline';
 import {
-  Skill, Input, Output, File, Document, Conversation, TextContent,
+  File, Document, Conversation,
 } from './classes';
 import {
   Cluster,
   Collection, getCollections, Item, Phrase,
 } from './clustering';
-import { sendBatchRequest, sendRequest } from './requests';
 import { skills } from './skills';
 
 class OneAI {
@@ -52,59 +52,7 @@ class OneAI {
     this.printProgress = params?.printProgress || true;
   }
 
-  get Pipeline() {
-    const client = this;
-    return class {
-      steps: Skill[];
-
-      constructor(...steps: Skill[]) {
-        this.steps = steps;
-      }
-
-      async run(
-        text: TextContent | Input,
-        params?: {
-          apiKey?: string,
-          timeout?: number
-        },
-      ): Promise<Output> {
-        return sendRequest(text, this.steps, params?.apiKey || client.apiKey, params?.timeout);
-      }
-
-      /** @deprecated since version 0.2.1, use property `runBatch` instead */
-      async run_batch(
-        texts: Iterable<TextContent | Input>,
-        params?: {
-          apiKey?: string,
-          timeout?: number,
-          onOutput?: (input: TextContent | Input, output: Output) => void,
-          onError?: (input: TextContent | Input, error: any) => void,
-        },
-      ): Promise<Map<TextContent | Input, Output>> {
-        return this.runBatch(texts, params);
-      }
-
-      async runBatch(
-        texts: Iterable<TextContent | Input>,
-        params?: {
-          apiKey?: string,
-          timeout?: number,
-          onOutput?: (input: TextContent | Input, output: Output) => void,
-          onError?: (input: TextContent | Input, error: any) => void,
-        },
-      ): Promise<Map<TextContent | Input, Output>> {
-        return sendBatchRequest(
-          texts,
-          this.steps,
-          params?.apiKey || client.apiKey,
-          params?.timeout,
-          params?.onOutput,
-          params?.onError,
-          client.printProgress,
-        );
-      }
-    };
-  }
+  Pipeline = pipeline(this);
 
   clustering = {
     collection: (name: string, apiKey?: string) => new Collection(name, (apiKey || this.apiKey)!),
@@ -159,5 +107,7 @@ class OneAI {
   static get Conversation() {
     return OneAI.instance.Conversation;
   }
+
+  static OneAI = OneAI;
 }
 export = OneAI;

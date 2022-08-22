@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { describe, it } = require('mocha');
 const { apiKey } = require('./credentials.json');
 const constants = require('./constants.json');
-const OneAI = require('../lib/src/index');
+const { OneAI } = require('../lib/src/index');
 
 const oneai = new OneAI(apiKey);
 
