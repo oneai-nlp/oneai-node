@@ -173,11 +173,11 @@ Our API supports the following file extensions:
 * `.srt`- analyze captions as conversations
 * `.wav`, `.mp3`- audio files to be transcribed & analyzed
 * `.jpg`- detect text in pictures via OCR
-Upload a file via the `oneai.File` class, i.e
+Upload a file via the `Pipeline.runFile` method, i.e
 ```node
-const input = new oneai.File('./example.txt');
+const filePath = './example.txt';
 const pipeline = new oneai.Pipeline(...);
-const output = await pipeline.run(input);
+const output = await pipeline.runFile(filePath);
 ```
 
 ### Support
