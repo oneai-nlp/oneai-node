@@ -25,8 +25,18 @@ class logger {
   }
 
   static error(message: string) {
-    stderr.write(message);
+    stderr.write(`${message}\n`);
   }
+}
+
+const pattern = /(\d+):(\d+):(\d+).(\d+)/;
+function timestampToMilliseconds(timestamp?: string): number | undefined {
+  if (!timestamp) return undefined;
+  const match = timestamp.match(pattern);
+  if (!match) return undefined;
+  const numbers = match.map((n) => parseInt(n, 10));
+  const [, hour, minute, second, milli] = numbers;
+  return (((hour * 60 + minute) * 60 + second)) * 1000 * milli;
 }
 
 function prepOutput(
@@ -63,6 +73,8 @@ function prepOutput(
       inputSpans: label.input_spans,
       value: label.value,
       data: label.data,
+      timestamp: timestampToMilliseconds(label.timestamp),
+      timestampEnd: timestampToMilliseconds(label.timestamp_end),
     }));
 
     skills.some((skill, i) => {

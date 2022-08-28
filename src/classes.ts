@@ -196,6 +196,8 @@ export interface Label {
   inputSpans: Span[]
   value: number | string
   data: object
+  timestamp?: number
+  timestampEnd?: number
 }
 
 export interface Output extends Input, OutputFields {
