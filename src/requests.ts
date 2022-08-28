@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label, TextContent,
+  Skill, Input, Output, Label, TextContent, File, isFileContent,
 } from './classes';
 import { version } from '../package.json';
 import { handleError } from './errors';
@@ -39,8 +39,7 @@ function prepInput(skills: Skill[]): object[] {
 type PipelineInput = TextContent | Input;
 
 const wrapContent = (content: PipelineInput): Input => (
-  ((content as Input).text !== undefined
-  || (content as Input).getText !== undefined) ? content as Input : {
+  ((content as Input).text !== undefined) ? content as Input : {
     text: content as TextContent,
     contentType: (typeof content === 'string') ? 'text/plain' : 'application/json',
     type: (typeof content === 'string') ? 'article' : 'conversation',
@@ -123,7 +122,41 @@ export async function sendRequest(
         'User-Agent': `node-sdk/${version}/${uuid}`,
       },
       data: JSON.stringify({
-        input: inputWrapped.text || inputWrapped.getText!(),
+        input: inputWrapped.text,
+        input_type: inputWrapped.type,
+        encoding: inputWrapped.encoding,
+        content_type: inputWrapped.contentType,
+        steps: prepInput(skills),
+      }, (_, value) => value ?? undefined),
+      timeout,
+    });
+
+    return prepOutput(skills, data, String);
+  } catch (error) {
+    throw handleError(error);
+  }
+}
+
+export async function sendFileRequest(
+  input: File,
+  skills: Skill[],
+  apiKey?: string,
+  timeout?: number,
+): Promise<Output> {
+  if (!apiKey) throw new Error('API key is required');
+  const inputWrapped = wrapContent(input);
+
+  try {
+    const { data } = await axios({
+      method: 'POST',
+      url: 'https://api.oneai.com/api/v0/pipeline',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+        'User-Agent': `node-sdk/${version}/${uuid}`,
+      },
+      data: JSON.stringify({
+        input: inputWrapped.text,
         input_type: inputWrapped.type,
         encoding: inputWrapped.encoding,
         content_type: inputWrapped.contentType,

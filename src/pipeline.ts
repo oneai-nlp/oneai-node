@@ -1,6 +1,6 @@
 import type OneAI from '.';
 import {
-  Input, Output, Skill, TextContent,
+  Input, Output, Skill, TextContent, File,
 } from './classes';
 import { sendBatchRequest, sendRequest } from './requests';
 
@@ -26,17 +26,19 @@ function pipeline(client: OneAI) {
       return sendRequest(text, this.steps, params?.apiKey || client.apiKey, params?.timeout);
     }
 
-    /** @deprecated since version 0.2.1, use property `runBatch` instead */
-    async run_batch(
-      texts: Iterable<TextContent | Input>,
+    async runFile(
+      filePath: string,
       params?: {
-          apiKey?: string,
-          timeout?: number,
-          onOutput?: (input: TextContent | Input, output: Output) => void,
-          onError?: (input: TextContent | Input, error: any) => void,
-        },
-    ): Promise<Map<TextContent | Input, Output>> {
-      return this.runBatch(texts, params);
+        apiKey?: string,
+        timeout?: number
+      },
+    ): Promise<Output> {
+      return sendRequest(
+        new File(filePath),
+        this.steps,
+        params?.apiKey || client.apiKey,
+        params?.timeout,
+      );
     }
 
     async runBatch(
@@ -57,6 +59,19 @@ function pipeline(client: OneAI) {
         params?.onError,
         client.printProgress,
       );
+    }
+
+    /** @deprecated since version 0.2.1, use property `runBatch` instead */
+    async run_batch(
+      texts: Iterable<TextContent | Input>,
+      params?: {
+          apiKey?: string,
+          timeout?: number,
+          onOutput?: (input: TextContent | Input, output: Output) => void,
+          onError?: (input: TextContent | Input, error: any) => void,
+        },
+    ): Promise<Map<TextContent | Input, Output>> {
+      return this.runBatch(texts, params);
     }
   };
 }

@@ -17,7 +17,7 @@ describe('File inputs', () => {
 
   function testFile(path) {
     return async () => {
-      const output = await pipeline.run(new oneai.File(path));
+      const output = await pipeline.runFile(path);
 
       expect(output).to.have.property('transcription');
       expect(output).to.have.deep.nested.property('transcription.numbers');
@@ -28,5 +28,5 @@ describe('File inputs', () => {
   }
 
   pipeline.steps[0] = oneai.skills.transcribe();
-  // it('wav', testFile(constants.wavPath));
+  it('wav', testFile(constants.wavPath));
 });
