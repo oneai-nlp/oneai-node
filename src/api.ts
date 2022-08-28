@@ -43,7 +43,7 @@ export async function postPipeline(
   input: Input,
   skills: Skill[],
   apiKey: string,
-  timeout: number = 6000,
+  timeout: number = 6000000,
 ): Promise<any> {
   try {
     const { data } = await axios({
@@ -85,7 +85,7 @@ export async function postAsyncFile(
   input: _Input<FileContent>,
   skills: Skill[],
   apiKey: string,
-  timeout?: number,
+  timeout: number = 6000000,
 ): Promise<string> {
   try {
     const request = buildRequest(input, skills, false);
