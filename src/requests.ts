@@ -6,6 +6,7 @@ import {
   Skill, Input, Output, Label, TextContent,
 } from './classes';
 import { version } from '../package.json';
+import { handleError } from './errors';
 
 const MAX_CONCURRENT_REQUESTS = 2;
 
@@ -111,23 +112,30 @@ export async function sendRequest(
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
   const inputWrapped = wrapContent(input);
-  return axios({
-    method: 'POST',
-    url: 'https://api.oneai.com/api/v0/pipeline',
-    headers: {
-      'api-key': apiKey,
-      'Content-Type': 'application/json',
-      'User-Agent': `node-sdk/${version}/${uuid}`,
-    },
-    data: JSON.stringify({
-      input: inputWrapped.text || inputWrapped.getText!(),
-      input_type: inputWrapped.type,
-      encoding: inputWrapped.encoding,
-      content_type: inputWrapped.contentType,
-      steps: prepInput(skills),
-    }, (_, value) => value ?? undefined),
-    timeout,
-  }).then((response) => prepOutput(skills, response.data, String));
+
+  try {
+    const { data } = await axios({
+      method: 'POST',
+      url: 'https://api.oneai.com/api/v0/pipeline',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+        'User-Agent': `node-sdk/${version}/${uuid}`,
+      },
+      data: JSON.stringify({
+        input: inputWrapped.text || inputWrapped.getText!(),
+        input_type: inputWrapped.type,
+        encoding: inputWrapped.encoding,
+        content_type: inputWrapped.contentType,
+        steps: prepInput(skills),
+      }, (_, value) => value ?? undefined),
+      timeout,
+    });
+
+    return prepOutput(skills, data, String);
+  } catch (error) {
+    throw handleError(error);
+  }
 }
 
 function timeFormat(time: number) {
