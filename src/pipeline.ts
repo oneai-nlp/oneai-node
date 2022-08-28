@@ -2,7 +2,7 @@ import type OneAI from '.';
 import {
   Input, Output, Skill, TextContent, File,
 } from './classes';
-import { sendAsyncFileRequestAndWait, sendBatchRequest, sendFileRequest, sendRequest } from './requests';
+import { sendAsyncFileRequestAndWait, sendBatchRequest, sendRequest } from './requests';
 
 interface Pipeline {
   steps: Skill[];

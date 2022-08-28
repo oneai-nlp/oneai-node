@@ -1,49 +1,20 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable no-await-in-loop */
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
-import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, isFileContent,
+  Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, inputType,
 } from './classes';
-import { version } from '../package.json';
 import { handleError } from './errors';
+import { getTaskStatus, postAsyncFile, postPipeline } from './api';
 
 const MAX_CONCURRENT_REQUESTS = 2;
-
-const uuid = (() => {
-  const filePath = `${__dirname}/.uuid`;
-  let result = '';
-  if (fs.existsSync(filePath)) {
-    result = fs.readFileSync(filePath, 'utf8');
-  } else {
-    result = uuidv4().replace(/-/g, '');
-    fs.writeFileSync(filePath, result);
-  }
-  return result;
-})();
-
-function prepInput(skills: Skill[]): object[] {
-  let input = 0;
-  return skills.map((skill, id) => {
-    const prepped = {
-      skill: skill.apiName,
-      id,
-      input,
-      params: skill.params,
-    };
-    if (skill.isGenerator) input++;
-    return prepped;
-  });
-}
 
 type PipelineInput = TextContent | Input;
 
 function prepOutput(
   steps: Skill[],
   output: any,
-  inputParse: (raw: string) => PipelineInput,
+  sourceType: inputType,
 ): Output {
   function splitPipeline(skills: Skill[], i: number): Skill[][] {
     // split pipeline at a generator Skill
@@ -62,7 +33,7 @@ function prepOutput(
   function build(
     outputIndex: number,
     skills: Skill[],
-    parse: (raw: string) => PipelineInput,
+    type: inputType,
   ): Output {
     const result: Output = { text: output.output[outputIndex].text };
     const labels: Label[] = output.output[outputIndex].labels.map((label: any) => ({
@@ -80,7 +51,7 @@ function prepOutput(
       const field = skill.outputField || skill.apiName;
       if (skill.isGenerator) {
         const [, nextSkills] = splitPipeline(skills, i);
-        result[field] = build(outputIndex + 1, nextSkills, parse);
+        result[field] = build(outputIndex + 1, nextSkills, type);
         return true;
       }
       result[field] = labels.filter((label: Label) => label.type === skill.labelType);
@@ -91,7 +62,7 @@ function prepOutput(
   }
 
   const generator = (output.output[0].text_generated_by_step_id || 0) - 1;
-  if (generator < 0) return build(0, steps, inputParse);
+  if (generator < 0) return build(0, steps, sourceType);
 
   // edge case- first Skill is a generator, or a generator preceded by
   // Skills that didn't generate output. In this case the API will skip these Skills,
@@ -101,7 +72,7 @@ function prepOutput(
 
   currentSkills.forEach((skill) => {
     const field = skill.outputField || skill.apiName;
-    result[field] = (skill.isGenerator) ? build(0, nextSkills, inputParse) : [];
+    result[field] = (skill.isGenerator) ? build(0, nextSkills, sourceType) : [];
   });
   return result;
 }
@@ -116,77 +87,8 @@ export async function sendRequest(
   const inputWrapped = wrapContent(input, true);
 
   try {
-    const { data } = await axios({
-      method: 'POST',
-      url: 'https://api.oneai.com/api/v0/pipeline',
-      headers: {
-        'api-key': apiKey,
-        'Content-Type': 'application/json',
-        'User-Agent': `node-sdk/${version}/${uuid}`,
-      },
-      data: JSON.stringify({
-        input: inputWrapped.text,
-        input_type: inputWrapped.type,
-        encoding: inputWrapped.encoding,
-        content_type: inputWrapped.contentType,
-        steps: prepInput(skills),
-      }, (_, value) => value ?? undefined),
-      timeout,
-    });
-
-    return prepOutput(skills, data, String);
-  } catch (error) {
-    throw handleError(error);
-  }
-}
-
-export async function getTaskStatus(taskId: string, apiKey?: string): Promise<any> {
-  if (!apiKey) throw new Error('API key is required');
-
-  try {
-    const { data } = await axios({
-      method: 'GET',
-      url: `https://api.oneai.com/api/v0/pipeline/async/tasks/${taskId}`,
-      headers: {
-        'api-key': apiKey,
-        'User-Agent': `node-sdk/${version}/${uuid}`,
-      },
-    });
-
-    return data;
-  } catch (error) {
-    throw handleError(error);
-  }
-}
-
-export async function sendFileRequest(
-  input: File | FileContent,
-  skills: Skill[],
-  apiKey?: string,
-  timeout?: number,
-): Promise<string> {
-  if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = (isFileContent(input)) ? new File(input) : input;
-
-  try {
-    const request = {
-      content_type: inputWrapped.contentType,
-      encoding: inputWrapped.encoding,
-      steps: prepInput(skills),
-    };
-    const { data } = await axios({
-      method: 'POST',
-      url: `https://api.oneai.com/api/v0/pipeline/async/file?pipeline=${encodeURIComponent(JSON.stringify(request))}`,
-      headers: {
-        'api-key': apiKey,
-        'Content-Type': 'application/json',
-        'User-Agent': `node-sdk/${version}/${uuid}`,
-      },
-      data: inputWrapped.text.buffer,
-      timeout,
-    });
-
-    return data.task_id;
+    const data = await postPipeline(inputWrapped, skills, apiKey, timeout);
+    return prepOutput(skills, data, inputWrapped.type);
   } catch (error) {
     throw handleError(error);
   }
@@ -199,8 +101,10 @@ export async function sendAsyncFileRequestAndWait(
   timeout?: number,
   interval: number = 1,
 ): Promise<Output> {
+  if (!apiKey) throw new Error('API key is required');
+  const inputWrapped = wrapContent(input, false) as File;
   console.log('Uploading file');
-  const taskId = await sendFileRequest(input, skills, apiKey, timeout);
+  const taskId = await postAsyncFile(inputWrapped, skills, apiKey, timeout);
   console.log('Upload of file complete');
 
   let response = { status: '', result: undefined };
@@ -212,7 +116,7 @@ export async function sendAsyncFileRequestAndWait(
     await new Promise((f) => setTimeout(f, 1000 * interval));
   }
   console.log('processing file complete');
-  return prepOutput(skills, response.result, String);
+  return prepOutput(skills, response.result, inputWrapped.type);
 }
 
 function timeFormat(time: number) {
@@ -231,6 +135,7 @@ export async function sendBatchRequest(
   onError?: (input: PipelineInput, error: any) => void,
   printProgress = true,
 ): Promise<Map<PipelineInput, Output>> {
+  if (!apiKey) throw new Error('API key is required');
   const outputs = new Map<PipelineInput, Output>();
 
   const generator = (function* dist() {
@@ -245,7 +150,7 @@ export async function sendBatchRequest(
     while (!done) {
       try {
         /* eslint-disable no-await-in-loop */ // (since we send requests sequentially)
-        const output = await sendRequest(value!, skills, apiKey, timeout);
+        const output = await postPipeline(wrapContent(value!, true), skills, apiKey!, timeout);
         if (onOutput) onOutput(value!, output);
         else outputs.set(value!, output);
       } catch (e: any) {

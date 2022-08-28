@@ -12,8 +12,8 @@ export interface Skill {
   outputField1?: string
 }
 
-type inputType = 'article' | 'conversation' | undefined;
-type encoding = 'utf8' | 'base64';
+export type inputType = 'article' | 'conversation' | undefined;
+export type encoding = 'utf8' | 'base64';
 
 export type FileContent = {
   filePath: string,
@@ -146,7 +146,7 @@ export class File implements Input {
   }
 }
 
-export function wrapContent(content: Input | TextContent, sync: boolean) {
+export function wrapContent(content: Input | TextContent, sync: boolean): Input {
   if (isInput(content)) {
     if (!isFileContent(content.text) || !sync) return content;
     return (content as File).read();
