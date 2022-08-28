@@ -122,6 +122,12 @@ export const skills = {
     labelType: 'detect-language',
     outputField: 'language',
   }),
+
+  pricing: (): Skill => ({
+    apiName: 'business-entities',
+    labelType: 'business-entity',
+    outputField: 'pricing',
+  }),
 };
 
 export interface OutputFields {
@@ -144,4 +150,5 @@ export interface OutputFields {
     salesInsights?: Label[]
     transcription?: Output
     language?: Label[]
+    pricing?: Label[]
 }
