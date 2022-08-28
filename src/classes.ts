@@ -15,19 +15,23 @@ export interface Skill {
 type inputType = 'article' | 'conversation' | undefined;
 type encoding = 'utf8' | 'base64';
 
-type FileContent = {
+export type FileContent = {
   filePath: string,
   buffer: Buffer,
 };
-type ConversationContent = {
+export type ConversationContent = {
   speaker: string,
   utterance: string,
 }[];
 
 export type TextContent = string | ConversationContent | FileContent;
 
-export function isFileContent(text: any): text is FileContent {
-  return 'filePath' in text && 'buffer' in text;
+export function isInput(object: any): object is Input {
+  return 'text' in object;
+}
+
+export function isFileContent(object: any): object is FileContent {
+  return 'filePath' in object && 'buffer' in object;
 }
 
 export interface Input {
@@ -66,62 +70,105 @@ export class Conversation implements Input {
   }
 }
 
+interface ExtInfo {
+  contentType: string,
+  type: inputType,
+  isBinary: boolean,
+}
+
+const extensions: Record<string, ExtInfo> = {
+  '.json': {
+    contentType: 'application/json',
+    type: 'conversation',
+    isBinary: false,
+  },
+  '.txt': {
+    contentType: 'text/plain',
+    type: 'article',
+    isBinary: false,
+  },
+  '.srt': {
+    contentType: 'text/plain',
+    type: 'conversation',
+    isBinary: false,
+  },
+  '.mp3': {
+    contentType: 'audio/mp3',
+    type: 'conversation',
+    isBinary: true,
+  },
+  '.wav': {
+    contentType: 'audio/wav',
+    type: 'conversation',
+    isBinary: true,
+  },
+  '.html': {
+    contentType: 'text/plain',
+    type: 'article',
+    isBinary: false,
+  },
+};
+
 export class File implements Input {
   type: inputType;
 
   contentType?: string;
 
-  encoding?: encoding;
+  encoding: encoding;
 
-  text: TextContent;
+  text: FileContent;
 
-  constructor(filePath: string, type?: inputType) {
-    this.type = type;
+  constructor(fileContent: string | FileContent, inputType?: inputType) {
+    this.type = inputType;
+
+    const loadFile = typeof fileContent === 'string';
+    const filePath = (loadFile) ? fileContent : fileContent.filePath;
+    const buffer = (loadFile) ? fs.readFileSync(filePath) : fileContent.buffer;
 
     const ext = path.extname(filePath);
-    const buffer = fs.readFileSync(filePath);
+    if (!(ext in extensions)) throw new Error(`Unsupported file type: ${ext}`);
+    const { contentType, type, isBinary } = extensions[ext];
 
-    switch (ext) {
-      case '.json':
-        this.text = JSON.parse(buffer.toString());
-        this.encoding = 'utf8';
-        this.contentType = 'application/json';
-        this.type = 'conversation';
-        break;
-      case '.txt':
-        this.text = buffer.toString();
-        this.encoding = 'utf8';
-        this.contentType = 'text/plain';
-        this.type = 'article';
-        break;
-      case '.srt':
-        this.text = parseConversation(buffer.toString());
-        this.encoding = 'utf8';
-        this.contentType = 'application/json';
-        this.type = 'conversation';
-        break;
-      case '.mp3':
-        this.text = buffer.toString('base64');
-        this.encoding = 'base64';
-        this.contentType = 'audio/mp3';
-        this.type = 'conversation';
-        break;
-      case '.wav':
-        this.text = buffer.toString('base64');
-        this.encoding = 'base64';
-        this.contentType = 'audio/wav';
-        this.type = 'conversation';
-        break;
-      case '.html':
-        this.text = buffer.toString();
-        this.encoding = 'utf8';
-        this.contentType = 'text/plain';
-        this.type = 'article';
-        break;
-      default:
-        throw new Error(`Unsupported file type: ${ext}`);
-    }
+    this.contentType = contentType;
+    this.type = type;
+
+    this.text = { filePath, buffer };
+    this.encoding = (isBinary) ? 'base64' : 'utf8';
   }
+
+  read(): Input {
+    return {
+      text: this.text.buffer.toString(this.encoding),
+      encoding: this.encoding,
+      contentType: this.contentType,
+      type: this.type,
+    };
+  }
+}
+
+export function wrapContent(content: Input | TextContent, sync: boolean) {
+  if (isInput(content)) {
+    if (!isFileContent(content.text) || !sync) return content;
+    return (content as File).read();
+  }
+  if (typeof content === 'string') {
+    return {
+      text: content,
+      type: 'article',
+      encoding: 'utf8',
+      contentType: 'text/plain',
+    };
+  }
+  if (isFileContent(content)) {
+    const f = new File(content);
+    return (sync) ? f.read() : f;
+  }
+  return {
+    text: content,
+    type: 'conversation',
+    encoding: 'utf8',
+    contentType: 'application/json',
+  };
 }
 
 interface Span {

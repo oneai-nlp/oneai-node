@@ -29,4 +29,5 @@ describe('File inputs', () => {
 
   pipeline.steps[0] = oneai.skills.transcribe();
   it('wav', testFile(constants.wavPath));
+  it('mp3', testFile(constants.mp3Path));
 });

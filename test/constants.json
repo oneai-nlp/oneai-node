@@ -23,6 +23,7 @@
   ],
 
   "wavPath": "./test/topics.wav",
+  "mp3Path": "./test/testAudio.mp3",
 
   "conversationParsingTests": [
     {

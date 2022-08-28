@@ -2,7 +2,7 @@ import type OneAI from '.';
 import {
   Input, Output, Skill, TextContent, File,
 } from './classes';
-import { sendBatchRequest, sendRequest } from './requests';
+import { sendAsyncFileRequestAndWait, sendBatchRequest, sendFileRequest, sendRequest } from './requests';
 
 interface Pipeline {
   steps: Skill[];
@@ -30,10 +30,17 @@ function pipeline(client: OneAI) {
       filePath: string,
       params?: {
         apiKey?: string,
-        timeout?: number
+        timeout?: number,
+        sync?: boolean,
+        interval?: number,
       },
     ): Promise<Output> {
-      return sendRequest(
+      return (params?.sync) ? sendRequest(
+        new File(filePath),
+        this.steps,
+        params?.apiKey || client.apiKey,
+        params?.timeout,
+      ) : sendAsyncFileRequestAndWait(
         new File(filePath),
         this.steps,
         params?.apiKey || client.apiKey,

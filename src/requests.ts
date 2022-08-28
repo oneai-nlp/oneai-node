@@ -1,9 +1,11 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-await-in-loop */
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label, TextContent, File, isFileContent,
+  Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, isFileContent,
 } from './classes';
 import { version } from '../package.json';
 import { handleError } from './errors';
@@ -38,14 +40,6 @@ function prepInput(skills: Skill[]): object[] {
 
 type PipelineInput = TextContent | Input;
 
-const wrapContent = (content: PipelineInput): Input => (
-  ((content as Input).text !== undefined) ? content as Input : {
-    text: content as TextContent,
-    contentType: (typeof content === 'string') ? 'text/plain' : 'application/json',
-    type: (typeof content === 'string') ? 'article' : 'conversation',
-  }
-);
-
 function prepOutput(
   steps: Skill[],
   output: any,
@@ -71,7 +65,16 @@ function prepOutput(
     parse: (raw: string) => PipelineInput,
   ): Output {
     const result: Output = { text: output.output[outputIndex].text };
-    const { labels } = output.output[outputIndex];
+    const labels: Label[] = output.output[outputIndex].labels.map((label: any) => ({
+      type: label.type,
+      name: label.name,
+      span: label.span,
+      span_text: label.span_text,
+      outputSpans: label.output_spans,
+      inputSpans: label.input_spans,
+      value: label.value,
+      data: label.data,
+    }));
 
     skills.some((skill, i) => {
       const field = skill.outputField || skill.apiName;
@@ -110,7 +113,7 @@ export async function sendRequest(
   timeout?: number,
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = wrapContent(input);
+  const inputWrapped = wrapContent(input, true);
 
   try {
     const { data } = await axios({
@@ -137,38 +140,79 @@ export async function sendRequest(
   }
 }
 
-export async function sendFileRequest(
-  input: File,
-  skills: Skill[],
-  apiKey?: string,
-  timeout?: number,
-): Promise<Output> {
+export async function getTaskStatus(taskId: string, apiKey?: string): Promise<any> {
   if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = wrapContent(input);
 
   try {
     const { data } = await axios({
+      method: 'GET',
+      url: `https://api.oneai.com/api/v0/pipeline/async/tasks/${taskId}`,
+      headers: {
+        'api-key': apiKey,
+        'User-Agent': `node-sdk/${version}/${uuid}`,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    throw handleError(error);
+  }
+}
+
+export async function sendFileRequest(
+  input: File | FileContent,
+  skills: Skill[],
+  apiKey?: string,
+  timeout?: number,
+): Promise<string> {
+  if (!apiKey) throw new Error('API key is required');
+  const inputWrapped = (isFileContent(input)) ? new File(input) : input;
+
+  try {
+    const request = {
+      content_type: inputWrapped.contentType,
+      encoding: inputWrapped.encoding,
+      steps: prepInput(skills),
+    };
+    const { data } = await axios({
       method: 'POST',
-      url: 'https://api.oneai.com/api/v0/pipeline',
+      url: `https://api.oneai.com/api/v0/pipeline/async/file?pipeline=${encodeURIComponent(JSON.stringify(request))}`,
       headers: {
         'api-key': apiKey,
         'Content-Type': 'application/json',
         'User-Agent': `node-sdk/${version}/${uuid}`,
       },
-      data: JSON.stringify({
-        input: inputWrapped.text,
-        input_type: inputWrapped.type,
-        encoding: inputWrapped.encoding,
-        content_type: inputWrapped.contentType,
-        steps: prepInput(skills),
-      }, (_, value) => value ?? undefined),
+      data: inputWrapped.text.buffer,
       timeout,
     });
 
-    return prepOutput(skills, data, String);
+    return data.task_id;
   } catch (error) {
     throw handleError(error);
   }
+}
+
+export async function sendAsyncFileRequestAndWait(
+  input: File | FileContent,
+  skills: Skill[],
+  apiKey?: string,
+  timeout?: number,
+  interval: number = 1,
+): Promise<Output> {
+  console.log('Uploading file');
+  const taskId = await sendFileRequest(input, skills, apiKey, timeout);
+  console.log('Upload of file complete');
+
+  let response = { status: '', result: undefined };
+  while (response.status !== 'COMPLETED') {
+    response = await getTaskStatus(taskId, apiKey);
+
+    console.log(`processing file status ${response.status}`);
+    if (response.status === 'FAILED') throw handleError(response.result);
+    await new Promise((f) => setTimeout(f, 1000 * interval));
+  }
+  console.log('processing file complete');
+  return prepOutput(skills, response.result, String);
 }
 
 function timeFormat(time: number) {
