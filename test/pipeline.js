@@ -8,7 +8,7 @@ const oneai = new OneAI(apiKey);
 
 describe('Pipeline', () => {
   const pipeline = new oneai.Pipeline(
-    oneai.skills.topics(),
+    oneai.skills.proofread(),
     oneai.skills.numbers(),
     oneai.skills.summarize(),
     oneai.skills.names(),

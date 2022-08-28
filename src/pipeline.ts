@@ -5,7 +5,7 @@ import {
 import { sendBatchRequest, sendRequest } from './requests';
 
 interface Pipeline {
-    steps: Skill[];
+  steps: Skill[];
 }
 
 function pipeline(client: OneAI) {
@@ -19,9 +19,9 @@ function pipeline(client: OneAI) {
     async run(
       text: TextContent | Input,
       params?: {
-          apiKey?: string,
-          timeout?: number
-        },
+        apiKey?: string,
+        timeout?: number
+      },
     ): Promise<Output> {
       return sendRequest(text, this.steps, params?.apiKey || client.apiKey, params?.timeout);
     }
@@ -42,11 +42,11 @@ function pipeline(client: OneAI) {
     async runBatch(
       texts: Iterable<TextContent | Input>,
       params?: {
-          apiKey?: string,
-          timeout?: number,
-          onOutput?: (input: TextContent | Input, output: Output) => void,
-          onError?: (input: TextContent | Input, error: any) => void,
-        },
+            apiKey?: string,
+            timeout?: number,
+            onOutput?: (input: TextContent | Input, output: Output) => void,
+            onError?: (input: TextContent | Input, error: any) => void,
+          },
     ): Promise<Map<TextContent | Input, Output>> {
       return sendBatchRequest(
         texts,
