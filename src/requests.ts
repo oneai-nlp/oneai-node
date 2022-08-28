@@ -11,6 +11,24 @@ const MAX_CONCURRENT_REQUESTS = 2;
 
 type PipelineInput = TextContent | Input;
 
+class logger {
+  static prefix = '\x1b[34m●\x1b[36m▲\x1b[35m▮\x1b[0m ';
+
+  static debug(message: string) {
+    stdout.write(logger.prefix + message);
+  }
+
+  static debugNoNewline(message: string) {
+    stdout.clearLine(0);
+    stdout.cursorTo(0);
+    stdout.write(logger.prefix + message);
+  }
+
+  static error(message: string) {
+    stderr.write(message);
+  }
+}
+
 function prepOutput(
   steps: Skill[],
   output: any,
@@ -103,19 +121,20 @@ export async function sendAsyncFileRequestAndWait(
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
   const inputWrapped = wrapContent(input);
-  console.log('Uploading file');
+  logger.debug(`Uploading file ${inputWrapped.text.filePath}`);
   const taskId = await postAsyncFile(inputWrapped, skills, apiKey, timeout);
-  console.log('Upload of file complete');
+  logger.debugNoNewline(`Upload of file ${inputWrapped.text.filePath} complete\n`);
 
   let response = { status: '', result: undefined };
+  const timeStart = Date.now();
   while (response.status !== 'COMPLETED') {
     response = await getTaskStatus(taskId, apiKey);
 
-    console.log(`processing file status ${response.status}`);
+    logger.debugNoNewline(`Processing file ${inputWrapped.text.filePath} - status ${response.status} - ${timeFormat(Date.now() - timeStart)}`);
     if (response.status === 'FAILED') throw handleError(response.result);
     await new Promise((f) => setTimeout(f, 1000 * interval));
   }
-  console.log('processing file complete');
+  logger.debugNoNewline(`Processing of file ${inputWrapped.text.filePath} complete - took ${timeFormat(Date.now() - timeStart)} total\n`);
   return prepOutput(skills, response.result, inputWrapped.type);
 }
 
@@ -156,8 +175,8 @@ export async function sendBatchRequest(
       } catch (e: any) {
         errors++;
         if (printProgress) {
-          stderr.write(`\r\033[KInput ${outputs.size + errors}:`);
-          stderr.write(e?.message);
+          logger.error(`Input ${outputs.size + errors}:`);
+          logger.error(e?.message);
         }
         if (onError) onError(value!, e);
         else outputs.set(value!, e);
@@ -165,16 +184,16 @@ export async function sendBatchRequest(
         const timeDelta = Date.now() - timeStart;
         timeTotal += timeDelta;
         timeStart += timeDelta;
-        if (printProgress) stdout.write(`Input ${outputs.size + errors} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed\r`);
+        if (printProgress) logger.debugNoNewline(`Input ${outputs.size + errors} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed`);
       }
       ({ value, done } = generator.next());
     }
   }
 
-  if (printProgress) stdout.write(`Starting processing batch with ${MAX_CONCURRENT_REQUESTS} workers\r`);
+  if (printProgress) logger.debug(`Starting processing batch with ${MAX_CONCURRENT_REQUESTS} workers`);
   const workers = [...Array(MAX_CONCURRENT_REQUESTS).keys()].map(() => batchWorker());
   return Promise.all(workers).then(() => {
-    if (printProgress) stdout.write(`Processed ${outputs.size + errors} - ${timeFormat(timeTotal / outputs.size + errors)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed\n`);
+    if (printProgress) logger.debugNoNewline(`Processed ${outputs.size + errors} - ${timeFormat(timeTotal / outputs.size + errors)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed\n`);
     return outputs;
   });
 }

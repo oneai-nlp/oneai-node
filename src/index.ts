@@ -1,4 +1,4 @@
-import pipeline from './pipeline';
+import Pipeline from './pipeline';
 import {
   File, Document, Conversation,
 } from './classes';
@@ -52,7 +52,7 @@ class OneAI {
     this.printProgress = params?.printProgress || true;
   }
 
-  Pipeline = pipeline(this);
+  Pipeline = Pipeline(this);
 
   clustering = {
     collection: (name: string, apiKey?: string) => new Collection(name, (apiKey || this.apiKey)!),
