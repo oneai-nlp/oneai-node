@@ -27,21 +27,23 @@ export type ConversationContent = {
 export type TextContent = string | ConversationContent | FileContent;
 
 export function isInput(object: any): object is Input {
-  return 'text' in object;
+  return typeof object === 'object' && 'text' in object;
 }
 
 export function isFileContent(object: any): object is FileContent {
-  return 'filePath' in object && 'buffer' in object;
+  return typeof object === 'object' && 'filePath' in object && 'buffer' in object;
 }
 
-export interface Input {
-  text?: TextContent;
+export interface _Input<T extends TextContent> {
+  text: T;
   type?: inputType;
   contentType?: string;
   encoding?: encoding;
 }
 
-export class Document implements Input {
+export type Input = _Input<TextContent>;
+
+export class Document implements _Input<string> {
   type: inputType = 'article';
 
   text: string;
@@ -56,13 +58,23 @@ export interface Utterance {
   utterance: string
 }
 
-export class Conversation implements Input {
+export class Conversation implements _Input<ConversationContent> {
   type: inputType = 'conversation';
 
-  utterances: Utterance[];
+  contentType: string = 'application/json';
 
-  constructor(utterances: Utterance[]) {
-    this.utterances = utterances;
+  text: ConversationContent;
+
+  constructor(utterances: ConversationContent) {
+    this.text = utterances;
+  }
+
+  get utterances(): ConversationContent {
+    return this.text;
+  }
+
+  set utterances(utterances: ConversationContent) {
+    this.text = utterances;
   }
 
   static parse(text: string): Conversation {
@@ -109,7 +121,7 @@ const extensions: Record<string, ExtInfo> = {
   },
 };
 
-export class File implements Input {
+export class File implements _Input<FileContent> {
   type: inputType;
 
   contentType?: string;
@@ -121,19 +133,12 @@ export class File implements Input {
   constructor(fileContent: string | FileContent, inputType?: inputType) {
     this.type = inputType;
 
-    const loadFile = typeof fileContent === 'string';
-    const filePath = (loadFile) ? fileContent : fileContent.filePath;
-    const buffer = (loadFile) ? fs.readFileSync(filePath) : fileContent.buffer;
-
-    const ext = path.extname(filePath);
-    if (!(ext in extensions)) throw new Error(`Unsupported file type: ${ext}`);
-    const { contentType, type, isBinary } = extensions[ext];
-
-    this.contentType = contentType;
-    this.type = type;
-
-    this.text = { filePath, buffer };
-    this.encoding = (isBinary) ? 'base64' : 'utf8';
+    this.text = typeof fileContent === 'string'
+      ? { filePath: fileContent, buffer: fs.readFileSync(fileContent) } : fileContent;
+    const input = wrapContent(this.text);
+    this.type = input.type;
+    this.contentType = input.contentType;
+    this.encoding = input.encoding as encoding;
   }
 
   read(): Input {
@@ -146,27 +151,31 @@ export class File implements Input {
   }
 }
 
-export function wrapContent(content: Input | TextContent, sync: boolean): Input {
-  if (isInput(content)) {
-    if (!isFileContent(content.text) || !sync) return content;
-    return (content as File).read();
-  }
+export function wrapContent<T extends TextContent>(
+  content: _Input<T> | T,
+): _Input<T> {
+  if (isInput(content)) return content;
   if (typeof content === 'string') {
     return {
       text: content,
       type: 'article',
-      encoding: 'utf8',
-      contentType: 'text/plain',
     };
   }
   if (isFileContent(content)) {
-    const f = new File(content);
-    return (sync) ? f.read() : f;
+    const ext = path.extname(content.filePath);
+    if (!(ext in extensions)) throw new Error(`Unsupported file type: ${ext}`);
+    const { contentType, type, isBinary } = extensions[ext];
+
+    return {
+      text: content,
+      encoding: (isBinary) ? 'base64' : 'utf8',
+      contentType,
+      type,
+    };
   }
   return {
     text: content,
     type: 'conversation',
-    encoding: 'utf8',
     contentType: 'application/json',
   };
 }

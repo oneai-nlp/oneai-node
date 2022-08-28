@@ -8,7 +8,7 @@ const oneai = new OneAI(apiKey);
 
 describe('Pipeline', () => {
   const pipeline = new oneai.Pipeline(
-    oneai.skills.proofread(),
+    oneai.skills.topics(),
     oneai.skills.numbers(),
     oneai.skills.summarize(),
     oneai.skills.names(),
@@ -28,7 +28,7 @@ describe('Pipeline', () => {
       };
     }
 
-    it('document input (string)', testInput(constants.document));
-    it('conversation input (object)', testInput(constants.conversation));
+    it('document', testInput(constants.document));
+    it('conversation', testInput(constants.conversation));
   });
 });

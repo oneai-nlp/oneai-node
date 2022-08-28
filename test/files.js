@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const { describe, it } = require('mocha');
+const fs = require('fs');
 const { apiKey } = require('./credentials.json');
 const constants = require('./constants.json');
 const { OneAI } = require('../lib/src/index');
@@ -8,16 +9,19 @@ const oneai = new OneAI(apiKey);
 
 describe('File inputs', () => {
   const pipeline = new oneai.Pipeline(
-    oneai.skills.topics(),
+    oneai.skills.transcribe(),
     oneai.skills.numbers(),
     oneai.skills.summarize(),
     oneai.skills.names(),
     oneai.skills.emotions(),
   );
 
-  function testFile(path) {
+  function testFile(input, sync) {
     return async () => {
-      const output = await pipeline.runFile(path);
+      const output = await (sync
+        ? pipeline.run({ filePath: input, buffer: fs.readFileSync(input) })
+        : pipeline.runFile(input)
+      );
 
       expect(output).to.have.property('transcription');
       expect(output).to.have.deep.nested.property('transcription.numbers');
@@ -27,6 +31,8 @@ describe('File inputs', () => {
     };
   }
 
-  pipeline.steps[0] = oneai.skills.transcribe();
-  it('mp3', testFile(constants.mp3Path));
+  describe('mp3', () => {
+    it('sync', testFile(constants.mp3Path, true));
+    it('async', testFile(constants.mp3Path, false));
+  });
 });

@@ -84,7 +84,7 @@ export async function sendRequest(
   timeout?: number,
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = wrapContent(input, true);
+  const inputWrapped = wrapContent(input);
 
   try {
     const data = await postPipeline(inputWrapped, skills, apiKey, timeout);
@@ -102,7 +102,7 @@ export async function sendAsyncFileRequestAndWait(
   interval: number = 1,
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = wrapContent(input, false) as File;
+  const inputWrapped = wrapContent(input);
   console.log('Uploading file');
   const taskId = await postAsyncFile(inputWrapped, skills, apiKey, timeout);
   console.log('Upload of file complete');
@@ -150,7 +150,7 @@ export async function sendBatchRequest(
     while (!done) {
       try {
         /* eslint-disable no-await-in-loop */ // (since we send requests sequentially)
-        const output = await postPipeline(wrapContent(value!, true), skills, apiKey!, timeout);
+        const output = await postPipeline(wrapContent(value!), skills, apiKey!, timeout);
         if (onOutput) onOutput(value!, output);
         else outputs.set(value!, output);
       } catch (e: any) {

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import {
-  Skill, Input, File, isFileContent,
+  Skill, Input, isFileContent, FileContent, _Input,
 } from './classes';
 import { version } from '../package.json';
 import { handleError } from './errors';
@@ -20,11 +20,18 @@ const uuid = (() => {
 })();
 
 function buildRequest(input: Input, skills: Skill[], includeText: boolean): string {
+  const fixedInput = (isFileContent(input.text) && includeText)
+    ? {
+      text: input.text.buffer.toString(input.encoding),
+      encoding: input.encoding,
+      contentType: input.contentType,
+      type: input.type,
+    } : input;
   return JSON.stringify({
-    ...(includeText && { input: input.text }),
-    input_type: input.type,
-    encoding: input.encoding,
-    content_type: input.contentType,
+    ...(includeText && { input: fixedInput.text }),
+    input_type: fixedInput.type,
+    encoding: fixedInput.encoding,
+    content_type: fixedInput.contentType,
     steps: skills.map((skill) => ({
       skill: skill.apiName,
       params: skill.params,
@@ -38,8 +45,6 @@ export async function postPipeline(
   apiKey: string,
   timeout: number = 6000,
 ): Promise<any> {
-  if (!apiKey) throw new Error('API key is required');
-
   try {
     const { data } = await axios({
       method: 'POST',
@@ -77,13 +82,11 @@ export async function getTaskStatus(taskId: string, apiKey: string): Promise<any
 }
 
 export async function postAsyncFile(
-  input: File,
+  input: _Input<FileContent>,
   skills: Skill[],
   apiKey: string,
   timeout?: number,
 ): Promise<string> {
-  const inputWrapped = (isFileContent(input)) ? new File(input) : input;
-
   try {
     const request = buildRequest(input, skills, false);
     const { data } = await axios({
@@ -94,7 +97,7 @@ export async function postAsyncFile(
         'Content-Type': 'application/json',
         'User-Agent': `node-sdk/${version}/${uuid}`,
       },
-      data: inputWrapped.text.buffer,
+      data: input.text.buffer,
       timeout,
     });
 
