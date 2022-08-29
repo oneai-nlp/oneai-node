@@ -235,7 +235,7 @@ export abstract class _Collection {
     });
 
     const url = `${this.name}/clusters/find?${urlParams}`;
-    const { data } = (await GET(url, this.apiKey));
+    const { data } = (await GET(url, this.apiKey || this.client.apiKey));
     return data.map((cluster: any) => Cluster.fromJson(this, cluster));
   }
 
@@ -246,7 +246,7 @@ export abstract class _Collection {
       item_metadata: input.metadata,
       'force-new-cluster': forceNewClusters,
     }));
-    const { data } = await POST(url, this.apiKey, request);
+    const { data } = await POST(url, this.apiKey || this.client.apiKey, request);
     return data;
   }
 }
@@ -258,7 +258,7 @@ export async function* getCollections(
   apiKey?: string,
   limit?: number,
 ): AsyncGenerator<_Collection, void, undefined> {
-  if (!client.apiKey) throw new Error('API key is required');
+  if (!(client.apiKey || apiKey)) throw new Error('API key is required');
   const urlParams = new URLSearchParams();
   if (limit) urlParams.set('limit', limit.toString());
   let page = 0;
