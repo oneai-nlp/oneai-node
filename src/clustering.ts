@@ -190,7 +190,6 @@ export namespace ClusteringClient {
         limit?: number,
         fromDate?: Date | string,
         toDate?: Date | string,
-        itemLimit?: number,
         itemMetadata?: string,
       },
     ): AsyncGenerator<Phrase, void, undefined> {
@@ -203,7 +202,6 @@ export namespace ClusteringClient {
       if (params?.limit !== undefined) urlParams.set('limit', params.limit.toString());
       if (fromDate !== undefined) urlParams.set('from-date', fromDate.toISOString());
       if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
-      if (params?.itemLimit !== undefined) urlParams.set('phrases-limit', params.itemLimit.toString());
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
 
       let page = 0;
@@ -268,7 +266,6 @@ export namespace ClusteringClient {
         limit?: number,
         fromDate?: Date | string,
         toDate?: Date | string,
-        phraseLimit?: number,
         itemMetadata?: string,
       },
     ): AsyncGenerator<Cluster, void, undefined> {
@@ -281,7 +278,6 @@ export namespace ClusteringClient {
       if (params?.limit !== undefined) urlParams.set('limit', params.limit.toString());
       if (fromDate !== undefined) urlParams.set('from-date', fromDate.toISOString());
       if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
-      if (params?.phraseLimit !== undefined) urlParams.set('phrases-limit', params.phraseLimit.toString());
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
 
       let page = 0;
