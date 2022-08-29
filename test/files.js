@@ -18,10 +18,7 @@ describe('File inputs', () => {
 
   function testFile(input, sync) {
     return async () => {
-      const output = await (sync
-        ? pipeline.run({ filePath: input, buffer: fs.readFileSync(input) })
-        : pipeline.runFile(input)
-      );
+      const output = await pipeline.runFile(input, { sync }); // true by default
 
       expect(output).to.have.property('transcription');
       expect(output).to.have.deep.nested.property('transcription.numbers');
