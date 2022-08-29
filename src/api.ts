@@ -43,7 +43,7 @@ export async function postPipeline(
   input: Input,
   skills: Skill[],
   apiKey: string,
-  timeout: number = 6000000,
+  timeout: number = 6000,
 ): Promise<any> {
   try {
     const { data } = await axios({
@@ -55,7 +55,7 @@ export async function postPipeline(
         'User-Agent': `node-sdk/${version}/${uuid}`,
       },
       data: buildRequest(input, skills, true),
-      timeout,
+      timeout: timeout * 1000,
     });
 
     return data;
@@ -85,7 +85,7 @@ export async function postAsyncFile(
   input: _Input<FileContent>,
   skills: Skill[],
   apiKey: string,
-  timeout: number = 6000000,
+  timeout: number = 6000,
 ): Promise<string> {
   try {
     const request = buildRequest(input, skills, false);
@@ -98,7 +98,7 @@ export async function postAsyncFile(
         'User-Agent': `node-sdk/${version}/${uuid}`,
       },
       data: input.text.buffer,
-      timeout,
+      timeout: timeout * 1000,
     });
 
     return data.task_id;
