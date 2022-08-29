@@ -50,7 +50,7 @@ export const skills = {
     labelType: 'sentiment',
   }),
 
-  htmlToArticle: (): Skill => ({ 
+  htmlToArticle: (): Skill => ({
     apiName: 'extract-html',
     isGenerator: true,
     labelType: 'extract-html',
@@ -123,6 +123,12 @@ export const skills = {
     outputField: 'language',
   }),
 
+  headline: (): Skill => ({
+    apiName: 'headline',
+    labelType: 'headline',
+    outputField: 'headline',
+  }),
+
   pricing: (): Skill => ({
     apiName: 'business-entities',
     labelType: 'business-entity',
@@ -150,5 +156,6 @@ export interface OutputFields {
     salesInsights?: Label[]
     transcription?: Output
     language?: Label[]
+    headline?: Label[]
     pricing?: Label[]
 }

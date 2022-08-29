@@ -94,7 +94,7 @@ export class Phrase {
   ): Promise<Item[]> {
     const urlParams = new URLSearchParams();
     if (params?.itemMetadata !== 'undefined') urlParams.set('item-metadata', params?.itemMetadata!);
-    const { data } = await GET(`phrases/${this.id}/items?${urlParams}`, this.cluster.collection.apiKey);
+    const { data } = await GET(`phrases/${this.id}/items?${urlParams}`, this.cluster.collection.apiKey || this.cluster.collection.client.apiKey);
     return data.map((item: any) => Item.fromJson(this, item));
   }
 
@@ -147,7 +147,7 @@ export class Cluster {
     if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params?.itemMetadata);
 
     const url = `${this.collection.name}/clusters/${this.id}?${params}`;
-    const { data } = (await GET(url, this.collection.apiKey));
+    const { data } = (await GET(url, this.collection.apiKey || this.collection.client.apiKey));
     return data.map((cluster: any) => Phrase.fromJson(this, cluster));
   }
 
@@ -158,7 +158,11 @@ export class Cluster {
       item_metadata: item.metadata,
       'force-cluster-id': this.id,
     }));
-    const { data } = await POST(url, this.collection.apiKey, request);
+    const { data } = await POST(
+      url,
+      this.collection.apiKey || this.collection.client.apiKey,
+      request,
+    );
     return data;
   }
 
