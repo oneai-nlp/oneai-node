@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
 const { apiKey } = require('./credentials.json');
@@ -32,5 +33,23 @@ describe('Clustering', () => {
       },
     ];
     expect(await collection.addItems(items)).to.have.property('status');
+  });
+
+  it('getCollections', async () => {
+    for await (const collection of oneai.clustering.getCollections()) {
+      console.log(collection.name);
+      for await (const cluster of collection.getClusters({ limit: 1 })) {
+        console.log(`\t${cluster.text}`);
+        const phrase = (await cluster.getPhrases().next()).value;
+        console.log(`\t\t${phrase.text}`);
+        try {
+          const item = (await phrase.getItems())[0];
+          console.log(`\t\t\t${item.text}`);
+        } catch (e) {
+          console.log(e);
+          throw e;
+        }
+      }
+    }
   });
 });

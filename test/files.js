@@ -1,6 +1,5 @@
 const { expect } = require('chai');
 const { describe, it } = require('mocha');
-const fs = require('fs');
 const { apiKey } = require('./credentials.json');
 const constants = require('./constants.json');
 const { OneAI } = require('../lib/src/index');

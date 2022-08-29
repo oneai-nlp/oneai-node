@@ -2,10 +2,7 @@ import Pipeline from './pipeline';
 import {
   File, Document, Conversation,
 } from './classes';
-import {
-  Cluster,
-  Collection, getCollections, Item, Phrase,
-} from './clustering';
+import { ClusteringClient } from './clustering';
 import { skills } from './skills';
 
 class OneAI {
@@ -54,16 +51,7 @@ class OneAI {
 
   Pipeline = Pipeline(this);
 
-  clustering = {
-    Collection: Collection(this),
-    getCollections: (
-      apiKey?: string,
-      limit?: number,
-    ) => getCollections(this, apiKey, limit),
-    Cluster,
-    Phrase,
-    Item,
-  };
+  clustering = new ClusteringClient(this);
 
   private static instance = new OneAI();
 
@@ -108,5 +96,10 @@ class OneAI {
   }
 
   static OneAI = OneAI;
+
+  public toString(): string {
+    const apiKeyString = (this.apiKey) ? this.apiKey.substring(0, 8) + '*'.repeat(this.apiKey.length - 8) : undefined;
+    return `One AI Client - API Key ${apiKeyString}`;
+  }
 }
 export = OneAI;
