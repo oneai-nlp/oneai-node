@@ -152,7 +152,7 @@ export class Cluster {
     const url = `${this.collection.name}/items`;
     const data = items.map((item) => ({
       text: item.text,
-      metadata: item.metadata,
+      item_metadata: item.metadata,
       'force-cluster-id': this.id,
     }));
     return POST(url, this.collection.apiKey, data);
@@ -233,7 +233,7 @@ export class Collection {
     const url = `${this.name}/items`;
     const data = items.map((input) => ({
       text: input.text,
-      metadata: input.metadata,
+      item_metadata: input.metadata,
       'force-new-cluster': forceNewClusters,
     }));
     return POST(url, this.apiKey, data);
