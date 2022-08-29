@@ -55,12 +55,11 @@ class OneAI {
   Pipeline = Pipeline(this);
 
   clustering = {
-    collection: (name: string, apiKey?: string) => new Collection(name, (apiKey || this.apiKey)!),
+    Collection: Collection(this),
     getCollections: (
       apiKey?: string,
       limit?: number,
-    ) => getCollections((apiKey || this.apiKey)!, limit),
-    Collection,
+    ) => getCollections(this, apiKey, limit),
     Cluster,
     Phrase,
     Item,

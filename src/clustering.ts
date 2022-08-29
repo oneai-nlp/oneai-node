@@ -1,10 +1,12 @@
 /* eslint-disable no-await-in-loop */
 import axios from 'axios';
+import OneAI from '.';
 import { _Input } from './classes';
 
 const baseURL = 'https://api.oneai.com/clustering/v1/collections';
 
-function GET(path: string, apiKey: string) {
+function GET(path: string, apiKey?: string) {
+  if (!apiKey) throw new Error('API key is required');
   return axios({
     method: 'GET',
     url: `${baseURL}/${path}`,
@@ -15,7 +17,8 @@ function GET(path: string, apiKey: string) {
   });
 }
 
-function POST(path: string, apiKey: string, data: object) {
+function POST(path: string, apiKey?: string, data: object = {}) {
+  if (!apiKey) throw new Error('API key is required');
   return axios({
     method: 'POST',
     url: `${baseURL}/${path}`,
@@ -114,7 +117,7 @@ export class Cluster {
 
   metadata: string;
 
-  collection: Collection;
+  collection: _Collection;
 
   private cachedPhrases: Phrase[] = [];
 
@@ -123,7 +126,7 @@ export class Cluster {
     text: string,
     phraseCount: number,
     metadata: string,
-    collection: Collection,
+    collection: _Collection,
   ) {
     this.id = id;
     this.text = text;
@@ -150,15 +153,16 @@ export class Cluster {
 
   async addItems(items: _Input<string>[]): Promise<any> {
     const url = `${this.collection.name}/items`;
-    const data = items.map((item) => ({
+    const request = items.map((item) => ({
       text: item.text,
       item_metadata: item.metadata,
       'force-cluster-id': this.id,
     }));
-    return POST(url, this.collection.apiKey, data);
+    const { data } = await POST(url, this.collection.apiKey, request);
+    return data;
   }
 
-  static fromJson(collection: Collection, cluster: any): Cluster {
+  static fromJson(collection: _Collection, cluster: any): Cluster {
     const parsed = new Cluster(
       cluster.cluster_id,
       cluster.cluster_phrase,
@@ -171,14 +175,16 @@ export class Cluster {
   }
 }
 
-export class Collection {
+export abstract class _Collection {
   static apiDateFormat = '%Y-%m-%d';
+
+  abstract client: OneAI;
 
   name: string;
 
-  apiKey: string;
+  apiKey?: string;
 
-  constructor(name: string, apiKey: string) {
+  constructor(name: string, apiKey?: string) {
     this.name = name;
     this.apiKey = apiKey;
   }
@@ -207,18 +213,18 @@ export class Collection {
     if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
 
     let page = 0;
-    let clusters: Array<Cluster> = [];
+    let clusters: Cluster[] = [];
 
     while (page === 0 || clusters.length > 0) {
       urlParams.set('page', (page++).toString());
 
-      const { data } = await GET(`${this.name}/clusters?${urlParams}`, this.apiKey);
+      const { data } = await GET(`${this.name}/clusters?${urlParams}`, (this.apiKey || this.client.apiKey)!);
       clusters = data.map((cluster: any) => Cluster.fromJson(this, cluster));
       yield* clusters;
     }
   }
 
-  async find(query: string, threshold: number): Promise<Array<Cluster>> {
+  async find(query: string, threshold: number): Promise<Cluster[]> {
     const urlParams = new URLSearchParams({
       text: query,
       'similarity-threshold': threshold.toString(),
@@ -231,29 +237,36 @@ export class Collection {
 
   async addItems(items: _Input<string>[], forceNewClusters: boolean): Promise<any> {
     const url = `${this.name}/items`;
-    const data = items.map((input) => ({
+    const request = items.map((input) => ({
       text: input.text,
       item_metadata: input.metadata,
       'force-new-cluster': forceNewClusters,
     }));
-    return POST(url, this.apiKey, data);
+    const { data } = await POST(url, this.apiKey, request);
+    return data;
   }
 }
 
+export const Collection = (client: OneAI) => class extends _Collection { client = client; };
+
 export async function* getCollections(
-  apiKey: string,
+  client: OneAI,
+  apiKey?: string,
   limit?: number,
-): AsyncGenerator<Collection, void, undefined> {
+): AsyncGenerator<_Collection, void, undefined> {
+  if (!client.apiKey) throw new Error('API key is required');
   const urlParams = new URLSearchParams();
   if (limit) urlParams.set('limit', limit.toString());
   let page = 0;
-  let collections: Array<Collection> = [];
+  let collections: _Collection[] = [];
 
   while (page === 0 || collections.length > 0) {
     urlParams.set('page', (page++).toString());
 
-    const { data } = await GET(`?${urlParams}`, apiKey);
-    collections = data.map((collection: any) => new Collection(collection.name, apiKey));
+    const { data } = await GET(`?${urlParams}`, apiKey || client.apiKey);
+    collections = data.map(
+      (collection: any) => new (Collection(client))(collection.name, apiKey || client.apiKey),
+    );
     yield* collections;
   }
 }
