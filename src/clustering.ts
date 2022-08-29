@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import axios from 'axios';
+import { _Input } from './classes';
 
 const baseURL = 'https://api.oneai.com/clustering/v1/collections';
 
@@ -147,10 +148,11 @@ export class Cluster {
     return data.map((cluster: any) => Phrase.fromJson(this, cluster));
   }
 
-  async addItems(items: string[]): Promise<any> {
+  async addItems(items: _Input<string>[]): Promise<any> {
     const url = `${this.collection.name}/items`;
     const data = items.map((item) => ({
-      text: item,
+      text: item.text,
+      metadata: item.metadata,
       'force-cluster-id': this.id,
     }));
     return POST(url, this.collection.apiKey, data);
@@ -227,10 +229,11 @@ export class Collection {
     return data.map((cluster: any) => Cluster.fromJson(this, cluster));
   }
 
-  async addItems(items: Array<string>, forceNewClusters: boolean): Promise<any> {
+  async addItems(items: _Input<string>[], forceNewClusters: boolean): Promise<any> {
     const url = `${this.name}/items`;
     const data = items.map((input) => ({
-      text: input,
+      text: input.text,
+      metadata: input.metadata,
       'force-new-cluster': forceNewClusters,
     }));
     return POST(url, this.apiKey, data);

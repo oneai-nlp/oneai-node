@@ -39,6 +39,7 @@ export interface _Input<T extends TextContent> {
   type?: inputType;
   contentType?: string;
   encoding?: encoding;
+  metadata?: any;
 }
 
 export type Input = _Input<TextContent>;
