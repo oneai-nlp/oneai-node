@@ -134,18 +134,18 @@ export namespace ClusteringClient {
       this.metadata = metadata;
     }
 
-    async getItems(
+    async* getItems(
       params?: {
         itemMetadata?: string,
       },
-    ): Promise<Item[]> {
+    ): AsyncGenerator<Item, void, undefined> {
       const urlParams = new URLSearchParams();
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params?.itemMetadata!);
       const { data } = await this.cluster.collection.client.GET(
         `${this.cluster.collection.name}/phrases/${this.id}/items?${urlParams}`,
         this.cluster.collection.apiKey,
       );
-      return data ? data.map((item: any) => Item.fromJson(this, item)) : [];
+      yield* data ? data.map((item: any) => Item.fromJson(this, item)) : [];
     }
 
     static fromJson(cluster: Cluster, phrase: any): Phrase {

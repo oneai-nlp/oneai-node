@@ -42,12 +42,8 @@ describe('Clustering', () => {
         console.log(`\t${cluster.text}`);
         const phrase = (await cluster.getPhrases().next()).value;
         console.log(`\t\t${phrase.text}`);
-        try {
-          const item = (await phrase.getItems())[0];
+        for await (const item of phrase.getItems()) {
           console.log(`\t\t\t${item.text}`);
-        } catch (e) {
-          console.log(e);
-          throw e;
         }
       }
     }
