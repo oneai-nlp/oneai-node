@@ -64,7 +64,7 @@ export class ClusteringClient {
 
       const { data } = await this.GET(`?${urlParams}`, apiKey);
       collections = data ? data.map(
-        (name: string) => new this.Collection(name, apiKey),
+        (id: string) => new this.Collection(id, apiKey),
       ) : [];
       counter += collections.length;
       yield* collections;
@@ -98,7 +98,17 @@ export namespace ClusteringClient {
       this.phrase = phrase;
     }
 
-    static fromJson(phrase: Phrase, item: any): Item {
+    toJSON() {
+      return {
+        id: this.id,
+        text: this.text,
+        createdAt: this.createdAt,
+        distance: this.distance,
+        phraseId: this.phrase.id,
+      };
+    }
+
+    static fromJSON(phrase: Phrase, item: any): Item {
       return new Item(
         item.id,
         item.original_text,
@@ -142,13 +152,23 @@ export namespace ClusteringClient {
       const urlParams = new URLSearchParams();
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params?.itemMetadata!);
       const { data } = await this.cluster.collection.client.GET(
-        `${this.cluster.collection.name}/phrases/${this.id}/items?${urlParams}`,
+        `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
         this.cluster.collection.apiKey,
       );
-      yield* data ? data.map((item: any) => Item.fromJson(this, item)) : [];
+      yield* data ? data.map((item: any) => Item.fromJSON(this, item)) : [];
     }
 
-    static fromJson(cluster: Cluster, phrase: any): Phrase {
+    toJSON() {
+      return {
+        id: this.id,
+        text: this.text,
+        itemCount: this.itemCount,
+        metadata: this.metadata,
+        clusterId: this.cluster.id,
+      };
+    }
+
+    static fromJSON(cluster: Cluster, phrase: any): Phrase {
       return new Phrase(
         phrase.phrase_id,
         phrase.text,
@@ -215,17 +235,17 @@ export namespace ClusteringClient {
         urlParams.set('page', (page++).toString());
 
         const { data } = await this.collection.client.GET(
-          `${this.collection.name}/clusters/${this.id}/phrases?${urlParams}`,
+          `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
           this.collection.apiKey,
         );
-        phrases = data ? data.map((phrase: any) => Phrase.fromJson(this, phrase)) : [];
+        phrases = data ? data.map((phrase: any) => Phrase.fromJSON(this, phrase)) : [];
         counter += phrases.length;
         yield* phrases;
       }
     }
 
     async addItems(items: _Input<string>[]): Promise<any> {
-      const url = `${this.collection.name}/items`;
+      const url = `${this.collection.id}/items`;
       const request = items.map((item) => ({
         text: item.text,
         item_metadata: item.metadata,
@@ -235,7 +255,17 @@ export namespace ClusteringClient {
       return data;
     }
 
-    static fromJson(collection: Collection, cluster: any): Cluster {
+    toJSON() {
+      return {
+        id: this.id,
+        text: this.text,
+        phraseCount: this.phraseCount,
+        metadata: this.metadata,
+        collectionId: this.collection.id,
+      };
+    }
+
+    static fromJSON(collection: Collection, cluster: any): Cluster {
       return new Cluster(
         cluster.cluster_id,
         cluster.cluster_phrase,
@@ -251,12 +281,12 @@ export namespace ClusteringClient {
 
     abstract client: ClusteringClient;
 
-    name: string;
+    id: string;
 
     apiKey?: string;
 
-    constructor(name: string, apiKey?: string) {
-      this.name = name;
+    constructor(id: string, apiKey?: string) {
+      this.id = id;
       this.apiKey = apiKey;
     }
 
@@ -290,8 +320,8 @@ export namespace ClusteringClient {
       ) {
         urlParams.set('page', (page++).toString());
 
-        const { data } = await this.client.GET(`${this.name}/clusters?${urlParams}`, this.apiKey);
-        clusters = data ? data.map((cluster: any) => Cluster.fromJson(this, cluster)) : [];
+        const { data } = await this.client.GET(`${this.id}/clusters?${urlParams}`, this.apiKey);
+        clusters = data ? data.map((cluster: any) => Cluster.fromJSON(this, cluster)) : [];
         counter += clusters.length;
         yield* clusters;
       }
@@ -303,13 +333,13 @@ export namespace ClusteringClient {
         'similarity-threshold': threshold.toString(),
       });
 
-      const url = `${this.name}/clusters/find?${urlParams}`;
+      const url = `${this.id}/clusters/find?${urlParams}`;
       const { data } = (await this.client.GET(url, this.apiKey));
-      return data ? data.map((cluster: any) => Cluster.fromJson(this, cluster)) : [];
+      return data ? data.map((cluster: any) => Cluster.fromJSON(this, cluster)) : [];
     }
 
     async addItems(items: _Input<string>[], forceNewClusters: boolean): Promise<any> {
-      const url = `${this.name}/items`;
+      const url = `${this.id}/items`;
       const request = items.map((input) => ({
         text: input.text,
         item_metadata: input.metadata,
@@ -317,6 +347,12 @@ export namespace ClusteringClient {
       }));
       const { data } = await this.client.POST(url, this.apiKey, request);
       return data;
+    }
+
+    toJSON() {
+      return {
+        id: this.id,
+      };
     }
   }
 }

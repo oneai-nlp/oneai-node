@@ -39,12 +39,7 @@ describe('Clustering', () => {
     for await (const collection of oneai.clustering.getCollections()) {
       console.log(collection.name);
       for await (const cluster of collection.getClusters({ limit: 1 })) {
-        console.log(`\t${cluster.text}`);
-        const phrase = (await cluster.getPhrases().next()).value;
-        console.log(`\t\t${phrase.text}`);
-        for await (const item of phrase.getItems()) {
-          console.log(`\t\t\t${item.text}`);
-        }
+        console.log(cluster);
       }
     }
   });

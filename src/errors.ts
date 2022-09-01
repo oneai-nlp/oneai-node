@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-/* eslint-disable class-methods-use-this */
 export class OneAIError extends Error {
   statusCode: number;
 
@@ -22,6 +21,10 @@ export class OneAIError extends Error {
 
     Object.setPrototypeOf(this, OneAIError.prototype);
   }
+
+  toJSON = () => ({
+    statusCode: this.statusCode, details: this.details, requestId: this.requestId,
+  });
 }
 
 /** An error raised when the input is invalid or is of an incompatible type for the pipeline. */
