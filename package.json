@@ -1,12 +1,8 @@
 {
     "name": "oneai",
     "main": "lib/src/index.js",
-<<<<<<< HEAD
     "version": "0.3.8",
-=======
-    "version": "0.3.7",
     "description": "Make your app understand language. Summarize conversations, categorize articles, and more.",
->>>>>>> 7ed67b6e38e164d565ccde69b6a15f4cb3fbbfeb
     "repository": "github:power-of-language/oneai-sdk-node",
     "scripts": {
         "build": "tsc",
@@ -55,7 +51,7 @@
         "transcription",
         "speech to text",
         "voice",
-        "audio",
+        "audio"
     ],
-    "license": "MIT",
+    "license": "MIT"
 }
