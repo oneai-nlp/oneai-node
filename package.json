@@ -48,6 +48,10 @@
         "sentiment",
         "topic extraction",
         "topics",
+        "transcription",
+        "speech to text",
+        "voice",
+        "audio",
     ],
     "license": "MIT",
 }
