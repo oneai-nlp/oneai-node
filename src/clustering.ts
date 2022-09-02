@@ -182,26 +182,28 @@ export namespace ClusteringClient {
   export class Cluster {
     id: number;
 
-    text: string;
+    text?: string;
 
-    phraseCount: number;
+    phraseCount?: number;
 
     metadata?: any;
 
     collection: Collection;
 
     constructor(
-      id: number,
-      text: string,
-      phraseCount: number,
-      collection: Collection,
-      metadata?: any,
+      params: {
+        id: number,
+        text?: string,
+        phraseCount?: number,
+        metadata?: any,
+        collection: Collection,
+      },
     ) {
-      this.id = id;
-      this.text = text;
-      this.phraseCount = phraseCount;
-      this.collection = collection;
-      this.metadata = metadata;
+      this.id = params.id;
+      this.text = params.text;
+      this.phraseCount = params.phraseCount;
+      this.collection = params.collection;
+      this.metadata = params.metadata;
     }
 
     async* getPhrases(
@@ -266,13 +268,13 @@ export namespace ClusteringClient {
     }
 
     static fromJSON(collection: Collection, cluster: any): Cluster {
-      return new Cluster(
-        cluster.cluster_id,
-        cluster.cluster_phrase,
-        cluster.phrases_count,
+      return new Cluster({
+        id: cluster.cluster_id,
+        text: cluster.cluster_phrase,
+        phraseCount: cluster.phrases_count,
         collection,
-        cluster.metadata,
-      );
+        metadata: cluster.metadata,
+      });
     }
   }
 
