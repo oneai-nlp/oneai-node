@@ -1,10 +1,8 @@
-<p align="left">
-  <a href="https://oneai.com?utm_source=open_source&utm_medium=node_sdk_readme">
-    <img src="./oneai_logo_light_cropped.svg" height="60">
-  </a>
-</p>
+[![Logo](./oneai_logo_light_cropped.svg)](https://oneai.com?utm_source=open_source&utm_medium=node_sdk_readme)
 
 # Node.js SDK
+[![Version](https://img.shields.io/npm/v/oneai.svg)](https://www.npmjs.org/package/oneai)
+
 One AI is a NLP as a service platform. Our API enables language comprehension in context, transforming texts from any source into structured data to use in code.
 
 This SDK provides safe and convenient access to One AI's APIs from a node.js environment.
