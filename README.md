@@ -2,6 +2,9 @@
 
 # Node.js SDK
 [![Version](https://img.shields.io/npm/v/oneai.svg)](https://www.npmjs.org/package/oneai)
+[![Downloads](https://img.shields.io/npm/dm/oneai.svg)](https://www.npmjs.com/package/oneai)
+[![License](https://img.shields.io/npm/l/oneai.svg)](https://www.npmjs.com/package/oneai)
+[![Try on RunKit](https://badge.runkitcdn.com/oneai.svg)](https://runkit.com/npm/oneai)
 
 One AI is a NLP as a service platform. Our API enables language comprehension in context, transforming texts from any source into structured data to use in code.
 
