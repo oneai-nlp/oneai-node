@@ -36,7 +36,7 @@ function timestampToMilliseconds(timestamp?: string): number | undefined {
   if (!match) return undefined;
   const numbers = match.map((n) => parseInt(n, 10));
   const [, hour, minute, second, milli] = numbers;
-  return (((hour * 60 + minute) * 60 + second)) * 1000 * milli;
+  return (((hour * 60 + minute) * 60 + second)) * 1000 + milli;
 }
 
 function prepOutput(
