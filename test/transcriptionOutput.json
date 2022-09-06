@@ -1,0 +1,2326 @@
+{
+    "text": "[00:00:00.110] speaker 0:\nThe topics language skill takes a body of text, whether they are news reports, articles, emails, or conversations, and extracts a set of relevant topics. Place your text here. Next, drag the topic skill to the pipeline. Now run the pipeline. The extracted topics will appear in the output box to the right above your text. They're also listed at the bottom. The generated code appears in the box on the bottom left in the framework of your choice. Copy it here and paste it into your project.\n\n",
+    "transcription": {
+        "text": "[00:00:00.110] speaker 0:\nThe topics language skill takes a body of text, whether they are news reports, articles, emails, or conversations, and extracts a set of relevant topics. Place your text here. Next, drag the topic skill to the pipeline. Now run the pipeline. The extracted topics will appear in the output box to the right above your text. They're also listed at the bottom. The generated code appears in the box on the bottom left in the framework of your choice. Copy it here and paste it into your project.\n\n",
+        "words": [
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    26,
+                    29
+                ],
+                "span_text": "The",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 0,
+                        "end": 3
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 110,
+                "timestampEnd": 170
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    30,
+                    36
+                ],
+                "span_text": "topics",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 4,
+                        "end": 10
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 290,
+                "timestampEnd": 590
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    37,
+                    45
+                ],
+                "span_text": "language",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 11,
+                        "end": 19
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 770,
+                "timestampEnd": 830
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    46,
+                    51
+                ],
+                "span_text": "skill",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 20,
+                        "end": 25
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 1190,
+                "timestampEnd": 1250
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    52,
+                    57
+                ],
+                "span_text": "takes",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 26,
+                        "end": 31
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 1490,
+                "timestampEnd": 1610
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    58,
+                    59
+                ],
+                "span_text": "a",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 32,
+                        "end": 33
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 1670,
+                "timestampEnd": 1730
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    60,
+                    64
+                ],
+                "span_text": "body",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 34,
+                        "end": 38
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 1790,
+                "timestampEnd": 1850
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    65,
+                    67
+                ],
+                "span_text": "of",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 39,
+                        "end": 41
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 2030,
+                "timestampEnd": 2090
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    68,
+                    72
+                ],
+                "span_text": "text",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 42,
+                        "end": 46
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 2210,
+                "timestampEnd": 2270
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    72,
+                    73
+                ],
+                "span_text": ",",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 46,
+                        "end": 47
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 2570,
+                "timestampEnd": 2630
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    74,
+                    81
+                ],
+                "span_text": "whether",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 48,
+                        "end": 55
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 2690,
+                "timestampEnd": 2750
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    82,
+                    86
+                ],
+                "span_text": "they",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 56,
+                        "end": 60
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 2930,
+                "timestampEnd": 2990
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    87,
+                    90
+                ],
+                "span_text": "are",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 61,
+                        "end": 64
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 2990,
+                "timestampEnd": 3050
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    91,
+                    95
+                ],
+                "span_text": "news",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 65,
+                        "end": 69
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 3170,
+                "timestampEnd": 3290
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    96,
+                    103
+                ],
+                "span_text": "reports",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 70,
+                        "end": 77
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 3530,
+                "timestampEnd": 3710
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    103,
+                    104
+                ],
+                "span_text": ",",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 77,
+                        "end": 78
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 3770,
+                "timestampEnd": 3830
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    105,
+                    113
+                ],
+                "span_text": "articles",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 79,
+                        "end": 87
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 4010,
+                "timestampEnd": 4250
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    113,
+                    114
+                ],
+                "span_text": ",",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 87,
+                        "end": 88
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 4370,
+                "timestampEnd": 4430
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    115,
+                    121
+                ],
+                "span_text": "emails",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 89,
+                        "end": 95
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 4550,
+                "timestampEnd": 4850
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    121,
+                    122
+                ],
+                "span_text": ",",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 95,
+                        "end": 96
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 4970,
+                "timestampEnd": 5030
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    123,
+                    125
+                ],
+                "span_text": "or",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 97,
+                        "end": 99
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 5090,
+                "timestampEnd": 5150
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    126,
+                    139
+                ],
+                "span_text": "conversations",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 100,
+                        "end": 113
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 5570,
+                "timestampEnd": 5810
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    139,
+                    140
+                ],
+                "span_text": ",",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 113,
+                        "end": 114
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 5990,
+                "timestampEnd": 6050
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    141,
+                    144
+                ],
+                "span_text": "and",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 115,
+                        "end": 118
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 6110,
+                "timestampEnd": 6170
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    145,
+                    153
+                ],
+                "span_text": "extracts",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 119,
+                        "end": 127
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 6530,
+                "timestampEnd": 6710
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    154,
+                    155
+                ],
+                "span_text": "a",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 128,
+                        "end": 129
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 6830,
+                "timestampEnd": 6890
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    156,
+                    159
+                ],
+                "span_text": "set",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 130,
+                        "end": 133
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 7010,
+                "timestampEnd": 7070
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    160,
+                    162
+                ],
+                "span_text": "of",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 134,
+                        "end": 136
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 7190,
+                "timestampEnd": 7250
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    163,
+                    171
+                ],
+                "span_text": "relevant",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 137,
+                        "end": 145
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 7370,
+                "timestampEnd": 7670
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    172,
+                    178
+                ],
+                "span_text": "topics",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 146,
+                        "end": 152
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 7850,
+                "timestampEnd": 8090
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    178,
+                    179
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 152,
+                        "end": 153
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 8450,
+                "timestampEnd": 8510
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    180,
+                    185
+                ],
+                "span_text": "Place",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 154,
+                        "end": 159
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 8810,
+                "timestampEnd": 8870
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    186,
+                    190
+                ],
+                "span_text": "your",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 160,
+                        "end": 164
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 9050,
+                "timestampEnd": 9110
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    191,
+                    195
+                ],
+                "span_text": "text",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 165,
+                        "end": 169
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 9230,
+                "timestampEnd": 9290
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    196,
+                    200
+                ],
+                "span_text": "here",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 170,
+                        "end": 174
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 9470,
+                "timestampEnd": 9530
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    200,
+                    201
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 174,
+                        "end": 175
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 9950,
+                "timestampEnd": 10010
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    202,
+                    206
+                ],
+                "span_text": "Next",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 176,
+                        "end": 180
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 10490,
+                "timestampEnd": 10550
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    206,
+                    207
+                ],
+                "span_text": ",",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 180,
+                        "end": 181
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 10730,
+                "timestampEnd": 10790
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    208,
+                    212
+                ],
+                "span_text": "drag",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 182,
+                        "end": 186
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 10970,
+                "timestampEnd": 11030
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    213,
+                    216
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 187,
+                        "end": 190
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 11210,
+                "timestampEnd": 11270
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    217,
+                    222
+                ],
+                "span_text": "topic",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 191,
+                        "end": 196
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 11390,
+                "timestampEnd": 11630
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    223,
+                    228
+                ],
+                "span_text": "skill",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 197,
+                        "end": 202
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 11810,
+                "timestampEnd": 11870
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    229,
+                    231
+                ],
+                "span_text": "to",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 203,
+                        "end": 205
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 12050,
+                "timestampEnd": 12110
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    232,
+                    235
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 206,
+                        "end": 209
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 12170,
+                "timestampEnd": 12230
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    236,
+                    244
+                ],
+                "span_text": "pipeline",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 210,
+                        "end": 218
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 12350,
+                "timestampEnd": 12650
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    244,
+                    245
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 218,
+                        "end": 219
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 12950,
+                "timestampEnd": 13010
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    246,
+                    249
+                ],
+                "span_text": "Now",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 220,
+                        "end": 223
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 17030,
+                "timestampEnd": 17090
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    250,
+                    253
+                ],
+                "span_text": "run",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 224,
+                        "end": 227
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 17390,
+                "timestampEnd": 17450
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    254,
+                    257
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 228,
+                        "end": 231
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 17570,
+                "timestampEnd": 17630
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    258,
+                    266
+                ],
+                "span_text": "pipeline",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 232,
+                        "end": 240
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 17690,
+                "timestampEnd": 17990
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    266,
+                    267
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 240,
+                        "end": 241
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 18410,
+                "timestampEnd": 18470
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    268,
+                    271
+                ],
+                "span_text": "The",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 242,
+                        "end": 245
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 18650,
+                "timestampEnd": 18710
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    272,
+                    281
+                ],
+                "span_text": "extracted",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 246,
+                        "end": 255
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 19010,
+                "timestampEnd": 19310
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    282,
+                    288
+                ],
+                "span_text": "topics",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 256,
+                        "end": 262
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 19430,
+                "timestampEnd": 19670
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    289,
+                    293
+                ],
+                "span_text": "will",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 263,
+                        "end": 267
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 19790,
+                "timestampEnd": 19850
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    294,
+                    300
+                ],
+                "span_text": "appear",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 268,
+                        "end": 274
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 20030,
+                "timestampEnd": 20090
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    301,
+                    303
+                ],
+                "span_text": "in",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 275,
+                        "end": 277
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 20210,
+                "timestampEnd": 20270
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    304,
+                    307
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 278,
+                        "end": 281
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 20330,
+                "timestampEnd": 20390
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    308,
+                    314
+                ],
+                "span_text": "output",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 282,
+                        "end": 288
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 20510,
+                "timestampEnd": 20690
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    315,
+                    318
+                ],
+                "span_text": "box",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 289,
+                        "end": 292
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 20870,
+                "timestampEnd": 20930
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    319,
+                    321
+                ],
+                "span_text": "to",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 293,
+                        "end": 295
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 21110,
+                "timestampEnd": 21170
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    322,
+                    325
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 296,
+                        "end": 299
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 21230,
+                "timestampEnd": 21290
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    326,
+                    331
+                ],
+                "span_text": "right",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 300,
+                        "end": 305
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 21410,
+                "timestampEnd": 21470
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    332,
+                    337
+                ],
+                "span_text": "above",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 306,
+                        "end": 311
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 21710,
+                "timestampEnd": 21770
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    338,
+                    342
+                ],
+                "span_text": "your",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 312,
+                        "end": 316
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 21950,
+                "timestampEnd": 22010
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    343,
+                    347
+                ],
+                "span_text": "text",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 317,
+                        "end": 321
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 22190,
+                "timestampEnd": 22250
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    347,
+                    348
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 321,
+                        "end": 322
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 22430,
+                "timestampEnd": 22490
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    349,
+                    356
+                ],
+                "span_text": "They're",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 323,
+                        "end": 330
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 22670,
+                "timestampEnd": 22730
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    357,
+                    361
+                ],
+                "span_text": "also",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 331,
+                        "end": 335
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 22850,
+                "timestampEnd": 22910
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    362,
+                    368
+                ],
+                "span_text": "listed",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 336,
+                        "end": 342
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 23090,
+                "timestampEnd": 23270
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    369,
+                    371
+                ],
+                "span_text": "at",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 343,
+                        "end": 345
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 23390,
+                "timestampEnd": 23450
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    372,
+                    375
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 346,
+                        "end": 349
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 23450,
+                "timestampEnd": 23510
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    376,
+                    382
+                ],
+                "span_text": "bottom",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 350,
+                        "end": 356
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 23630,
+                "timestampEnd": 23690
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    382,
+                    383
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 356,
+                        "end": 357
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 24110,
+                "timestampEnd": 24170
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    384,
+                    387
+                ],
+                "span_text": "The",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 358,
+                        "end": 361
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 24530,
+                "timestampEnd": 24590
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    388,
+                    397
+                ],
+                "span_text": "generated",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 362,
+                        "end": 371
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 24830,
+                "timestampEnd": 25070
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    398,
+                    402
+                ],
+                "span_text": "code",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 372,
+                        "end": 376
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 25250,
+                "timestampEnd": 25310
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    403,
+                    410
+                ],
+                "span_text": "appears",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 377,
+                        "end": 384
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 25610,
+                "timestampEnd": 25730
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    411,
+                    413
+                ],
+                "span_text": "in",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 385,
+                        "end": 387
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 25910,
+                "timestampEnd": 25970
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    414,
+                    417
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 388,
+                        "end": 391
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 26030,
+                "timestampEnd": 26090
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    418,
+                    421
+                ],
+                "span_text": "box",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 392,
+                        "end": 395
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 26210,
+                "timestampEnd": 26270
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    422,
+                    424
+                ],
+                "span_text": "on",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 396,
+                        "end": 398
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 26510,
+                "timestampEnd": 26570
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    425,
+                    428
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 399,
+                        "end": 402
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 26630,
+                "timestampEnd": 26690
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    429,
+                    435
+                ],
+                "span_text": "bottom",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 403,
+                        "end": 409
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 26750,
+                "timestampEnd": 26810
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    436,
+                    440
+                ],
+                "span_text": "left",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 410,
+                        "end": 414
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 27050,
+                "timestampEnd": 27110
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    441,
+                    443
+                ],
+                "span_text": "in",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 415,
+                        "end": 417
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 27230,
+                "timestampEnd": 27290
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    444,
+                    447
+                ],
+                "span_text": "the",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 418,
+                        "end": 421
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 27290,
+                "timestampEnd": 27350
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    448,
+                    457
+                ],
+                "span_text": "framework",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 422,
+                        "end": 431
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 27470,
+                "timestampEnd": 27710
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    458,
+                    460
+                ],
+                "span_text": "of",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 432,
+                        "end": 434
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 27770,
+                "timestampEnd": 27830
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    461,
+                    465
+                ],
+                "span_text": "your",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 435,
+                        "end": 439
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 27950,
+                "timestampEnd": 28010
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    466,
+                    472
+                ],
+                "span_text": "choice",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 440,
+                        "end": 446
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 28190,
+                "timestampEnd": 28250
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    472,
+                    473
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 446,
+                        "end": 447
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 28670,
+                "timestampEnd": 28730
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    474,
+                    478
+                ],
+                "span_text": "Copy",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 448,
+                        "end": 452
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 29030,
+                "timestampEnd": 29210
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    479,
+                    481
+                ],
+                "span_text": "it",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 453,
+                        "end": 455
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 29270,
+                "timestampEnd": 29330
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    482,
+                    486
+                ],
+                "span_text": "here",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 456,
+                        "end": 460
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 29390,
+                "timestampEnd": 29450
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    487,
+                    490
+                ],
+                "span_text": "and",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 461,
+                        "end": 464
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 29810,
+                "timestampEnd": 29870
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    491,
+                    496
+                ],
+                "span_text": "paste",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 465,
+                        "end": 470
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 29990,
+                "timestampEnd": 30170
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    497,
+                    499
+                ],
+                "span_text": "it",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 471,
+                        "end": 473
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 30170,
+                "timestampEnd": 30230
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    500,
+                    504
+                ],
+                "span_text": "into",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 474,
+                        "end": 478
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 30350,
+                "timestampEnd": 30410
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    505,
+                    509
+                ],
+                "span_text": "your",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 479,
+                        "end": 483
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 30530,
+                "timestampEnd": 30590
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    510,
+                    517
+                ],
+                "span_text": "project",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 484,
+                        "end": 491
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 30770,
+                "timestampEnd": 30830
+            },
+            {
+                "type": "word",
+                "name": null,
+                "span": [
+                    517,
+                    518
+                ],
+                "span_text": ".",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 491,
+                        "end": 492
+                    }
+                ],
+                "inputSpans": null,
+                "value": null,
+                "data": null,
+                "timestamp": 31250,
+                "timestampEnd": 31310
+            }
+        ],
+        "sentences": [
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    26,
+                    179
+                ],
+                "span_text": "The topics language skill takes a body of text, whether they are news reports, articles, emails, or conversations, and extracts a set of relevant topics.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 0,
+                        "end": 153
+                    }
+                ],
+                "inputSpans": null,
+                "value": "The topics language skill takes a body of text, whether they are news reports, articles, emails, or conversations, and extracts a set of relevant topics.",
+                "data": null,
+                "timestamp": 110,
+                "timestampEnd": 8510
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    180,
+                    201
+                ],
+                "span_text": "Place your text here.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 154,
+                        "end": 175
+                    }
+                ],
+                "inputSpans": null,
+                "value": "Place your text here.",
+                "data": null,
+                "timestamp": 8810,
+                "timestampEnd": 10010
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    202,
+                    245
+                ],
+                "span_text": "Next, drag the topic skill to the pipeline.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 176,
+                        "end": 219
+                    }
+                ],
+                "inputSpans": null,
+                "value": "Next, drag the topic skill to the pipeline.",
+                "data": null,
+                "timestamp": 10490,
+                "timestampEnd": 13010
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    246,
+                    267
+                ],
+                "span_text": "Now run the pipeline.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 220,
+                        "end": 241
+                    }
+                ],
+                "inputSpans": null,
+                "value": "Now run the pipeline.",
+                "data": null,
+                "timestamp": 17030,
+                "timestampEnd": 18470
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    268,
+                    348
+                ],
+                "span_text": "The extracted topics will appear in the output box to the right above your text.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 242,
+                        "end": 322
+                    }
+                ],
+                "inputSpans": null,
+                "value": "The extracted topics will appear in the output box to the right above your text.",
+                "data": null,
+                "timestamp": 18650,
+                "timestampEnd": 22490
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    349,
+                    383
+                ],
+                "span_text": "They're also listed at the bottom.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 323,
+                        "end": 357
+                    }
+                ],
+                "inputSpans": null,
+                "value": "They're also listed at the bottom.",
+                "data": null,
+                "timestamp": 22670,
+                "timestampEnd": 24170
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    384,
+                    473
+                ],
+                "span_text": "The generated code appears in the box on the bottom left in the framework of your choice.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 358,
+                        "end": 447
+                    }
+                ],
+                "inputSpans": null,
+                "value": "The generated code appears in the box on the bottom left in the framework of your choice.",
+                "data": null,
+                "timestamp": 24530,
+                "timestampEnd": 28730
+            },
+            {
+                "type": "sentence",
+                "name": null,
+                "span": [
+                    474,
+                    518
+                ],
+                "span_text": "Copy it here and paste it into your project.",
+                "outputSpans": [
+                    {
+                        "section": 0,
+                        "start": 448,
+                        "end": 492
+                    }
+                ],
+                "inputSpans": null,
+                "value": "Copy it here and paste it into your project.",
+                "data": null,
+                "timestamp": 29030,
+                "timestampEnd": 31310
+            }
+        ],
+        "summary": {
+            "text": "The topics language skill takes a body of text, whether they are news reports, articles, emails, or conversations, and extracts a set of relevant topics. The generated code appears in the box on the bottom left in the framework of your choice.",
+            "origins": [],
+            "names": [],
+            "emotions": []
+        }
+    }
+}

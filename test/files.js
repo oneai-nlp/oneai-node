@@ -6,10 +6,11 @@ const { OneAI } = require('../lib/src/index');
 
 const oneai = new OneAI(apiKey);
 
-describe('File inputs', () => {
+describe('audio', () => {
   const pipeline = new oneai.Pipeline(
-    oneai.skills.transcribe(),
-    oneai.skills.numbers(),
+    oneai.skills.transcribe({ timestamp_per_word: true }),
+    oneai.skills.splitBySentence(),
+    oneai.skills.splitByTopic(),
     oneai.skills.summarize(),
     oneai.skills.names(),
     oneai.skills.emotions(),
@@ -20,7 +21,8 @@ describe('File inputs', () => {
       const output = await pipeline.runFile(input, { sync }); // true by default
 
       expect(output).to.have.property('transcription');
-      expect(output).to.have.deep.nested.property('transcription.numbers');
+      expect(output).to.have.deep.nested.property('transcription.sentences');
+      expect(output).to.have.deep.nested.property('transcription.segments');
       expect(output).to.have.deep.nested.property('transcription.summary');
       expect(output).to.have.deep.nested.property('transcription.summary.names');
       expect(output).to.have.deep.nested.property('transcription.summary.emotions');
@@ -30,5 +32,9 @@ describe('File inputs', () => {
   describe('mp3', () => {
     it('sync', testFile(constants.mp3Path, true));
     it('async', testFile(constants.mp3Path, false));
+  });
+
+  describe('wav', () => {
+    it('async', testFile(constants.wavPath, false));
   });
 });
