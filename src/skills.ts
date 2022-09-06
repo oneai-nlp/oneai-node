@@ -111,10 +111,13 @@ export const skills = {
     outputField: 'salesInsights',
   }),
 
-  transcribe: (): Skill => ({
+  transcribe: (params?: { timestamp_per_word?: boolean }): Skill => ({
     apiName: 'transcribe',
     isGenerator: true,
     outputField: 'transcription',
+    labelType: 'word',
+    outputField1: 'words',
+    params,
   }),
 
   detectLanguage: (): Skill => ({
@@ -155,6 +158,7 @@ export interface OutputFields {
     segments?: Label[]
     salesInsights?: Label[]
     transcription?: Output
+    words?: Label[]
     language?: Label[]
     headline?: Label[]
     pricing?: Label[]
