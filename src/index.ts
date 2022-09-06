@@ -1,9 +1,11 @@
 import Pipeline from './pipeline';
 import {
-  File, Document, Conversation,
+  File, Document, Conversation, ConversationContent, Output,
 } from './classes';
 import { ClusteringClient } from './clustering';
 import { skills } from './skills';
+import parseConversation from './parsing';
+import toSRT from './utils';
 
 class OneAI {
 /**
@@ -52,6 +54,14 @@ class OneAI {
   Pipeline = Pipeline(this);
 
   clustering = new ClusteringClient(this);
+
+  parsing: {
+    parseConversation: (input: string) => ConversationContent,
+    toSRT: (output: Output) => string,
+  } = {
+      parseConversation,
+      toSRT,
+    };
 
   private static instance = new OneAI();
 
