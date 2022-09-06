@@ -15,15 +15,15 @@
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.25.0",
         "@typescript-eslint/parser": "^5.25.0",
+        "chai": "^4.3.6",
         "eslint": "^8.15.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.26.0",
+        "mocha": "^10.0.0",
         "typescript": "^4.5.4"
     },
     "dependencies": {
         "axios": "^0.24.0",
-        "chai": "^4.3.6",
-        "mocha": "^10.0.0",
         "uuid": "^8.3.2"
     },
     "keywords": [
@@ -53,5 +53,8 @@
         "voice",
         "audio"
     ],
-    "license": "MIT"
+    "license": "MIT",
+    "optionalDependencies": {
+        "subtitle": "^4.2.1"
+    }
 }
