@@ -4,7 +4,7 @@ import {
 } from './classes';
 import { ClusteringClient } from './clustering';
 import { skills } from './skills';
-import parseConversation from './parsing';
+import parseConversation from './parsing/conversation';
 import toSRT from './parsing/srt';
 
 class OneAI {
