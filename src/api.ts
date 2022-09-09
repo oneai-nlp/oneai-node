@@ -30,6 +30,7 @@ function buildRequest(input: Input, skills: Skill[], includeText: boolean): stri
   return JSON.stringify({
     ...(includeText && { input: fixedInput.text }),
     input_type: fixedInput.type,
+    output_type: fixedInput.type === 'conversation' ? 'json' : 'text',
     encoding: fixedInput.encoding,
     content_type: fixedInput.contentType,
     steps: skills.map((skill) => ({

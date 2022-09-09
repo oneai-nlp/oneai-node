@@ -2,7 +2,7 @@
 /* eslint-disable no-await-in-loop */
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, inputType,
+  Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, inputType, ConversationContent,
 } from './classes';
 import { handleError } from './errors';
 import { getTaskStatus, postAsyncFile, postPipeline } from './api';
@@ -63,18 +63,21 @@ function prepOutput(
     skills: Skill[],
     type: inputType,
   ): Output {
-    const result: Output = { text: output.output[outputIndex].text };
-    const labels: Label[] = output.output[outputIndex].labels.map((label: any) => ({
-      type: label.type,
-      name: label.name,
-      span: label.span,
-      span_text: label.span_text,
-      outputSpans: label.output_spans,
-      inputSpans: label.input_spans,
-      value: label.value,
-      data: label.data,
-      timestamp: timestampToMilliseconds(label.timestamp),
-      timestampEnd: timestampToMilliseconds(label.timestamp_end),
+    const source = output.output[outputIndex];
+    const result: Output = {
+      text: 'text' in source ? source.text : (source.contents as ConversationContent),
+    };
+    const labels: Label[] = source.labels.map((label: any) => ({
+      ...label.type && { type: label.type },
+      ...label.name && { name: label.name },
+      ...label.span && { span: label.span },
+      ...label.span_text && { span_text: label.span_text },
+      ...label.output_spans && { outputSpans: label.output_spans },
+      ...label.input_spans && { inputSpans: label.input_spans },
+      ...label.value && { value: label.value },
+      ...label.timestamp && { timestamp: timestampToMilliseconds(label.timestamp) },
+      ...label.timestamp_end && { timestampEnd: timestampToMilliseconds(label.timestamp_end) },
+      data: label.data || {},
     }));
 
     skills.some((skill, i) => {

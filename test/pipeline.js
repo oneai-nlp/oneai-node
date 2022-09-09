@@ -19,6 +19,7 @@ describe('Pipeline', () => {
     function testInput(input) {
       return async () => {
         const output = await pipeline.run(input);
+        console.log(output)
 
         expect(output).to.have.property('topics');
         expect(output).to.have.property('numbers');
