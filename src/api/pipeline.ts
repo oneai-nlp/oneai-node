@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import {
   Skill, Input, isFileContent, FileContent, _Input,
-} from './classes';
-import { version } from '../package.json';
-import { handleError } from './errors';
+} from '../classes';
+import { version } from '../../package.json';
+import { handleError } from '../errors';
 
 const uuid = (() => {
   const filePath = `${__dirname}/.uuid`;
