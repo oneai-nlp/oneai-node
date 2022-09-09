@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import parseConversation from './parsing';
+import parseConversation from './parsing/conversation';
 import type { OutputFields } from './skills';
 
 export interface Skill {
