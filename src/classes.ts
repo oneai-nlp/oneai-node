@@ -5,11 +5,9 @@ import type { OutputFields } from './skills';
 
 export interface Skill {
   apiName: string
-  isGenerator?: boolean
   params?: object
-  labelType?: string
-  outputField?: string
-  outputField1?: string
+  textField?: string
+  labelsField?: string
 }
 
 export type inputType = 'article' | 'conversation' | undefined;
@@ -179,6 +177,7 @@ interface Span {
 }
 
 export interface Label {
+  skill: string
   type: string
   name: string
   /** @deprecated since version 0.2.0, use `outputSpans` instead */

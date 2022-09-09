@@ -20,11 +20,10 @@ export function buildOutput(
     // split pipeline at a generator Skill
     const first = skills.slice(0, i + 1);
     const second = skills.slice(i + 1);
-    if (skills[i].outputField1) {
+    if (skills[i].labelsField) {
       // handle skills that create both text and labels
       const clone = { ...skills[i] };
-      clone.isGenerator = false;
-      clone.outputField = clone.outputField1;
+      clone.textField = undefined;
       second.unshift(clone);
     }
     return [first, second];
@@ -39,6 +38,7 @@ export function buildOutput(
       text: 'text' in source ? source.text : (source.contents as ConversationContent),
     };
     const labels: Label[] = source.labels.map((label: any) => ({
+      ...label.skill && { skill: label.skill },
       ...label.type && { type: label.type },
       ...label.name && { name: label.name },
       ...label.span && { span: label.span },
@@ -52,13 +52,14 @@ export function buildOutput(
     }));
 
     skills.some((skill, i) => {
-      const field = skill.outputField || skill.apiName;
-      if (skill.isGenerator) {
+      if (skill.textField) {
         const [, nextSkills] = splitPipeline(skills, i);
-        result[field] = build(outputIndex + 1, nextSkills);
+        result[skill.textField] = build(outputIndex + 1, nextSkills);
         return true;
       }
-      result[field] = labels.filter((label: Label) => label.type === skill.labelType);
+      result[skill.labelsField || skill.apiName] = labels.filter(
+        (label: Label) => label.skill === skill.apiName,
+      );
       return false;
     });
 
@@ -75,8 +76,11 @@ export function buildOutput(
   const result: Output = { text: output.input_text };
 
   currentSkills.forEach((skill) => {
-    const field = skill.outputField || skill.apiName;
-    result[field] = (skill.isGenerator) ? build(0, nextSkills) : [];
+    if (skill.textField) {
+      result[skill.textField] = build(0, nextSkills);
+    } else {
+      result[skill.labelsField || skill.apiName] = [];
+    }
   });
   return result;
 }

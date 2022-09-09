@@ -6,136 +6,86 @@ export const skills = {
   ): Skill => {
     const skill: Skill = ({
       apiName: 'summarize',
-      isGenerator: true,
       params,
-      outputField: 'summary',
+      textField: 'summary',
     });
     if (params?.find_origins !== false) {
       skill.params = { ...params };
-      skill.labelType = 'origin';
-      skill.outputField1 = 'origins';
+      skill.labelsField = 'origins';
     }
     return skill;
   },
 
-  emotions: (): Skill => ({
-    apiName: 'emotions',
-    labelType: 'emotion',
-  }),
+  emotions: (): Skill => ({ apiName: 'emotions' }),
 
-  keywords: (): Skill => ({
-    apiName: 'keywords',
-    labelType: 'keyword',
-  }),
+  keywords: (): Skill => ({ apiName: 'keywords' }),
 
   /** @deprecated since v. 0.0.9- use `splitBySentence` instead */
-  sentences: (): Skill => ({
-    apiName: 'sentences',
-    labelType: 'sentence',
-  }),
+  sentences: (): Skill => ({ apiName: 'sentences' }),
 
-  highlights: (): Skill => ({
-    apiName: 'highlights',
-    labelType: 'highlight',
-  }),
+  highlights: (): Skill => ({ apiName: 'highlights' }),
 
   topics: (): Skill => ({
-    apiName: 'article-topics',
-    labelType: 'topic',
-    outputField: 'topics',
+    apiName: 'article-topics', textField: 'topics',
   }),
 
-  sentiments: (): Skill => ({
-    apiName: 'sentiments',
-    labelType: 'sentiment',
-  }),
+  sentiments: (): Skill => ({ apiName: 'sentiments' }),
 
   htmlToArticle: (): Skill => ({
     apiName: 'extract-html',
-    isGenerator: true,
-    labelType: 'extract-html',
-    outputField: 'htmlArticle',
-    outputField1: 'htmlFields',
+    textField: 'htmlArticle',
+    labelsField: 'htmlFields',
   }),
   htmlAllText: (): Skill => ({
     apiName: 'html-extract-text',
-    isGenerator: true,
-    labelType: 'html-extract-text',
-    outputField: 'htmlText',
-    outputField1: 'htmlFields',
+    textField: 'htmlText',
+    labelsField: 'htmlFields',
   }),
 
   proofread: (): Skill => ({
     apiName: 'enhance',
-    isGenerator: true,
-    labelType: 'replacement',
-    outputField: 'proofread',
-    outputField1: 'replacements',
+    textField: 'proofread',
+    labelsField: 'replacements',
   }),
 
   actionItems: (): Skill => ({
-    apiName: 'action-items',
-    labelType: 'action-item',
-    outputField: 'actionItems',
+    apiName: 'action-items', textField: 'actionItems',
   }),
 
   anonymize: (): Skill => ({
     apiName: 'anonymize',
-    isGenerator: true,
-    labelType: 'anonymized',
-    outputField: 'anonymizations',
+    textField: 'anonymizations',
   }),
 
-  names: (): Skill => ({
-    apiName: 'names',
-    labelType: 'name',
-  }),
-  numbers: (): Skill => ({
-    apiName: 'numbers',
-    labelType: 'number',
-  }),
+  names: (): Skill => ({ apiName: 'names' }),
+  numbers: (): Skill => ({ apiName: 'numbers' }),
 
-  splitBySentence: (): Skill => ({
-    apiName: 'sentences',
-    labelType: 'sentence',
-  }),
+  splitBySentence: (): Skill => ({ apiName: 'sentences' }),
   splitByTopic: (): Skill => ({
-    apiName: 'dialogue-segmentation',
-    labelType: 'dialogue-segment',
-    outputField: 'segments',
+    apiName: 'dialogue-segmentation', textField: 'segments',
   }),
 
   salesInsights: (): Skill => ({
-    apiName: 'sales-insights',
-    labelType: 'sales-insights',
-    outputField: 'salesInsights',
+    apiName: 'sales-insights', textField: 'salesInsights',
   }),
 
   transcribe: (params?: { timestamp_per_word?: boolean }): Skill => ({
     apiName: 'transcribe',
-    isGenerator: true,
-    outputField: 'transcription',
-    labelType: 'word',
-    outputField1: 'words',
+    textField: 'transcription',
+    labelsField: 'words',
     params,
   }),
 
   detectLanguage: (): Skill => ({
-    apiName: 'detect-language',
-    labelType: 'detect-language',
-    outputField: 'language',
+    apiName: 'detect-language', textField: 'language',
   }),
 
   headline: (): Skill => ({
-    apiName: 'headline',
-    labelType: 'headline',
-    outputField: 'headline',
+    apiName: 'headline', textField: 'headline',
   }),
 
   pricing: (): Skill => ({
-    apiName: 'business-entities',
-    labelType: 'business-entity',
-    outputField: 'pricing',
+    apiName: 'business-entities', textField: 'pricing',
   }),
 };
 
