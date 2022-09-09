@@ -2,14 +2,12 @@
 /* eslint-disable no-await-in-loop */
 import { stdout, stderr } from 'process';
 import {
-  Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, inputType, ConversationContent,
+  Skill, Input, Output, Label, FileContent, ConversationContent, _Input,
 } from './classes';
 import { handleError } from './errors';
 import { getTaskStatus, postAsyncFile, postPipeline } from './api/pipeline';
 
 const MAX_CONCURRENT_REQUESTS = 2;
-
-type PipelineInput = TextContent | Input;
 
 class logger {
   static prefix = '\x1b[34m●\x1b[36m▲\x1b[35m▮\x1b[0m ';
@@ -42,7 +40,6 @@ function timestampToMilliseconds(timestamp?: string): number | undefined {
 function prepOutput(
   steps: Skill[],
   output: any,
-  sourceType: inputType,
 ): Output {
   function splitPipeline(skills: Skill[], i: number): Skill[][] {
     // split pipeline at a generator Skill
@@ -61,7 +58,6 @@ function prepOutput(
   function build(
     outputIndex: number,
     skills: Skill[],
-    type: inputType,
   ): Output {
     const source = output.output[outputIndex];
     const result: Output = {
@@ -84,7 +80,7 @@ function prepOutput(
       const field = skill.outputField || skill.apiName;
       if (skill.isGenerator) {
         const [, nextSkills] = splitPipeline(skills, i);
-        result[field] = build(outputIndex + 1, nextSkills, type);
+        result[field] = build(outputIndex + 1, nextSkills);
         return true;
       }
       result[field] = labels.filter((label: Label) => label.type === skill.labelType);
@@ -95,7 +91,7 @@ function prepOutput(
   }
 
   const generator = (output.output[0].text_generated_by_step_id || 0) - 1;
-  if (generator < 0) return build(0, steps, sourceType);
+  if (generator < 0) return build(0, steps);
 
   // edge case- first Skill is a generator, or a generator preceded by
   // Skills that didn't generate output. In this case the API will skip these Skills,
@@ -105,52 +101,51 @@ function prepOutput(
 
   currentSkills.forEach((skill) => {
     const field = skill.outputField || skill.apiName;
-    result[field] = (skill.isGenerator) ? build(0, nextSkills, sourceType) : [];
+    result[field] = (skill.isGenerator) ? build(0, nextSkills) : [];
   });
   return result;
 }
 
 export async function sendRequest(
-  input: PipelineInput,
+  input: Input,
   skills: Skill[],
   apiKey?: string,
   timeout?: number,
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = wrapContent(input);
 
   try {
-    const data = await postPipeline(inputWrapped, skills, apiKey, timeout);
-    return prepOutput(skills, data, inputWrapped.type);
+    const data = await postPipeline(input, skills, apiKey, timeout);
+    return prepOutput(skills, data);
   } catch (error) {
     throw handleError(error);
   }
 }
 
 export async function sendAsyncFileRequestAndWait(
-  input: File | FileContent,
+  input: _Input<FileContent>,
   skills: Skill[],
   apiKey?: string,
   timeout?: number,
   interval: number = 1,
 ): Promise<Output> {
   if (!apiKey) throw new Error('API key is required');
-  const inputWrapped = wrapContent(input);
-  logger.debug(`Uploading file ${inputWrapped.text.filePath}`);
-  const taskId = await postAsyncFile(inputWrapped, skills, apiKey, timeout);
-  logger.debugNoNewline(`Upload of file ${inputWrapped.text.filePath} complete\n`);
+
+  logger.debug(`Uploading file ${input.text.filePath}`);
+  const taskId = await postAsyncFile(input, skills, apiKey, timeout);
+  logger.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
 
   let response = { status: '', result: undefined };
   const timeStart = Date.now();
   while (response.status !== 'COMPLETED') {
     response = await getTaskStatus(taskId, apiKey);
 
-    logger.debugNoNewline(`Processing file ${inputWrapped.text.filePath} - status ${response.status} - ${timeFormat(Date.now() - timeStart)}`);
+    logger.debugNoNewline(`Processing file ${input.text.filePath} - status ${response.status} - ${timeFormat(Date.now() - timeStart)}`);
     if (response.status === 'FAILED') throw handleError(response.result);
     await new Promise((f) => setTimeout(f, 1000 * interval));
   }
-  logger.debugNoNewline(`Processing of file ${inputWrapped.text.filePath} complete - took ${timeFormat(Date.now() - timeStart)} total\n`);
-  return prepOutput(skills, response.result, inputWrapped.type);
+  logger.debugNoNewline(`Processing of file ${input.text.filePath} complete - took ${timeFormat(Date.now() - timeStart)} total\n`);
+  return prepOutput(skills, response.result);
 }
 
 function timeFormat(time: number) {
@@ -161,47 +156,44 @@ function timeFormat(time: number) {
 }
 
 export async function sendBatchRequest(
-  inputs: Iterable<PipelineInput>,
+  inputs: Iterator<Input, void>,
   skills: Skill[],
   apiKey?: string,
   timeout?: number,
-  onOutput?: (input: PipelineInput, output: Output) => void,
-  onError?: (input: PipelineInput, error: any) => void,
+  onOutput?: (input: Input, output: Output) => void,
+  onError?: (input: Input, error: any) => void,
   printProgress = true,
-): Promise<Map<PipelineInput, Output>> {
+): Promise<Map<Input, Output>> {
   if (!apiKey) throw new Error('API key is required');
-  const outputs = new Map<PipelineInput, Output>();
-
-  const generator = (function* dist() {
-    yield* inputs;
-  }());
+  const outputs = new Map<Input, Output>();
 
   let errors = 0;
   let timeTotal = 0;
   async function batchWorker() {
-    let { value, done } = generator.next();
+    let { value, done } = inputs.next();
     let timeStart = Date.now();
     while (!done) {
-      try {
-        /* eslint-disable no-await-in-loop */ // (since we send requests sequentially)
-        const output = await postPipeline(wrapContent(value!), skills, apiKey!, timeout);
-        if (onOutput) onOutput(value!, output);
-        else outputs.set(value!, output);
-      } catch (e: any) {
-        errors++;
-        if (printProgress) {
-          logger.error(`Input ${outputs.size + errors}:`);
-          logger.error(e?.message);
+      if (value !== undefined) {
+        try {
+          const output = await postPipeline(value, skills, apiKey!, timeout);
+          if (onOutput) onOutput(value, output);
+          else outputs.set(value, output);
+        } catch (e: any) {
+          errors++;
+          if (printProgress) {
+            logger.error(`Input ${outputs.size + errors}:`);
+            logger.error(e?.message);
+          }
+          if (onError) onError(value, e);
+          else outputs.set(value, e);
+        } finally {
+          const timeDelta = Date.now() - timeStart;
+          timeTotal += timeDelta;
+          timeStart += timeDelta;
+          if (printProgress) logger.debugNoNewline(`Input ${outputs.size + errors} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed`);
         }
-        if (onError) onError(value!, e);
-        else outputs.set(value!, e);
-      } finally {
-        const timeDelta = Date.now() - timeStart;
-        timeTotal += timeDelta;
-        timeStart += timeDelta;
-        if (printProgress) logger.debugNoNewline(`Input ${outputs.size + errors} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed`);
       }
-      ({ value, done } = generator.next());
+      ({ value, done } = inputs.next());
     }
   }
 

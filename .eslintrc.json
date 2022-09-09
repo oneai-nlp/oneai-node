@@ -17,6 +17,7 @@
     "rules": {
         "max-classes-per-file": "off",
         "no-plusplus": "off",
+        "no-restricted-syntax": "off",
         "import/extensions": [
             "error",
             "ignorePackages",

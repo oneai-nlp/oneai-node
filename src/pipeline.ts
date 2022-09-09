@@ -1,6 +1,7 @@
+import fs from 'fs';
 import type OneAI from '.';
 import {
-  Input, Output, Skill, TextContent, File,
+  Input, Output, Skill, TextContent, wrapContent,
 } from './classes';
 import { sendAsyncFileRequestAndWait, sendBatchRequest, sendRequest } from './requests';
 
@@ -20,7 +21,12 @@ abstract class _Pipeline {
       timeout?: number
     },
   ): Promise<Output> {
-    return sendRequest(text, this.steps, params?.apiKey || this.client.apiKey, params?.timeout);
+    return sendRequest(
+      wrapContent(text),
+      this.steps,
+      params?.apiKey || this.client.apiKey,
+      params?.timeout,
+    );
   }
 
   async runFile(
@@ -32,13 +38,14 @@ abstract class _Pipeline {
       interval?: number,
     },
   ): Promise<Output> {
+    const input = wrapContent({ filePath, buffer: fs.readFileSync(filePath) });
     return (params?.sync) ? sendRequest(
-      new File(filePath),
+      input,
       this.steps,
       params?.apiKey || this.client.apiKey,
       params?.timeout,
     ) : sendAsyncFileRequestAndWait(
-      new File(filePath),
+      input,
       this.steps,
       params?.apiKey || this.client.apiKey,
       params?.timeout,
@@ -46,16 +53,18 @@ abstract class _Pipeline {
   }
 
   async runBatch(
-    texts: Iterable<TextContent | Input>,
+    inputs: Iterable<TextContent | Input>,
     params?: {
-          apiKey?: string,
-          timeout?: number,
-          onOutput?: (input: TextContent | Input, output: Output) => void,
-          onError?: (input: TextContent | Input, error: any) => void,
-        },
-  ): Promise<Map<TextContent | Input, Output>> {
+      apiKey?: string,
+      timeout?: number,
+      onOutput?: (input: Input, output: Output) => void,
+      onError?: (input: Input, error: any) => void,
+    },
+  ): Promise<Map<Input, Output>> {
     return sendBatchRequest(
-      texts,
+      (function* iterInputs(): Iterator<Input> {
+        for (const input of inputs) yield wrapContent(input);
+      }()),
       this.steps,
       params?.apiKey || this.client.apiKey,
       params?.timeout,
@@ -63,19 +72,6 @@ abstract class _Pipeline {
       params?.onError,
       this.client.printProgress,
     );
-  }
-
-  /** @deprecated since version 0.2.1, use property `runBatch` instead */
-  async run_batch(
-    texts: Iterable<TextContent | Input>,
-    params?: {
-        apiKey?: string,
-        timeout?: number,
-        onOutput?: (input: TextContent | Input, output: Output) => void,
-        onError?: (input: TextContent | Input, error: any) => void,
-      },
-  ): Promise<Map<TextContent | Input, Output>> {
-    return this.runBatch(texts, params);
   }
 }
 

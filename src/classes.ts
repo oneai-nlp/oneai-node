@@ -141,15 +141,6 @@ export class File implements _Input<FileContent> {
     this.contentType = input.contentType;
     this.encoding = input.encoding as encoding;
   }
-
-  read(): Input {
-    return {
-      text: this.text.buffer.toString(this.encoding),
-      encoding: this.encoding,
-      contentType: this.contentType,
-      type: this.type,
-    };
-  }
 }
 
 export function wrapContent<T extends TextContent>(
