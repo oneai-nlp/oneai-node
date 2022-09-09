@@ -1,23 +1,9 @@
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
-import * as fs from 'fs';
 import {
   Skill, Input, isFileContent, FileContent, _Input,
 } from '../classes';
-import { version } from '../../package.json';
 import { handleError } from '../errors';
-
-const uuid = (() => {
-  const filePath = `${__dirname}/.uuid`;
-  let result = '';
-  if (fs.existsSync(filePath)) {
-    result = fs.readFileSync(filePath, 'utf8');
-  } else {
-    result = uuidv4().replace(/-/g, '');
-    fs.writeFileSync(filePath, result);
-  }
-  return result;
-})();
+import { agent } from './agent';
 
 function buildRequest(input: Input, skills: Skill[], includeText: boolean): string {
   const fixedInput = (isFileContent(input.text) && includeText)
@@ -53,7 +39,7 @@ export async function postPipeline(
       headers: {
         'api-key': apiKey,
         'Content-Type': 'application/json',
-        'User-Agent': `node-sdk/${version}/${uuid}`,
+        'User-Agent': agent,
       },
       data: buildRequest(input, skills, true),
       timeout: timeout * 1000,
@@ -72,7 +58,7 @@ export async function getTaskStatus(taskId: string, apiKey: string): Promise<any
       url: `https://api.oneai.com/api/v0/pipeline/async/tasks/${taskId}`,
       headers: {
         'api-key': apiKey,
-        'User-Agent': `node-sdk/${version}/${uuid}`,
+        'User-Agent': agent,
       },
     });
 
@@ -96,7 +82,7 @@ export async function postAsyncFile(
       headers: {
         'api-key': apiKey,
         'Content-Type': 'application/json',
-        'User-Agent': `node-sdk/${version}/${uuid}`,
+        'User-Agent': agent,
       },
       data: input.text.buffer,
       timeout: timeout * 1000,
