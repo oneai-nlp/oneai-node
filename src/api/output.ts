@@ -42,7 +42,7 @@ export function buildOutput(
       ...label.type && { type: label.type },
       ...label.name && { name: label.name },
       ...label.span && { span: label.span },
-      ...label.span_text && { span_text: label.span_text },
+      ...label.span_text && { spanText: label.span_text, span_text: label.span_text },
       ...label.output_spans && { outputSpans: label.output_spans },
       ...label.input_spans && { inputSpans: label.input_spans },
       ...label.value && { value: label.value },

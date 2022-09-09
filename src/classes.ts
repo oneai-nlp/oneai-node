@@ -42,45 +42,6 @@ export interface _Input<T extends TextContent> {
 
 export type Input = _Input<TextContent>;
 
-export class Document implements _Input<string> {
-  type: inputType = 'article';
-
-  text: string;
-
-  constructor(text: string) {
-    this.text = text;
-  }
-}
-
-export interface Utterance {
-  speaker: string,
-  utterance: string
-}
-
-export class Conversation implements _Input<ConversationContent> {
-  type: inputType = 'conversation';
-
-  contentType: string = 'application/json';
-
-  text: ConversationContent;
-
-  constructor(utterances: ConversationContent) {
-    this.text = utterances;
-  }
-
-  get utterances(): ConversationContent {
-    return this.text;
-  }
-
-  set utterances(utterances: ConversationContent) {
-    this.text = utterances;
-  }
-
-  static parse(text: string): Conversation {
-    return new Conversation(parseConversation(text));
-  }
-}
-
 interface ExtInfo {
   contentType: string,
   type: inputType,
@@ -119,27 +80,6 @@ const extensions: Record<string, ExtInfo> = {
     isBinary: false,
   },
 };
-
-export class File implements _Input<FileContent> {
-  type: inputType;
-
-  contentType?: string;
-
-  encoding: encoding;
-
-  text: FileContent;
-
-  constructor(fileContent: string | FileContent, inputType?: inputType) {
-    this.type = inputType;
-
-    this.text = typeof fileContent === 'string'
-      ? { filePath: fileContent, buffer: fs.readFileSync(fileContent) } : fileContent;
-    const input = wrapContent(this.text);
-    this.type = input.type;
-    this.contentType = input.contentType;
-    this.encoding = input.encoding as encoding;
-  }
-}
 
 export function wrapContent<T extends TextContent>(
   content: _Input<T> | T,
@@ -182,7 +122,9 @@ export interface Label {
   name: string
   /** @deprecated since version 0.2.0, use `outputSpans` instead */
   span: number[]
+  /** @deprecated since version 0.4.0, use `spanText` instead */
   span_text: string
+  spanText: string
   outputSpans: Span[]
   inputSpans: Span[]
   value: number | string
@@ -194,4 +136,68 @@ export interface Label {
 export interface Output extends Input, OutputFields {
   text: TextContent
   [key: string]: (Output | Label[] | TextContent | any)
+}
+
+// deprecated old classes, will be removed in future versions
+
+/** @deprecated since version 0.4.0, use `string` inputs instead */
+export class Document implements _Input<string> {
+  type: inputType = 'article';
+
+  text: string;
+
+  constructor(text: string) {
+    this.text = text;
+  }
+}
+
+/** @deprecated since version 0.4.0, use `Utterance[]` inputs instead */
+export class Conversation implements _Input<ConversationContent> {
+  type: inputType = 'conversation';
+
+  contentType: string = 'application/json';
+
+  text: ConversationContent;
+
+  constructor(utterances: ConversationContent) {
+    this.text = utterances;
+  }
+
+  get utterances(): ConversationContent {
+    return this.text;
+  }
+
+  set utterances(utterances: ConversationContent) {
+    this.text = utterances;
+  }
+
+  /** @deprecated since version 0.4.0, use `oneai.parsing.parseConversation()` instead */
+  static parse(text: string): Conversation {
+    return new Conversation(parseConversation(text));
+  }
+}
+
+/**
+ * @deprecated since version 0.4.0, use `FileContent` inputs or
+ * `pipeline.runFile()` method instead
+ */
+export class File implements _Input<FileContent> {
+  type: inputType;
+
+  contentType?: string;
+
+  encoding: encoding;
+
+  text: FileContent;
+
+  constructor(fileContent: string | FileContent, inputType?: inputType) {
+    this.type = inputType;
+
+    this.text = typeof fileContent === 'string'
+      ? { filePath: fileContent, buffer: fs.readFileSync(fileContent) } : fileContent;
+    const input = wrapContent(this.text);
+    this.type = input.type;
+    this.contentType = input.contentType;
+    this.encoding = input.encoding as encoding;
+  }
 }
