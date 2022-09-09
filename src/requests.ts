@@ -5,7 +5,7 @@ import {
   Skill, Input, Output, Label, TextContent, File, FileContent, wrapContent, inputType, ConversationContent,
 } from './classes';
 import { handleError } from './errors';
-import { getTaskStatus, postAsyncFile, postPipeline } from './api';
+import { getTaskStatus, postAsyncFile, postPipeline } from './api/pipeline';
 
 const MAX_CONCURRENT_REQUESTS = 2;
 
