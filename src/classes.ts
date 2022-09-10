@@ -10,9 +10,6 @@ export interface Skill {
   labelsField?: string
 }
 
-export type inputType = 'article' | 'conversation' | undefined;
-export type encoding = 'utf8' | 'base64';
-
 export type FileContent = {
   filePath: string,
   buffer: Buffer,
@@ -24,13 +21,8 @@ export type ConversationContent = {
 
 export type TextContent = string | ConversationContent | FileContent;
 
-export function isInput(object: any): object is Input {
-  return typeof object === 'object' && 'text' in object;
-}
-
-export function isFileContent(object: any): object is FileContent {
-  return typeof object === 'object' && 'filePath' in object && 'buffer' in object;
-}
+export type inputType = 'article' | 'conversation';
+export type encoding = 'utf8' | 'base64';
 
 export interface _Input<T extends TextContent> {
   text: T;
@@ -41,6 +33,14 @@ export interface _Input<T extends TextContent> {
 }
 
 export type Input = _Input<TextContent>;
+
+export function isInput(object: any): object is Input {
+  return typeof object === 'object' && 'text' in object;
+}
+
+export function isFileContent(object: any): object is FileContent {
+  return typeof object === 'object' && 'filePath' in object && 'buffer' in object;
+}
 
 interface ExtInfo {
   contentType: string,
@@ -182,7 +182,7 @@ export class Conversation implements _Input<ConversationContent> {
  * `pipeline.runFile()` method instead
  */
 export class File implements _Input<FileContent> {
-  type: inputType;
+  type?: inputType;
 
   contentType?: string;
 
