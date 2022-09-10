@@ -1,12 +1,14 @@
 /* eslint-disable no-await-in-loop */
-import axios from 'axios';
-import OneAI from '.';
+import { ApiReqParams } from './api/client';
+import ClusteringApiClient from './api/clustering';
 import { _Input } from './classes';
+
+export type Paginated<T> = AsyncGenerator<T, void>
 
 export class ClusteringClient {
   private baseURL = 'https://api.oneai.com/clustering/v1/collections';
 
-  private client: OneAI;
+  private client: ClusteringApiClient;
 
   Item = ClusteringClient.Item;
 
@@ -15,60 +17,26 @@ export class ClusteringClient {
   Cluster = ClusteringClient.Cluster;
 
   Collection = ((cclient: ClusteringClient) => class extends ClusteringClient.Collection {
-    client: ClusteringClient = cclient;
+    client: ClusteringApiClient = cclient.client;
   })(this);
 
-  constructor(client: OneAI) {
+  constructor(client: ClusteringApiClient) {
     this.client = client;
-  }
-
-  GET(path: string, apiKey?: string): Promise<any> {
-    const key = apiKey || this.client.params.apiKey;
-    if (!key) throw new Error('API key is required');
-    return axios({
-      method: 'GET',
-      url: `${this.baseURL}/${path}`,
-      headers: {
-        'api-key': key,
-        'Content-Type': 'application/json',
-      },
-    });
-  }
-
-  POST(path: string, apiKey?: string, data: object = {}) {
-    const key = apiKey || this.client.params.apiKey;
-    if (!key) throw new Error('API key is required');
-    return axios({
-      method: 'POST',
-      url: `${this.baseURL}/${path}`,
-      headers: {
-        'api-key': key,
-        'Content-Type': 'application/json',
-      },
-      data,
-    });
   }
 
   async* getCollections(
     apiKey?: string,
     limit?: number,
-  ): AsyncGenerator<ClusteringClient.Collection, void, undefined> {
+  ): Paginated<ClusteringClient.Collection> {
     const urlParams = new URLSearchParams();
     if (limit) urlParams.set('limit', limit.toString());
-    let page = 0;
-    let collections: ClusteringClient.Collection[] = [];
-    let counter = 0;
 
-    while ((page === 0 || collections.length > 0) && (limit === undefined || counter < limit)) {
-      urlParams.set('page', (page++).toString());
-
-      const { data } = await this.GET(`?${urlParams}`, apiKey);
-      collections = data ? data.map(
-        (id: string) => new this.Collection(id, apiKey),
-      ) : [];
-      counter += collections.length;
-      yield* collections;
-    }
+    yield* this.client.getPaginated(
+      `?${urlParams}`,
+      'collections',
+      (id: string) => (new this.Collection(id, apiKey)) as ClusteringClient.Collection,
+      limit,
+    );
   }
 }
 
@@ -145,17 +113,20 @@ export namespace ClusteringClient {
     }
 
     async* getItems(
-      params?: {
+      params?: ApiReqParams & {
         itemMetadata?: string,
       },
     ): AsyncGenerator<Item, void, undefined> {
       const urlParams = new URLSearchParams();
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params?.itemMetadata!);
-      const { data } = await this.cluster.collection.client.GET(
+
+      yield* this.cluster.collection.client.getPaginated(
         `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
-        this.cluster.collection.apiKey,
+        'items',
+        (item) => Item.fromJSON(this, item),
+        undefined,
+        params,
       );
-      yield* data ? data.map((item: any) => Item.fromJSON(this, item)) : [];
     }
 
     toJSON() {
@@ -207,7 +178,7 @@ export namespace ClusteringClient {
     }
 
     async* getPhrases(
-      params?: {
+      params?: ApiReqParams & {
         sort?: 'ASC' | 'DESC',
         limit?: number,
         fromDate?: Date | string,
@@ -226,35 +197,27 @@ export namespace ClusteringClient {
       if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
 
-      let page = 0;
-      let phrases: Phrase[] = [];
-      let counter = 0;
-
-      while (
-        (page === 0 || phrases.length > 0)
-        && (params?.limit === undefined || counter < params?.limit)
-      ) {
-        urlParams.set('page', (page++).toString());
-
-        const { data } = await this.collection.client.GET(
-          `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
-          this.collection.apiKey,
-        );
-        phrases = data ? data.map((phrase: any) => Phrase.fromJSON(this, phrase)) : [];
-        counter += phrases.length;
-        yield* phrases;
-      }
+      yield* this.collection.client.getPaginated(
+        `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
+        'clusters',
+        (phrase) => Phrase.fromJSON(this, phrase),
+        params?.limit,
+        params,
+      );
     }
 
-    async addItems(items: _Input<string>[]): Promise<any> {
-      const url = `${this.collection.id}/items`;
-      const request = items.map((item) => ({
-        text: item.text,
-        item_metadata: item.metadata,
-        'force-cluster-id': this.id,
-      }));
-      const { data } = await this.collection.client.POST(url, this.collection.apiKey, request);
-      return data;
+    async addItems(
+      items: _Input<string>[],
+      params?: ApiReqParams,
+    ): Promise<any> {
+      return this.collection.client.postItems(
+        `${this.collection.id}/items`,
+        items,
+        {
+          forceClusterId: this.id,
+          ...params,
+        },
+      );
     }
 
     toJSON() {
@@ -281,7 +244,7 @@ export namespace ClusteringClient {
   export abstract class Collection {
     static apiDateFormat = '%Y-%m-%d';
 
-    abstract client: ClusteringClient;
+    abstract client: ClusteringApiClient;
 
     id: string;
 
@@ -293,14 +256,14 @@ export namespace ClusteringClient {
     }
 
     async* getClusters(
-      params?: {
+      params?: ApiReqParams & {
         sort?: 'ASC' | 'DESC',
         limit?: number,
         fromDate?: Date | string,
         toDate?: Date | string,
         itemMetadata?: string,
       },
-    ): AsyncGenerator<Cluster, void, undefined> {
+    ): Paginated<Cluster> {
       const urlParams = new URLSearchParams();
       const fromDate = (typeof params?.fromDate === 'string') ? new Date(params?.fromDate) : params?.fromDate;
       const toDate = (typeof params?.toDate === 'string') ? new Date(params?.toDate) : params?.toDate;
@@ -312,43 +275,41 @@ export namespace ClusteringClient {
       if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
       if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
 
-      let page = 0;
-      let clusters: Cluster[] = [];
-      let counter = 0;
-
-      while (
-        (page === 0 || clusters.length > 0)
-        && (params?.limit === undefined || counter < params?.limit)
-      ) {
-        urlParams.set('page', (page++).toString());
-
-        const { data } = await this.client.GET(`${this.id}/clusters?${urlParams}`, this.apiKey);
-        clusters = data ? data.map((cluster: any) => Cluster.fromJSON(this, cluster)) : [];
-        counter += clusters.length;
-        yield* clusters;
-      }
+      yield* this.client.getPaginated(
+        `${this.id}/clusters?${urlParams}`,
+        'clusters',
+        (cluster) => Cluster.fromJSON(this, cluster),
+        params?.limit,
+        params,
+      );
     }
 
-    async find(query: string, threshold: number): Promise<Cluster[]> {
+    async find(
+      query: string,
+      params?: ApiReqParams & {
+        threshold: number,
+      },
+    ): Promise<Cluster[]> {
       const urlParams = new URLSearchParams({
         text: query,
-        'similarity-threshold': threshold.toString(),
+        ...params?.threshold && { 'similarity-threshold': params.threshold.toString() },
       });
 
-      const url = `${this.id}/clusters/find?${urlParams}`;
-      const { data } = (await this.client.GET(url, this.apiKey));
-      return data ? data.map((cluster: any) => Cluster.fromJSON(this, cluster)) : [];
+      const clusters = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
+      return clusters.map((cluster: any) => Cluster.fromJSON(this, cluster)) || [];
     }
 
-    async addItems(items: _Input<string>[], forceNewClusters: boolean): Promise<any> {
-      const url = `${this.id}/items`;
-      const request = items.map((input) => ({
-        text: input.text,
-        item_metadata: input.metadata,
-        'force-new-cluster': forceNewClusters,
-      }));
-      const { data } = await this.client.POST(url, this.apiKey, request);
-      return data;
+    async addItems(
+      items: _Input<string>[],
+      params?: ApiReqParams & {
+        forceNewClusters: boolean,
+      },
+    ): Promise<any> {
+      return this.client.postItems(
+        `${this.id}/items`,
+        items,
+        params,
+      );
     }
 
     toJSON() {

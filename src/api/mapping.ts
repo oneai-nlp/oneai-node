@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   AsyncApiResponse,
   AsyncApiTask,
-  ConversationContent, Input, isFileContent, Label, Output, Skill,
+  ConversationContent, Input, isFileContent, Label, Output, Skill, _Input,
 } from '../classes';
 import { httpStatusErrorType } from '../errors';
 
@@ -145,4 +145,17 @@ export function buildAsyncApiResponse(task: AsyncApiTask, response: any) : Async
     status: response.status,
     result,
   };
+}
+
+export function buildClusteringItems(
+  inputs: _Input<string>[],
+  forceNewClusters?: boolean,
+  forceClusterId?: number,
+) {
+  return inputs.map((input) => ({
+    text: input.text,
+    item_metadata: input.metadata,
+    ...forceNewClusters && { 'force-new-cluster': forceNewClusters },
+    ...forceClusterId && { 'force-cluster-id': forceClusterId },
+  }));
 }

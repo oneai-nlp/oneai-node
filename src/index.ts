@@ -9,6 +9,7 @@ import toSRT from './parsing/srt';
 import PipelineApiClient from './api/pipeline';
 import { ApiClientParams } from './api/client';
 import Logger from './logging';
+import ClusteringApiClient from './api/clustering';
 
 type OneAIClientParams = ApiClientParams & {
   loggingEnabled: boolean,
@@ -39,6 +40,8 @@ class OneAI {
 
   private pipelineApiClient: PipelineApiClient;
 
+  private clusteringApiClient: ClusteringApiClient;
+
   private logger: Logger;
 
   static defaultParams: OneAIClientParams = {
@@ -62,12 +65,14 @@ class OneAI {
 
     this.logger = new Logger(this.params.loggingEnabled);
     this.pipelineApiClient = new PipelineApiClient(this.params, this.logger);
+    this.clusteringApiClient = new ClusteringApiClient(this.params, this.logger);
+    this.clustering = new ClusteringClient(this.clusteringApiClient);
     this.Pipeline = createPipelineClass(this.pipelineApiClient);
   }
 
   Pipeline;
 
-  clustering = new ClusteringClient(this);
+  clustering: ClusteringClient;
 
   parsing: {
     parseConversation: (input: string) => ConversationContent,
