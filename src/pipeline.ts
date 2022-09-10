@@ -1,12 +1,20 @@
 import fs from 'fs';
-import type OneAI from '.';
+import { ApiReqParams } from './api/client';
+import PipelineApiClient from './api/pipeline';
 import {
+  AsyncApiTask,
   Input, Output, Skill, TextContent, wrapContent,
 } from './classes';
-import { sendAsyncFileRequestAndWait, sendBatchRequest, sendRequest } from './requests';
+import { logger } from './logging';
+import { batchProcessing, polling } from './schedule';
+
+export type PipelineRunParams = ApiReqParams & {
+  interval?: number,
+  loggingEnabled?: boolean
+};
 
 abstract class _Pipeline {
-  abstract client: OneAI;
+  abstract client: PipelineApiClient;
 
   steps: Skill[];
 
@@ -16,64 +24,53 @@ abstract class _Pipeline {
 
   async run(
     text: TextContent | Input,
-    params?: {
-      apiKey?: string,
-      timeout?: number
-    },
+    params?: ApiReqParams,
   ): Promise<Output> {
-    return sendRequest(
+    return this.client.postPipeline(
       wrapContent(text),
       this.steps,
-      params?.apiKey || this.client.apiKey,
-      params?.timeout,
+      params,
     );
   }
 
   async runFile(
     filePath: string,
-    params?: {
-      apiKey?: string,
-      timeout?: number,
-      sync?: boolean,
-      interval?: number,
+    params?: PipelineRunParams & {
+      sync?: boolean
     },
   ): Promise<Output> {
     const input = wrapContent({ filePath, buffer: fs.readFileSync(filePath) });
-    return (params?.sync) ? sendRequest(
-      input,
-      this.steps,
-      params?.apiKey || this.client.apiKey,
-      params?.timeout,
-    ) : sendAsyncFileRequestAndWait(
-      input,
-      this.steps,
-      params?.apiKey || this.client.apiKey,
-      params?.timeout,
+    if (params?.sync) return this.run(input, params);
+
+    // todo: extend to non-file inputs
+    if (params?.loggingEnabled !== false) logger.debug(`Uploading file ${input.text.filePath}`);
+    const task = await this.client.postAsyncFile(input, this.steps, params);
+    if (params?.loggingEnabled !== false) logger.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
+    return polling(
+      task,
+      (t: AsyncApiTask) => this.client.getTaskStatus.call(this.client, t),
+      params?.interval || 1,
+      params?.loggingEnabled || true,
     );
   }
 
-  async runBatch(
-    inputs: Iterable<TextContent | Input>,
-    params?: {
-      apiKey?: string,
-      timeout?: number,
-      onOutput?: (input: Input, output: Output) => void,
-      onError?: (input: Input, error: any) => void,
+  async runBatch<T extends TextContent | Input>(
+    inputs: Iterable<T>,
+    params?: PipelineRunParams & {
+      onOutput?: (input: T, output: Output) => void,
+      onError?: (input: T, error: any) => void,
     },
-  ): Promise<Map<Input, Output>> {
-    return sendBatchRequest(
-      (function* iterInputs(): Iterator<Input> {
-        for (const input of inputs) yield wrapContent(input);
-      }()),
-      this.steps,
-      params?.apiKey || this.client.apiKey,
-      params?.timeout,
+  ): Promise<Map<T, Output>> {
+    return batchProcessing(
+      inputs,
+      this.run,
       params?.onOutput,
       params?.onError,
-      this.client.printProgress,
+      params?.loggingEnabled || true,
     );
   }
 }
 
-const Pipeline = (client: OneAI) => class extends _Pipeline { client = client; };
-export default Pipeline;
+export const createPipelineClass = (client: PipelineApiClient) => class extends _Pipeline {
+  client = client;
+};

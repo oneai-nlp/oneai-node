@@ -1,95 +1,54 @@
-import axios from 'axios';
 import {
-  Skill, Input, isFileContent, FileContent, _Input,
+  Skill, Input, FileContent, _Input, Output, AsyncApiTask, AsyncApiResponse,
 } from '../classes';
-import { handleError } from '../errors';
-import { agent } from './agent';
+import { ApiClient, ApiReqParams } from './client';
+import {
+  buildAsyncApiResponse, buildOutput, buildRequest,
+} from './mapping';
 
-function buildRequest(input: Input, skills: Skill[], includeText: boolean): string {
-  const fixedInput = (isFileContent(input.text) && includeText)
-    ? {
-      text: input.text.buffer.toString(input.encoding),
-      encoding: input.encoding,
-      contentType: input.contentType,
-      type: input.type,
-    } : input;
-  return JSON.stringify({
-    ...(includeText && { input: fixedInput.text }),
-    input_type: fixedInput.type,
-    output_type: fixedInput.type === 'conversation' ? 'json' : 'text',
-    encoding: fixedInput.encoding,
-    content_type: fixedInput.contentType,
-    steps: skills.map((skill) => ({
-      skill: skill.apiName,
-      params: skill.params,
-    })),
-  }, (_, value) => value ?? undefined);
-}
+export default class PipelineApiClient extends ApiClient {
+  rootPath = 'api/v0/pipeline';
 
-export async function postPipeline(
-  input: Input,
-  skills: Skill[],
-  apiKey: string,
-  timeout: number = 6000,
-): Promise<any> {
-  try {
-    const { data } = await axios({
-      method: 'POST',
-      url: 'https://api.oneai.com/api/v0/pipeline',
-      headers: {
-        'api-key': apiKey,
-        'Content-Type': 'application/json',
-        'User-Agent': agent,
-      },
-      data: buildRequest(input, skills, true),
-      timeout: timeout * 1000,
-    });
-
-    return data;
-  } catch (error) {
-    throw handleError(error);
+  async postPipeline(
+    input: Input,
+    skills: Skill[],
+    params?: ApiReqParams,
+  ): Promise<Output> {
+    const { data } = await this.post(
+      this.rootPath,
+      buildRequest(input, skills, true),
+      params,
+    );
+    return buildOutput(skills, data);
   }
-}
 
-export async function getTaskStatus(taskId: string, apiKey: string): Promise<any> {
-  try {
-    const { data } = await axios({
-      method: 'GET',
-      url: `https://api.oneai.com/api/v0/pipeline/async/tasks/${taskId}`,
-      headers: {
-        'api-key': apiKey,
-        'User-Agent': agent,
-      },
-    });
-
-    return data;
-  } catch (error) {
-    throw handleError(error);
-  }
-}
-
-export async function postAsyncFile(
-  input: _Input<FileContent>,
-  skills: Skill[],
-  apiKey: string,
-  timeout: number = 6000,
-): Promise<string> {
-  try {
+  async postAsyncFile(
+    input: _Input<FileContent>,
+    skills: Skill[],
+    params?: ApiReqParams,
+  ): Promise<AsyncApiTask> {
     const request = buildRequest(input, skills, false);
-    const { data } = await axios({
-      method: 'POST',
-      url: `https://api.oneai.com/api/v0/pipeline/async/file?pipeline=${encodeURIComponent(request)}`,
-      headers: {
-        'api-key': apiKey,
-        'Content-Type': 'application/json',
-        'User-Agent': agent,
-      },
-      data: input.text.buffer,
-      timeout: timeout * 1000,
-    });
+    const { data } = await this.post(
+      `${this.rootPath}/async/file?pipeline=${encodeURIComponent(request)}`,
+      input.text.buffer,
+      params,
+    );
+    return {
+      id: data.task_id,
+      name: input.text.filePath,
+      skills,
+    };
+  }
 
-    return data.task_id;
-  } catch (error) {
-    throw handleError(error);
+  async getTaskStatus(
+    task: AsyncApiTask,
+    params?: ApiReqParams,
+  ): Promise<AsyncApiResponse> {
+    const { data } = await this.get(
+      `${this.rootPath}/async/tasks/${task.id}`,
+      params,
+    );
+
+    return buildAsyncApiResponse(task, data);
   }
 }

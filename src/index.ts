@@ -1,4 +1,4 @@
-import Pipeline from './pipeline';
+import { createPipelineClass } from './pipeline';
 import {
   File, Document, Conversation, ConversationContent, Output,
 } from './classes';
@@ -6,6 +6,12 @@ import { ClusteringClient } from './clustering';
 import { skills } from './skills';
 import parseConversation from './parsing/conversation';
 import toSRT from './parsing/srt';
+import PipelineApiClient from './api/pipeline';
+import { ApiClientParams } from './api/client';
+
+type OneAIClientParams = ApiClientParams & {
+  loggingEnabled: boolean,
+};
 
 class OneAI {
 /**
@@ -18,40 +24,44 @@ class OneAI {
 
   static skills = skills;
 
+  /**
+   * @deprecated since version 0.4.0, use `FileContent` inputs or
+   * `pipeline.runFile()` method instead
+   */
   File = File;
 
+  /** @deprecated since version 0.4.0, use `Utterance[]` inputs instead */
   Conversation = Conversation;
 
+  /** @deprecated since version 0.4.0, use `string` inputs instead */
   Document = Document;
 
-  /** the default API key to use, get one at https://studio.oneai.com/settings/api-keys */
-  apiKey?: string;
+  private pipelineApiClient: PipelineApiClient;
 
-  /** @deprecated since version 0.0.8. Use `apiKey` instead */
-  get api_key() { return this.apiKey; }
+  static defaultParams: OneAIClientParams = {
+    apiKey: '',
+    timeout: 60,
+    baseURL: 'https://api.oneai.com',
+    loggingEnabled: true,
+  };
 
-  /** @deprecated since version 0.0.8. Use `apiKey` instead */
-  set api_key(value) { this.apiKey = value; }
-
-  /** default request timeout */
-  timeout?: number;
-
-  /** whether to log progress when processing batches */
-  printProgress: boolean;
+  params: OneAIClientParams;
 
   constructor(
     apiKey?: string,
-    params?: {
-      timeout?: number,
-      printProgress?: boolean,
-    },
+    params?: Partial<OneAIClientParams>,
   ) {
-    this.apiKey = apiKey;
-    this.timeout = params?.timeout;
-    this.printProgress = params?.printProgress || true;
+    this.params = {
+      ...OneAI.defaultParams,
+      ...params !== undefined && params,
+      ...apiKey !== undefined && { apiKey },
+    };
+
+    this.pipelineApiClient = new PipelineApiClient(this.params);
+    this.Pipeline = createPipelineClass(this.pipelineApiClient);
   }
 
-  Pipeline = Pipeline(this);
+  Pipeline;
 
   clustering = new ClusteringClient(this);
 
@@ -63,52 +73,10 @@ class OneAI {
       toSRT,
     };
 
-  private static instance = new OneAI();
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get apiKey() {
-    return OneAI.instance.apiKey;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static set apiKey(apiKey: string | undefined) {
-    OneAI.instance.apiKey = apiKey;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get PRINT_PROGRESS() {
-    return OneAI.instance.printProgress;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static set PRINT_PROGRESS(printProgress: boolean) {
-    OneAI.instance.printProgress = printProgress;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get Pipeline() {
-    return OneAI.instance.Pipeline;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get File() {
-    return OneAI.instance.File;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get Document() {
-    return OneAI.instance.Document;
-  }
-
-  /** @deprecated since version 0.1.3. Create a `OneAI` instance instead */
-  static get Conversation() {
-    return OneAI.instance.Conversation;
-  }
-
   static OneAI = OneAI;
 
   public toString(): string {
-    const apiKeyString = (this.apiKey) ? this.apiKey.substring(0, 8) + '*'.repeat(this.apiKey.length - 8) : undefined;
+    const apiKeyString = (this.params.apiKey) ? this.params.apiKey.substring(0, 8) + '*'.repeat(this.params.apiKey.length - 8) : undefined;
     return `One AI Client - API Key ${apiKeyString}`;
   }
 }

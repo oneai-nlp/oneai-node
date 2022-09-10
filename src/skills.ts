@@ -26,7 +26,7 @@ export const skills = {
   highlights: (): Skill => ({ apiName: 'highlights' }),
 
   topics: (): Skill => ({
-    apiName: 'article-topics', textField: 'topics',
+    apiName: 'article-topics', labelsField: 'topics',
   }),
 
   sentiments: (): Skill => ({ apiName: 'sentiments' }),
@@ -49,12 +49,12 @@ export const skills = {
   }),
 
   actionItems: (): Skill => ({
-    apiName: 'action-items', textField: 'actionItems',
+    apiName: 'action-items', labelsField: 'actionItems',
   }),
 
   anonymize: (): Skill => ({
     apiName: 'anonymize',
-    textField: 'anonymizations',
+    labelsField: 'anonymizations',
   }),
 
   names: (): Skill => ({ apiName: 'names' }),
@@ -62,11 +62,11 @@ export const skills = {
 
   splitBySentence: (): Skill => ({ apiName: 'sentences' }),
   splitByTopic: (): Skill => ({
-    apiName: 'dialogue-segmentation', textField: 'segments',
+    apiName: 'dialogue-segmentation', labelsField: 'segments',
   }),
 
   salesInsights: (): Skill => ({
-    apiName: 'sales-insights', textField: 'salesInsights',
+    apiName: 'sales-insights', labelsField: 'salesInsights',
   }),
 
   transcribe: (params?: { timestamp_per_word?: boolean }): Skill => ({
@@ -77,15 +77,15 @@ export const skills = {
   }),
 
   detectLanguage: (): Skill => ({
-    apiName: 'detect-language', textField: 'language',
+    apiName: 'detect-language', labelsField: 'language',
   }),
 
   headline: (): Skill => ({
-    apiName: 'headline', textField: 'headline',
+    apiName: 'headline', labelsField: 'headline',
   }),
 
   pricing: (): Skill => ({
-    apiName: 'business-entities', textField: 'pricing',
+    apiName: 'business-entities', labelsField: 'pricing',
   }),
 };
 

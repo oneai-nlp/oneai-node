@@ -23,7 +23,7 @@ export class ClusteringClient {
   }
 
   GET(path: string, apiKey?: string): Promise<any> {
-    const key = apiKey || this.client.apiKey;
+    const key = apiKey || this.client.params.apiKey;
     if (!key) throw new Error('API key is required');
     return axios({
       method: 'GET',
@@ -36,7 +36,7 @@ export class ClusteringClient {
   }
 
   POST(path: string, apiKey?: string, data: object = {}) {
-    const key = apiKey || this.client.apiKey;
+    const key = apiKey || this.client.params.apiKey;
     if (!key) throw new Error('API key is required');
     return axios({
       method: 'POST',

@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import parseConversation from './parsing/conversation';
 import type { OutputFields } from './skills';
+import { OneAIError } from './errors';
 
 export interface Skill {
   apiName: string
@@ -136,6 +137,17 @@ export interface Label {
 export interface Output extends Input, OutputFields {
   text: TextContent
   [key: string]: (Output | Label[] | TextContent | any)
+}
+
+export interface AsyncApiTask {
+  id: string,
+  name: string,
+  skills: Skill[],
+}
+
+export interface AsyncApiResponse extends AsyncApiTask {
+  status: 'COMPLETED' | 'FAILED' | 'RUNNING',
+  result?: Output | OneAIError,
 }
 
 // deprecated old classes, will be removed in future versions
