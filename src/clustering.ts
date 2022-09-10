@@ -1,13 +1,20 @@
 /* eslint-disable no-await-in-loop */
 import { ApiReqParams } from './api/client';
 import ClusteringApiClient from './api/clustering';
+import { buildClusteringQueryParams } from './api/mapping';
 import { _Input } from './classes';
 
 export type Paginated<T> = AsyncGenerator<T, void>
 
-export class ClusteringClient {
-  private baseURL = 'https://api.oneai.com/clustering/v1/collections';
+export type ClusteringApiParams = ApiReqParams & {
+  sort?: 'ASC' | 'DESC',
+  limit?: number,
+  fromDate?: Date | string,
+  toDate?: Date | string,
+  itemMetadata?: string,
+};
 
+export class ClusteringClient {
   private client: ClusteringApiClient;
 
   Item = ClusteringClient.Item;
@@ -25,17 +32,16 @@ export class ClusteringClient {
   }
 
   async* getCollections(
-    apiKey?: string,
-    limit?: number,
+    params?: ClusteringApiParams,
   ): Paginated<ClusteringClient.Collection> {
-    const urlParams = new URLSearchParams();
-    if (limit) urlParams.set('limit', limit.toString());
-
+    const urlParams = buildClusteringQueryParams(params);
     yield* this.client.getPaginated(
       `?${urlParams}`,
       'collections',
-      (id: string) => (new this.Collection(id, apiKey)) as ClusteringClient.Collection,
-      limit,
+      (id: string) => (
+        new this.Collection(id, params?.apiKey || this.client.params.apiKey)
+      ) as ClusteringClient.Collection,
+      params?.limit,
     );
   }
 }
@@ -113,13 +119,9 @@ export namespace ClusteringClient {
     }
 
     async* getItems(
-      params?: ApiReqParams & {
-        itemMetadata?: string,
-      },
+      params?: ClusteringApiParams,
     ): AsyncGenerator<Item, void, undefined> {
-      const urlParams = new URLSearchParams();
-      if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params?.itemMetadata!);
-
+      const urlParams = buildClusteringQueryParams(params);
       yield* this.cluster.collection.client.getPaginated(
         `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
         'items',
@@ -178,25 +180,9 @@ export namespace ClusteringClient {
     }
 
     async* getPhrases(
-      params?: ApiReqParams & {
-        sort?: 'ASC' | 'DESC',
-        limit?: number,
-        fromDate?: Date | string,
-        toDate?: Date | string,
-        itemMetadata?: string,
-      },
+      params?: ClusteringApiParams,
     ): AsyncGenerator<Phrase, void, undefined> {
-      const urlParams = new URLSearchParams();
-      const fromDate = (typeof params?.fromDate === 'string') ? new Date(params?.fromDate) : params?.fromDate;
-      const toDate = (typeof params?.toDate === 'string') ? new Date(params?.toDate) : params?.toDate;
-
-      urlParams.set('include-items', 'false');
-      if (params?.sort !== undefined) urlParams.set('sort', params.sort);
-      if (params?.limit !== undefined) urlParams.set('limit', params.limit.toString());
-      if (fromDate !== undefined) urlParams.set('from-date', fromDate.toISOString());
-      if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
-      if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
-
+      const urlParams = buildClusteringQueryParams(params);
       yield* this.collection.client.getPaginated(
         `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
         'clusters',
@@ -256,25 +242,9 @@ export namespace ClusteringClient {
     }
 
     async* getClusters(
-      params?: ApiReqParams & {
-        sort?: 'ASC' | 'DESC',
-        limit?: number,
-        fromDate?: Date | string,
-        toDate?: Date | string,
-        itemMetadata?: string,
-      },
+      params?: ClusteringApiParams,
     ): Paginated<Cluster> {
-      const urlParams = new URLSearchParams();
-      const fromDate = (typeof params?.fromDate === 'string') ? new Date(params?.fromDate) : params?.fromDate;
-      const toDate = (typeof params?.toDate === 'string') ? new Date(params?.toDate) : params?.toDate;
-
-      urlParams.set('include-phrases', 'false');
-      if (params?.sort !== undefined) urlParams.set('sort', params.sort);
-      if (params?.limit !== undefined) urlParams.set('limit', params.limit.toString());
-      if (fromDate !== undefined) urlParams.set('from-date', fromDate.toISOString());
-      if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
-      if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
-
+      const urlParams = buildClusteringQueryParams(params);
       yield* this.client.getPaginated(
         `${this.id}/clusters?${urlParams}`,
         'clusters',

@@ -4,6 +4,7 @@ import {
   AsyncApiTask,
   ConversationContent, Input, isFileContent, Label, Output, Skill, _Input,
 } from '../classes';
+import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
 
 export function buildRequest(input: Input, skills: Skill[], includeText: boolean): string {
@@ -158,4 +159,20 @@ export function buildClusteringItems(
     ...forceNewClusters && { 'force-new-cluster': forceNewClusters },
     ...forceClusterId && { 'force-cluster-id': forceClusterId },
   }));
+}
+
+export function buildClusteringQueryParams(params?: ClusteringApiParams): string {
+  const urlParams = new URLSearchParams();
+  const fromDate = (typeof params?.fromDate === 'string') ? new Date(params?.fromDate) : params?.fromDate;
+  const toDate = (typeof params?.toDate === 'string') ? new Date(params?.toDate) : params?.toDate;
+
+  urlParams.set('include-items', 'false');
+  urlParams.set('include-phrases', 'false');
+  if (params?.sort !== undefined) urlParams.set('sort', params.sort);
+  if (params?.limit !== undefined) urlParams.set('limit', params.limit.toString());
+  if (fromDate !== undefined) urlParams.set('from-date', fromDate.toISOString());
+  if (toDate !== undefined) urlParams.set('to-date', toDate.toISOString());
+  if (params?.itemMetadata !== undefined) urlParams.set('item-metadata', params.itemMetadata);
+
+  return urlParams.toString();
 }
