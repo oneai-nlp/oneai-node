@@ -1,20 +1,28 @@
 import { stderr, stdout } from 'process';
 
-export class logger {
-  static prefix = '\x1b[34m●\x1b[36m▲\x1b[35m▮\x1b[0m ';
+export default class Logger {
+  enabled: boolean;
 
-  static debug(message: string) {
-    stdout.write(logger.prefix + message);
+  prefix = '\x1b[34m●\x1b[36m▲\x1b[35m▮\x1b[0m ';
+
+  constructor(enabled: boolean = true) {
+    this.enabled = enabled;
   }
 
-  static debugNoNewline(message: string) {
-    stdout.clearLine(0);
-    stdout.cursorTo(0);
-    stdout.write(logger.prefix + message);
+  debug(message: string) {
+    if (this.enabled) stdout.write(this.prefix + message);
   }
 
-  static error(message: string) {
-    stderr.write(`${message}\n`);
+  debugNoNewline(message: string) {
+    if (this.enabled) {
+      stdout.clearLine(0);
+      stdout.cursorTo(0);
+      stdout.write(this.prefix + message);
+    }
+  }
+
+  error(message: string) {
+    if (this.enabled) stderr.write(`${message}\n`);
   }
 }
 

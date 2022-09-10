@@ -1,4 +1,4 @@
-import { createPipelineClass } from './pipeline';
+import createPipelineClass from './pipeline';
 import {
   File, Document, Conversation, ConversationContent, Output,
 } from './classes';
@@ -8,6 +8,7 @@ import parseConversation from './parsing/conversation';
 import toSRT from './parsing/srt';
 import PipelineApiClient from './api/pipeline';
 import { ApiClientParams } from './api/client';
+import Logger from './logging';
 
 type OneAIClientParams = ApiClientParams & {
   loggingEnabled: boolean,
@@ -38,6 +39,8 @@ class OneAI {
 
   private pipelineApiClient: PipelineApiClient;
 
+  private logger: Logger;
+
   static defaultParams: OneAIClientParams = {
     apiKey: '',
     timeout: 60,
@@ -57,7 +60,8 @@ class OneAI {
       ...apiKey !== undefined && { apiKey },
     };
 
-    this.pipelineApiClient = new PipelineApiClient(this.params);
+    this.logger = new Logger(this.params.loggingEnabled);
+    this.pipelineApiClient = new PipelineApiClient(this.params, this.logger);
     this.Pipeline = createPipelineClass(this.pipelineApiClient);
   }
 

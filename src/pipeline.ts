@@ -5,13 +5,7 @@ import {
   AsyncApiTask,
   Input, Output, Skill, TextContent, wrapContent,
 } from './classes';
-import { logger } from './logging';
 import { batchProcessing, polling } from './schedule';
-
-export type PipelineRunParams = ApiReqParams & {
-  interval?: number,
-  loggingEnabled?: boolean
-};
 
 abstract class _Pipeline {
   abstract client: PipelineApiClient;
@@ -35,28 +29,29 @@ abstract class _Pipeline {
 
   async runFile(
     filePath: string,
-    params?: PipelineRunParams & {
-      sync?: boolean
+    params?: ApiReqParams & {
+      sync?: boolean,
+      interval?: number,
     },
   ): Promise<Output> {
     const input = wrapContent({ filePath, buffer: fs.readFileSync(filePath) });
     if (params?.sync) return this.run(input, params);
 
     // todo: extend to non-file inputs
-    if (params?.loggingEnabled !== false) logger.debug(`Uploading file ${input.text.filePath}`);
+    this.client.logger.debug(`Uploading file ${input.text.filePath}`);
     const task = await this.client.postAsyncFile(input, this.steps, params);
-    if (params?.loggingEnabled !== false) logger.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
+    this.client.logger.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
     return polling(
       task,
       (t: AsyncApiTask) => this.client.getTaskStatus.call(this.client, t),
       params?.interval || 1,
-      params?.loggingEnabled || true,
+      this.client.logger,
     );
   }
 
   async runBatch<T extends TextContent | Input>(
     inputs: Iterable<T>,
-    params?: PipelineRunParams & {
+    params?: ApiReqParams & {
       onOutput?: (input: T, output: Output) => void,
       onError?: (input: T, error: any) => void,
     },
@@ -66,11 +61,13 @@ abstract class _Pipeline {
       this.run,
       params?.onOutput,
       params?.onError,
-      params?.loggingEnabled || true,
+      this.client.logger,
     );
   }
 }
 
-export const createPipelineClass = (client: PipelineApiClient) => class extends _Pipeline {
+const createPipelineClass = (client: PipelineApiClient) => class extends _Pipeline {
   client = client;
 };
+
+export default createPipelineClass;

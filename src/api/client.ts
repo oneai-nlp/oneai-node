@@ -3,6 +3,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { version } from '../../package.json';
 import { buildError } from './mapping';
+import Logger from '../logging';
 
 export const uuid = (() => {
   const filePath = `${__dirname}/.uuid`;
@@ -31,8 +32,11 @@ export class ApiClient {
 
   params: ApiClientParams;
 
-  constructor(params: ApiClientParams) {
+  logger: Logger;
+
+  constructor(params: ApiClientParams, logger: Logger) {
     this.params = params;
+    this.logger = logger;
   }
 
   async get(
