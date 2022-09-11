@@ -41,6 +41,7 @@ export class Item {
 
   toJSON() {
     return {
+      type: 'item',
       id: this.id,
       text: this.text,
       createdAt: this.createdAt,
@@ -100,6 +101,7 @@ export class Phrase {
 
   toJSON() {
     return {
+      type: 'phrase',
       id: this.id,
       text: this.text,
       itemCount: this.itemCount,
@@ -175,6 +177,7 @@ export class Cluster {
 
   toJSON() {
     return {
+      type: 'cluster',
       id: this.id,
       text: this.text,
       phraseCount: this.phraseCount,
@@ -251,6 +254,7 @@ export abstract class _Collection {
 
   toJSON() {
     return {
+      type: 'collection',
       id: this.id,
     };
   }
