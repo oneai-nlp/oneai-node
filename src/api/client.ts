@@ -53,6 +53,8 @@ export class ApiClient {
           'User-Agent': this.agent,
         },
         timeout: (params?.timeout || this.params.timeout) * 1000,
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
       });
     } catch (error) {
       throw buildError(error);
@@ -76,6 +78,8 @@ export class ApiClient {
         },
         data,
         timeout: (params?.timeout || this.params.timeout) * 1000,
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
       });
     } catch (error) {
       throw buildError(error);
