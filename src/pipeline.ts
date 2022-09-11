@@ -5,7 +5,7 @@ import {
   AsyncApiTask,
   Input, Output, Skill, TextContent, wrapContent,
 } from './classes';
-import { batchProcessing, polling } from './schedule';
+import { batchProcessing, BatchResponse, polling } from './schedule';
 
 abstract class _Pipeline {
   abstract client: PipelineApiClient;
@@ -55,7 +55,7 @@ abstract class _Pipeline {
       onOutput?: (input: T, output: Output) => void,
       onError?: (input: T, error: any) => void,
     },
-  ): Promise<Map<T, Output>> {
+  ): Promise<BatchResponse<T, Output>> {
     return batchProcessing(
       inputs,
       this.run,

@@ -3,6 +3,7 @@
 import {
   Output, AsyncApiResponse, AsyncApiTask,
 } from './classes';
+import { OneAIError } from './errors';
 import Logger, { timeFormat } from './logging';
 
 const MAX_CONCURRENT_REQUESTS = 2;
@@ -26,41 +27,66 @@ export async function polling(
   return response.result as Output;
 }
 
+export interface BatchResponse<TInput, TOutput> {
+  outputs: {
+    index: number,
+    input: TInput,
+    output: TOutput,
+  }[],
+
+  errors: {
+    index: number,
+    input: TInput,
+    error: OneAIError,
+  }[]
+}
+
 export async function batchProcessing<TInput, TOutput>(
   inputs: Iterable<TInput>,
   processingFn: (input: TInput) => Promise<TOutput>,
   onOutput?: (input: TInput, output: TOutput) => void,
   onError?: (input: TInput, error: any) => void,
   logger?: Logger,
-): Promise<Map<TInput, TOutput>> {
-  const outputs = new Map<TInput, TOutput>();
+): Promise<BatchResponse<TInput, TOutput>> {
+  const response: BatchResponse<TInput, TOutput> = {
+    outputs: [],
+    errors: [],
+  };
 
-  const inputDist = (function* inputDist(): Iterator<TInput, void> {
-    yield* inputs;
+  const inputDist = (function* inputDist(): Iterator<[number, TInput], void> {
+    let index = 0;
+    for (const input of inputs) yield [index++, input];
   }());
 
-  let errors = 0;
   let timeTotal = 0;
   async function batchWorker() {
     let { value, done } = inputDist.next();
     let timeStart = Date.now();
     while (!done) {
       if (value !== undefined) {
+        const [index, input] = value;
         try {
-          const output = await processingFn(value);
-          if (onOutput) onOutput(value, output);
-          else outputs.set(value, output);
-        } catch (e: any) {
-          errors++;
-          logger?.error(`Input ${outputs.size + errors}:`);
-          logger?.error(e?.message);
-          if (onError) onError(value, e);
-          else outputs.set(value, e);
+          const output = await processingFn(input);
+          if (onOutput) onOutput(input, output);
+          response.outputs.push({
+            index,
+            input,
+            output,
+          });
+        } catch (error: any) {
+          logger?.error(`Input ${index}:`);
+          logger?.error(error?.message);
+          if (onError) onError(input, error);
+          response.errors.push({
+            index,
+            input,
+            error,
+          });
         } finally {
           const timeDelta = Date.now() - timeStart;
           timeTotal += timeDelta;
           timeStart += timeDelta;
-          logger?.debugNoNewline(`Input ${outputs.size + errors} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed`);
+          logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
         }
       }
       ({ value, done } = inputDist.next());
@@ -70,7 +96,8 @@ export async function batchProcessing<TInput, TOutput>(
   logger?.debug(`Starting processing batch with ${MAX_CONCURRENT_REQUESTS} workers`);
   const workers = [...Array(MAX_CONCURRENT_REQUESTS).keys()].map(() => batchWorker());
   return Promise.all(workers).then(() => {
-    logger?.debugNoNewline(`Processed ${outputs.size + errors} - ${timeFormat(timeTotal / outputs.size + errors)}/input - ${timeFormat(timeTotal)} total - ${outputs.size} successful - ${errors} failed\n`);
-    return outputs;
+    const size = response.outputs.length + response.errors.length;
+    logger?.debugNoNewline(`Processed ${size} - ${timeFormat(timeTotal / size)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
+    return response;
   });
 }
