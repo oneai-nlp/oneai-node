@@ -14,278 +14,264 @@ export type ClusteringApiParams = ApiReqParams & {
   itemMetadata?: string,
 };
 
-export class ClusteringClient {
-  private client: ClusteringApiClient;
+export class Item {
+  id: number;
 
-  Item = ClusteringClient.Item;
+  text: string;
 
-  Phrase = ClusteringClient.Phrase;
+  createdAt: Date;
 
-  Cluster = ClusteringClient.Cluster;
+  distance: number;
 
-  Collection = ((cclient: ClusteringClient) => class extends ClusteringClient.Collection {
-    client: ClusteringApiClient = cclient.client;
-  })(this);
+  phrase: Phrase;
 
-  constructor(client: ClusteringApiClient) {
-    this.client = client;
+  constructor(
+    id: number,
+    text: string,
+    createdAt: Date,
+    distance: number,
+    phrase: Phrase,
+  ) {
+    this.id = id;
+    this.text = text;
+    this.createdAt = createdAt;
+    this.distance = distance;
+    this.phrase = phrase;
   }
 
-  async* getCollections(
-    params?: ClusteringApiParams,
-  ): Paginated<ClusteringClient.Collection> {
-    const urlParams = buildClusteringQueryParams(params);
-    yield* this.client.getPaginated(
-      `?${urlParams}`,
-      'collections',
-      (id: string) => (
-        new this.Collection(id, params?.apiKey || this.client.params.apiKey)
-      ) as ClusteringClient.Collection,
-      params?.limit,
+  toJSON() {
+    return {
+      id: this.id,
+      text: this.text,
+      createdAt: this.createdAt,
+      distance: this.distance,
+      phraseId: this.phrase.id,
+    };
+  }
+
+  static fromJSON(phrase: Phrase, item: any): Item {
+    return new Item(
+      item.id,
+      item.original_text,
+      new Date(item.created_at),
+      item.distance_to_phrase,
+      phrase,
     );
   }
 }
 
-export namespace ClusteringClient {
-  export class Item {
-    id: number;
+export class Phrase {
+  id: number;
 
-    text: string;
+  text: string;
 
-    createdAt: Date;
+  itemCount: number;
 
-    distance: number;
+  metadata?: any;
 
-    phrase: Phrase;
+  cluster: Cluster;
 
-    constructor(
-      id: number,
-      text: string,
-      createdAt: Date,
-      distance: number,
-      phrase: Phrase,
-    ) {
-      this.id = id;
-      this.text = text;
-      this.createdAt = createdAt;
-      this.distance = distance;
-      this.phrase = phrase;
-    }
-
-    toJSON() {
-      return {
-        id: this.id,
-        text: this.text,
-        createdAt: this.createdAt,
-        distance: this.distance,
-        phraseId: this.phrase.id,
-      };
-    }
-
-    static fromJSON(phrase: Phrase, item: any): Item {
-      return new Item(
-        item.id,
-        item.original_text,
-        new Date(item.created_at),
-        item.distance_to_phrase,
-        phrase,
-      );
-    }
+  constructor(
+    id: number,
+    text: string,
+    itemCount: number,
+    cluster: Cluster,
+    metadata?: any,
+  ) {
+    this.id = id;
+    this.text = text;
+    this.itemCount = itemCount;
+    this.cluster = cluster;
+    this.metadata = metadata;
   }
 
-  export class Phrase {
-    id: number;
-
-    text: string;
-
-    itemCount: number;
-
-    metadata?: any;
-
-    cluster: Cluster;
-
-    constructor(
-      id: number,
-      text: string,
-      itemCount: number,
-      cluster: Cluster,
-      metadata?: any,
-    ) {
-      this.id = id;
-      this.text = text;
-      this.itemCount = itemCount;
-      this.cluster = cluster;
-      this.metadata = metadata;
-    }
-
-    async* getItems(
-      params?: ClusteringApiParams,
-    ): AsyncGenerator<Item, void, undefined> {
-      const urlParams = buildClusteringQueryParams(params);
-      yield* this.cluster.collection.client.getPaginated(
-        `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
-        'items',
-        (item) => Item.fromJSON(this, item),
-        undefined,
-        params,
-      );
-    }
-
-    toJSON() {
-      return {
-        id: this.id,
-        text: this.text,
-        itemCount: this.itemCount,
-        metadata: this.metadata,
-        clusterId: this.cluster.id,
-      };
-    }
-
-    static fromJSON(cluster: Cluster, phrase: any): Phrase {
-      return new Phrase(
-        phrase.phrase_id,
-        phrase.text,
-        phrase.items_count,
-        cluster,
-        phrase.metadata,
-      );
-    }
+  async* getItems(
+    params?: ClusteringApiParams,
+  ): AsyncGenerator<Item, void, undefined> {
+    const urlParams = buildClusteringQueryParams(params);
+    yield* this.cluster.collection.client.getPaginated(
+      `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
+      'items',
+      (item: any) => Item.fromJSON(this, item),
+      undefined,
+      params,
+    );
   }
 
-  export class Cluster {
-    id: number;
-
-    text?: string;
-
-    phraseCount?: number;
-
-    metadata?: any;
-
-    collection: Collection;
-
-    constructor(
-      params: {
-        id: number,
-        text?: string,
-        phraseCount?: number,
-        metadata?: any,
-        collection: Collection,
-      },
-    ) {
-      this.id = params.id;
-      this.text = params.text;
-      this.phraseCount = params.phraseCount;
-      this.collection = params.collection;
-      this.metadata = params.metadata;
-    }
-
-    async* getPhrases(
-      params?: ClusteringApiParams,
-    ): AsyncGenerator<Phrase, void, undefined> {
-      const urlParams = buildClusteringQueryParams(params);
-      yield* this.collection.client.getPaginated(
-        `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
-        'clusters',
-        (phrase) => Phrase.fromJSON(this, phrase),
-        params?.limit,
-        params,
-      );
-    }
-
-    async addItems(
-      items: _Input<string>[],
-      params?: ApiReqParams,
-    ): Promise<any> {
-      return this.collection.client.postItems(
-        `${this.collection.id}/items`,
-        items,
-        {
-          forceClusterId: this.id,
-          ...params,
-        },
-      );
-    }
-
-    toJSON() {
-      return {
-        id: this.id,
-        text: this.text,
-        phraseCount: this.phraseCount,
-        metadata: this.metadata,
-        collectionId: this.collection.id,
-      };
-    }
-
-    static fromJSON(collection: Collection, cluster: any): Cluster {
-      return new Cluster({
-        id: cluster.cluster_id,
-        text: cluster.cluster_phrase,
-        phraseCount: cluster.phrases_count,
-        collection,
-        metadata: cluster.metadata,
-      });
-    }
+  toJSON() {
+    return {
+      id: this.id,
+      text: this.text,
+      itemCount: this.itemCount,
+      metadata: this.metadata,
+      clusterId: this.cluster.id,
+    };
   }
 
-  export abstract class Collection {
-    static apiDateFormat = '%Y-%m-%d';
-
-    abstract client: ClusteringApiClient;
-
-    id: string;
-
-    apiKey?: string;
-
-    constructor(id: string, apiKey?: string) {
-      this.id = id;
-      this.apiKey = apiKey;
-    }
-
-    async* getClusters(
-      params?: ClusteringApiParams,
-    ): Paginated<Cluster> {
-      const urlParams = buildClusteringQueryParams(params);
-      yield* this.client.getPaginated(
-        `${this.id}/clusters?${urlParams}`,
-        'clusters',
-        (cluster) => Cluster.fromJSON(this, cluster),
-        params?.limit,
-        params,
-      );
-    }
-
-    async find(
-      query: string,
-      params?: ApiReqParams & {
-        threshold: number,
-      },
-    ): Promise<Cluster[]> {
-      const urlParams = new URLSearchParams({
-        text: query,
-        ...params?.threshold && { 'similarity-threshold': params.threshold.toString() },
-      });
-
-      const clusters = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
-      return clusters.map((cluster: any) => Cluster.fromJSON(this, cluster)) || [];
-    }
-
-    async addItems(
-      items: _Input<string>[],
-      params?: ApiReqParams & {
-        forceNewClusters: boolean,
-      },
-    ): Promise<any> {
-      return this.client.postItems(
-        `${this.id}/items`,
-        items,
-        params,
-      );
-    }
-
-    toJSON() {
-      return {
-        id: this.id,
-      };
-    }
+  static fromJSON(cluster: Cluster, phrase: any): Phrase {
+    return new Phrase(
+      phrase.phrase_id,
+      phrase.text,
+      phrase.items_count,
+      cluster,
+      phrase.metadata,
+    );
   }
 }
+
+export class Cluster {
+  id: number;
+
+  text?: string;
+
+  phraseCount?: number;
+
+  metadata?: any;
+
+  collection: _Collection;
+
+  constructor(
+    params: {
+      id: number,
+      text?: string,
+      phraseCount?: number,
+      metadata?: any,
+      collection: _Collection,
+    },
+  ) {
+    this.id = params.id;
+    this.text = params.text;
+    this.phraseCount = params.phraseCount;
+    this.collection = params.collection;
+    this.metadata = params.metadata;
+  }
+
+  async* getPhrases(
+    params?: ClusteringApiParams,
+  ): AsyncGenerator<Phrase, void, undefined> {
+    const urlParams = buildClusteringQueryParams(params);
+    yield* this.collection.client.getPaginated(
+      `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
+      'clusters',
+      (phrase) => Phrase.fromJSON(this, phrase),
+      params?.limit,
+      params,
+    );
+  }
+
+  async addItems(
+    items: _Input<string>[],
+    params?: ApiReqParams,
+  ): Promise<any> {
+    return this.collection.client.postItems(
+      `${this.collection.id}/items`,
+      items,
+      {
+        forceClusterId: this.id,
+        ...params,
+      },
+    );
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      text: this.text,
+      phraseCount: this.phraseCount,
+      metadata: this.metadata,
+      collectionId: this.collection.id,
+    };
+  }
+
+  static fromJSON(collection: _Collection, cluster: any): Cluster {
+    return new Cluster({
+      id: cluster.cluster_id,
+      text: cluster.cluster_phrase,
+      phraseCount: cluster.phrases_count,
+      collection,
+      metadata: cluster.metadata,
+    });
+  }
+}
+
+export abstract class _Collection {
+  static apiDateFormat = '%Y-%m-%d';
+
+  abstract client: ClusteringApiClient;
+
+  id: string;
+
+  params?: ApiReqParams;
+
+  constructor(id: string, params?: ApiReqParams) {
+    this.id = id;
+    this.params = params;
+  }
+
+  async* getClusters(
+    params?: ClusteringApiParams,
+  ): Paginated<Cluster> {
+    const urlParams = buildClusteringQueryParams(params);
+    yield* this.client.getPaginated(
+      `${this.id}/clusters?${urlParams}`,
+      'clusters',
+      (cluster) => Cluster.fromJSON(this, cluster),
+      params?.limit,
+      params,
+    );
+  }
+
+  async find(
+    query: string,
+    params?: ApiReqParams & {
+      threshold: number,
+    },
+  ): Promise<Cluster[]> {
+    const urlParams = new URLSearchParams({
+      text: query,
+      ...params?.threshold && { 'similarity-threshold': params.threshold.toString() },
+    });
+
+    const clusters = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
+    return clusters.map((cluster: any) => Cluster.fromJSON(this, cluster)) || [];
+  }
+
+  async addItems(
+    items: _Input<string>[],
+    params?: ApiReqParams & {
+      forceNewClusters: boolean,
+    },
+  ): Promise<any> {
+    return this.client.postItems(
+      `${this.id}/items`,
+      items,
+      params,
+    );
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+    };
+  }
+}
+
+export const createCollectionClass = (
+  client: ClusteringApiClient,
+) => class Collection extends _Collection {
+  client: ClusteringApiClient = client;
+
+  static async* getCollections(
+    params?: ClusteringApiParams,
+  ): Paginated<Collection> {
+    const urlParams = buildClusteringQueryParams(params);
+    yield* client.getPaginated(
+      `?${urlParams}`,
+      'collections',
+      (id: string) => (
+          new Collection(id, params)
+        ) as Collection,
+      params?.limit,
+    );
+  }
+};

@@ -2,7 +2,9 @@ import createPipelineClass from './pipeline';
 import {
   File, Document, Conversation, ConversationContent, Output,
 } from './classes';
-import { ClusteringClient } from './clustering';
+import {
+  Cluster, createCollectionClass, Item, Phrase,
+} from './clustering';
 import { skills } from './skills';
 import parseConversation from './parsing/conversation';
 import toSRT from './parsing/srt';
@@ -65,14 +67,22 @@ class OneAI {
 
     this.logger = new Logger(this.params.loggingEnabled);
     this.pipelineApiClient = new PipelineApiClient(this.params, this.logger);
-    this.clusteringApiClient = new ClusteringApiClient(this.params, this.logger);
-    this.clustering = new ClusteringClient(this.clusteringApiClient);
     this.Pipeline = createPipelineClass(this.pipelineApiClient);
+
+    this.clusteringApiClient = new ClusteringApiClient(this.params, this.logger);
+    const Collection = createCollectionClass(this.clusteringApiClient);
+    this.clustering = {
+      Item,
+      Phrase,
+      Cluster,
+      Collection,
+      getCollections: Collection.getCollections,
+    };
   }
 
   Pipeline;
 
-  clustering: ClusteringClient;
+  clustering;
 
   parsing: {
     parseConversation: (input: string) => ConversationContent,
