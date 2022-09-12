@@ -6,8 +6,6 @@ import {
 import { OneAIError } from './errors';
 import Logger, { timeFormat } from './logging';
 
-const MAX_CONCURRENT_REQUESTS = 2;
-
 export async function polling(
   task: AsyncApiTask,
   pollingFn: (task: AsyncApiTask) => Promise<AsyncApiResponse>,
@@ -44,6 +42,7 @@ export interface BatchResponse<TInput, TOutput> {
 export async function batchProcessing<TInput, TOutput>(
   inputs: Iterable<TInput>,
   processingFn: (input: TInput) => Promise<TOutput>,
+  concurrentReqs: number,
   onOutput?: (input: TInput, output: TOutput) => void,
   onError?: (input: TInput, error: any) => void,
   logger?: Logger,
@@ -93,8 +92,8 @@ export async function batchProcessing<TInput, TOutput>(
     }
   }
 
-  logger?.debug(`Starting processing batch with ${MAX_CONCURRENT_REQUESTS} workers`);
-  const workers = [...Array(MAX_CONCURRENT_REQUESTS).keys()].map(() => batchWorker());
+  logger?.debug(`Starting processing batch with ${concurrentReqs} workers`);
+  const workers = [...Array(concurrentReqs).keys()].map(() => batchWorker());
   return Promise.all(workers).then(() => {
     const size = response.outputs.length + response.errors.length;
     logger?.debugNoNewline(`Processed ${size} - ${timeFormat(timeTotal / size)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);

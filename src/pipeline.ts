@@ -52,6 +52,7 @@ abstract class _Pipeline {
   async runBatch<T extends TextContent | Input>(
     inputs: Iterable<T>,
     params?: ApiReqParams & {
+      maxConcurrentRequests?: number,
       onOutput?: (input: T, output: Output) => void,
       onError?: (input: T, error: any) => void,
     },
@@ -59,6 +60,7 @@ abstract class _Pipeline {
     return batchProcessing(
       inputs,
       this.run,
+      params?.maxConcurrentRequests || 2,
       params?.onOutput,
       params?.onError,
       this.client.logger,
