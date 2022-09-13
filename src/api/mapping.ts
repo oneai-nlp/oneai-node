@@ -18,7 +18,7 @@ export function buildRequest(input: Input, skills: Skill[], includeText: boolean
   return JSON.stringify({
     ...(includeText && { input: fixedInput.text }),
     input_type: fixedInput.type,
-    output_type: fixedInput.type === 'conversation' ? 'json' : 'text',
+    output_type: 'json',
     encoding: fixedInput.encoding,
     content_type: fixedInput.contentType,
     steps: skills.map((skill) => ({
@@ -75,7 +75,9 @@ export function buildOutput(
   ): Output {
     const source = output.output[outputIndex];
     const result: Output = {
-      text: 'text' in source ? source.text : (source.contents as ConversationContent),
+      text: (source.contents.length > 1 || 'speaker' in source.contents[0])
+        ? (source.contents as ConversationContent)
+        : source.contents[0].utterance as string,
     };
     const labels: Label[] = source.labels.map(buildLabel);
 
