@@ -84,6 +84,10 @@ export const skills = {
     apiName: 'headline', labelsField: 'headline',
   }),
 
+  subheading: (): Skill => ({
+    apiName: 'subheading', labelsField: 'subheading',
+  }),
+
   pricing: (): Skill => ({
     apiName: 'business-entities', labelsField: 'pricing',
   }),
@@ -111,5 +115,6 @@ export interface OutputFields {
     words?: Label[]
     language?: Label[]
     headline?: Label[]
+    subheading?: Label[]
     pricing?: Label[]
 }
