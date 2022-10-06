@@ -15,7 +15,7 @@ One AI provides natural language processing for Node.js. Some use cases include:
 - Detect sentiments and emotions
 - Detect topics and classify content
 
-![alt text](https://gifyu.com/image/S9M8X "Summarize")
+![Alt text](https://s4.gifyu.com/images/Screen-Recording-10-6-2022-at-6.55-PM.gif "Summarize")
 
 Example of summarizing a Zoom meeting:
 ```node
