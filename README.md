@@ -1,6 +1,6 @@
 [![Logo](./oneai_logo_light_cropped.svg)](https://oneai.com?utm_source=open_source&utm_medium=node_sdk_readme)
 
-# Node.js SDK
+# Natural Language Processing API
 [![API Key](https://img.shields.io/badge/%20-Get%20Your%20API%20Key%20for%20Free-%231d1c29?logo=data:image/svg%2bxml;base64,PHN2ZyB3aWR0aD0iMTEyIiBoZWlnaHQ9Ijg4IiB2aWV3Qm94PSIwIDAgMTEyIDg4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTY5LjI5MTMgMzcuNTU4NkwzNi4xMTQzIDg3Ljc1MTZIMTAyLjQ2OEw2OS4yOTEzIDM3LjU1ODZaIiBmaWxsPSIjMDBGRkZGIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNODkuMzAwOCA1MC4yOTIxSDExMS4xNjRWMEg4OS4zMDA4VjUwLjI5MjFaIiBmaWxsPSIjRjIzREU5Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjUuOTEwOCAxMS42NDc5QzExLjYwMDcgMTEuNjQ3OSAwIDIzLjI0ODYgMCAzNy41NTg3QzAgNTEuODY4OCAxMS42MDA3IDYzLjQ3MDEgMjUuOTEwOCA2My40NzAxQzQwLjIyMDkgNjMuNDcwMSA1MS44MjE2IDUxLjg2ODggNTEuODIxNiAzNy41NTg3QzUxLjgyMTYgMjMuMjQ4NiA0MC4yMjA5IDExLjY0NzkgMjUuOTEwOCAxMS42NDc5IiBmaWxsPSIjNEQ0REZGIi8+Cjwvc3ZnPgo=)](https://studio.oneai.com/settings/api-keys)
 [![Version](https://img.shields.io/npm/v/oneai.svg)](https://www.npmjs.org/package/oneai)
 [![Downloads](https://img.shields.io/npm/dm/oneai.svg)](https://www.npmjs.com/package/oneai)
@@ -8,12 +8,33 @@
 [![Try on RunKit](https://badge.runkitcdn.com/oneai.svg)](https://runkit.com/npm/oneai)
 [![Discord](https://img.shields.io/discord/941458663493746698?logo=Discord)](https://discord.gg/ArpMha9n8H)
 
-One AI is a NLP as a service platform. Our API enables language comprehension in context, transforming texts from any source into structured data to use in code.
 
-This SDK provides safe and convenient access to One AI's APIs from a node.js environment.
+One AI provides natural language processing for Node.js. Some use cases include: 
 
-## Documentation
-See the [One AI documentation](https://studio.oneai.com/docs?utm_source=open_source&utm_medium=node_sdk_readme)
+- Summarize conversations and articles
+- Detect sentiments and emotions
+- Detect topics and classify content
+
+![alt text](https://gifyu.com/image/S9M8X "Summarize")
+
+Example of summarizing a Zoom meeting:
+```node
+const conversation = new oneai.Conversation(
+   boringMeeting
+);
+
+const pipeline = new oneai.Pipeline(
+   oneai.skills.transcribe(),
+   oneai.skills.summarize(),
+);
+
+pipeline.run(conversation);
+
+// Output: Luigi and Mario agreed to fix the plumbing at 9am on Friday.
+```
+
+
+See the full documentation [here.](https://studio.oneai.com/docs?utm_source=open_source&utm_medium=node_sdk_readme)
 
 ## Getting started
 
