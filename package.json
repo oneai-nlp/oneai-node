@@ -1,7 +1,7 @@
 {
     "name": "oneai",
     "main": "lib/src/index.js",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "description": "Make your app understand language. Summarize conversations, categorize articles, and more.",
     "repository": "github:power-of-language/oneai-sdk-node",
     "scripts": {
