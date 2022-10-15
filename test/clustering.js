@@ -33,7 +33,7 @@ describe('Clustering', () => {
   });
 
   it('getCollections', async () => {
-    for await (const collection of oneai.clustering.getCollections()) {
+    for await (const collection of oneai.clustering.getCollections({ limit: 2 })) {
       console.log(collection.toJSON());
       for await (const cluster of collection.getClusters({ limit: 1 })) {
         console.log(cluster.toJSON());
