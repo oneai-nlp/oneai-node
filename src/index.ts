@@ -1,6 +1,6 @@
 import createPipelineClass from './pipeline';
 import {
-  File, Document, Conversation, ConversationContent, Output,
+  ConversationContent, Output,
 } from './classes';
 import {
   Cluster, createCollectionClass, Item, Phrase,
@@ -27,18 +27,6 @@ class OneAI {
   readonly skills = skills;
 
   static skills = skills;
-
-  /**
-   * @deprecated since version 0.4.0, use `FileContent` inputs or
-   * `pipeline.runFile()` method instead
-   */
-  File = File;
-
-  /** @deprecated since version 0.4.0, use `Utterance[]` inputs instead */
-  Conversation = Conversation;
-
-  /** @deprecated since version 0.4.0, use `string` inputs instead */
-  Document = Document;
 
   private pipelineApiClient: PipelineApiClient;
 

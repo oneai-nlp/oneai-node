@@ -1,6 +1,4 @@
 import * as path from 'path';
-import * as fs from 'fs';
-import parseConversation from './parsing/conversation';
 import type { OutputFields } from './skills';
 import { OneAIError } from './errors';
 
@@ -148,68 +146,4 @@ export interface AsyncApiTask {
 export interface AsyncApiResponse extends AsyncApiTask {
   status: 'COMPLETED' | 'FAILED' | 'RUNNING',
   result?: Output | OneAIError,
-}
-
-// deprecated old classes, will be removed in future versions
-
-/** @deprecated since version 0.4.0, use `string` inputs instead */
-export class Document implements _Input<string> {
-  type: inputType = 'article';
-
-  text: string;
-
-  constructor(text: string) {
-    this.text = text;
-  }
-}
-
-/** @deprecated since version 0.4.0, use `Utterance[]` inputs instead */
-export class Conversation implements _Input<ConversationContent> {
-  type: inputType = 'conversation';
-
-  contentType: string = 'application/json';
-
-  text: ConversationContent;
-
-  constructor(utterances: ConversationContent) {
-    this.text = utterances;
-  }
-
-  get utterances(): ConversationContent {
-    return this.text;
-  }
-
-  set utterances(utterances: ConversationContent) {
-    this.text = utterances;
-  }
-
-  /** @deprecated since version 0.4.0, use `oneai.parsing.parseConversation()` instead */
-  static parse(text: string): Conversation {
-    return new Conversation(parseConversation(text));
-  }
-}
-
-/**
- * @deprecated since version 0.4.0, use `FileContent` inputs or
- * `pipeline.runFile()` method instead
- */
-export class File implements _Input<FileContent> {
-  type?: inputType;
-
-  contentType?: string;
-
-  encoding: encoding;
-
-  text: FileContent;
-
-  constructor(fileContent: string | FileContent, inputType?: inputType) {
-    this.type = inputType;
-
-    this.text = typeof fileContent === 'string'
-      ? { filePath: fileContent, buffer: fs.readFileSync(fileContent) } : fileContent;
-    const input = wrapContent(this.text);
-    this.type = input.type;
-    this.contentType = input.contentType;
-    this.encoding = input.encoding as encoding;
-  }
 }
