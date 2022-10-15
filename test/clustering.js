@@ -1,10 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
-const { apiKey } = require('./credentials.json');
+// const { apiKey } = require('./credentials.json');
 const OneAI = require('../lib/src/index');
 
-const oneai = new OneAI(apiKey);
+const oneai = new OneAI(process.env.API_KEY);
 
 describe('Clustering', () => {
   it('collection', async () => {
