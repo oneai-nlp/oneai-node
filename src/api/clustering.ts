@@ -22,7 +22,7 @@ export default class ClusteringApiClient extends ApiClient {
     let counter = 0;
     let nodes = [];
 
-    const url = `${this.rootPath}/${path}${path.includes('?') ? '&' : '?'}page=`;
+    const url = `${path}${path.includes('?') ? '&' : '?'}page=`;
 
     while (page === 0 || nodes.length > 0) {
       const { data } = await this.get(`${url}${page++}`, params);
