@@ -94,7 +94,7 @@ export class Phrase {
       `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
       'items',
       (item: any) => Item.fromJSON(this, item),
-      undefined,
+      params?.limit,
       params,
     );
   }
@@ -154,7 +154,7 @@ export class Cluster {
     const urlParams = buildClusteringQueryParams(params);
     yield* this.collection.client.getPaginated(
       `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
-      'clusters',
+      'phrases',
       (phrase) => Phrase.fromJSON(this, phrase),
       params?.limit,
       params,
@@ -235,8 +235,8 @@ export abstract class _Collection {
       ...params?.threshold && { 'similarity-threshold': params.threshold.toString() },
     });
 
-    const clusters = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
-    return clusters.map((cluster: any) => Cluster.fromJSON(this, cluster)) || [];
+    const { data } = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
+    return data.map((cluster: any) => Cluster.fromJSON(this, cluster)) || [];
   }
 
   async addItems(
