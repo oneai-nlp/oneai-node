@@ -1,4 +1,5 @@
 import { stderr, stdout } from 'process';
+import * as readline from 'readline';
 
 export default class Logger {
   enabled: boolean;
@@ -15,8 +16,8 @@ export default class Logger {
 
   debugNoNewline(message: string) {
     if (this.enabled) {
-      stdout.clearLine(0);
-      stdout.cursorTo(0);
+      readline.clearLine(stdout, 0);
+      readline.cursorTo(stdout, 0);
       stdout.write(this.prefix + message);
     }
   }
