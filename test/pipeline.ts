@@ -5,19 +5,42 @@ import constants from './constants.json';
 import oneai from './testClient';
 
 describe('Pipeline', () => {
+  it('skills', async () => {
+    const pipeline = new oneai.Pipeline(
+      oneai.skills.names(),
+      oneai.skills.keywords(),
+      oneai.skills.summarize(),
+      oneai.skills.topics(),
+      oneai.skills.emotions(),
+      oneai.skills.highlights(),
+      oneai.skills.headline(),
+      oneai.skills.subheading(),
+      oneai.skills.pricing(),
+      oneai.skills.salesInsights(),
+      oneai.skills.actionItems(),
+      oneai.skills.detectLanguage(),
+    );
+
+    const output = await pipeline.run(constants.document);
+
+    expect(output).to.have.property('names');
+    expect(output).to.have.property('keywords');
+    expect(output).to.have.property('summary');
+    expect(output).to.have.deep.nested.property('summary.topics');
+    expect(output).to.have.deep.nested.property('summary.emotions');
+    expect(output).to.have.deep.nested.property('summary.highlights');
+    expect(output).to.have.deep.nested.property('summary.headline');
+    expect(output).to.have.deep.nested.property('summary.subheading');
+    expect(output).to.have.deep.nested.property('summary.pricing');
+    expect(output).to.have.deep.nested.property('summary.salesInsights');
+    expect(output).to.have.deep.nested.property('summary.actionItems');
+    expect(output).to.have.deep.nested.property('summary.language');
+  });
+
   const pipeline = new oneai.Pipeline(
     oneai.skills.names(),
-    oneai.skills.keywords(),
     oneai.skills.summarize(),
-    oneai.skills.topics(),
-    oneai.skills.emotions(),
-    oneai.skills.highlights(),
-    oneai.skills.headline(),
-    oneai.skills.subheading(),
-    oneai.skills.pricing(),
-    oneai.skills.salesInsights(),
-    oneai.skills.actionItems(),
-    oneai.skills.detectLanguage(),
+    oneai.skills.keywords(),
   );
 
   describe('single input', () => {
@@ -26,17 +49,8 @@ describe('Pipeline', () => {
         const output = await pipeline.run(input);
 
         expect(output).to.have.property('names');
-        expect(output).to.have.property('keywords');
         expect(output).to.have.property('summary');
-        expect(output).to.have.deep.nested.property('summary.topics');
-        expect(output).to.have.deep.nested.property('summary.emotions');
-        expect(output).to.have.deep.nested.property('summary.highlights');
-        expect(output).to.have.deep.nested.property('summary.headline');
-        expect(output).to.have.deep.nested.property('summary.subheading');
-        expect(output).to.have.deep.nested.property('summary.pricing');
-        expect(output).to.have.deep.nested.property('summary.salesInsights');
-        expect(output).to.have.deep.nested.property('summary.actionItems');
-        expect(output).to.have.deep.nested.property('summary.language');
+        expect(output).to.have.deep.nested.property('summary.keywords');
       };
     }
 
@@ -48,11 +62,11 @@ describe('Pipeline', () => {
 
       expect(output).to.have.property('htmlArticle');
       expect(output).to.have.deep.nested.property('htmlArticle.htmlFields');
-      expect(output).to.have.deep.nested.property('htmlArticle.keywords');
+      expect(output).to.have.deep.nested.property('htmlArticle.names');
     });
   });
 
-  describe('batch', async () => {
+  it('batch input', async () => {
     const inputs = [
       constants.document,
       constants.conversation,

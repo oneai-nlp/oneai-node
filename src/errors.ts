@@ -1,6 +1,4 @@
 export class OneAIError extends Error {
-  type: string;
-
   statusCode: number;
 
   details?: string;
@@ -15,12 +13,11 @@ export class OneAIError extends Error {
   ) {
     super(message);
 
-    this.type = this.constructor.name;
+    Object.setPrototypeOf(this, OneAIError.prototype);
+
     this.statusCode = statusCode;
     this.details = details;
     this.requestId = requestId;
-
-    Object.setPrototypeOf(this, OneAIError.prototype);
   }
 
   toJSON = () => ({
@@ -29,13 +26,43 @@ export class OneAIError extends Error {
 }
 
 /** An error raised when the input is invalid or is of an incompatible type for the pipeline. */
-export class InputError extends OneAIError {}
+export class InputError extends OneAIError {
+  constructor(
+    statusCode: number,
+    message: string,
+    details?: string,
+    requestId?: string,
+  ) {
+    super(statusCode, message, details, requestId);
+    Object.setPrototypeOf(this, InputError.prototype);
+  }
+}
 
 /** An error raised when the API key is invalid, expired, or missing quota. */
-export class APIKeyError extends OneAIError {}
+export class APIKeyError extends OneAIError {
+  constructor(
+    statusCode: number,
+    message: string,
+    details?: string,
+    requestId?: string,
+  ) {
+    super(statusCode, message, details, requestId);
+    Object.setPrototypeOf(this, APIKeyError.prototype);
+  }
+}
 
-/** An error raised when the input is invalid or is of an incompatible type for the pipeline. */
-export class ServerError extends OneAIError {}
+/** An error raised when something went wrong on One AI servers. */
+export class ServerError extends OneAIError {
+  constructor(
+    statusCode: number,
+    message: string,
+    details?: string,
+    requestId?: string,
+  ) {
+    super(statusCode, message, details, requestId);
+    Object.setPrototypeOf(this, ServerError.prototype);
+  }
+}
 
 export const httpStatusErrorType: { [key: string]: typeof OneAIError } = {
   400: InputError,
