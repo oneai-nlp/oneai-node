@@ -30,5 +30,12 @@ describe('Pipeline', () => {
 
     it('document', testInput(constants.document));
     it('conversation', testInput(constants.conversation));
+    it('url', async () => {
+      pipeline.steps.splice(0, 0, oneai.skills.htmlToArticle());
+      const output = await pipeline.run(constants.urlInput);
+
+      expect(output).to.have.property('htmlArticle');
+      expect(output).to.have.deep.nested.property('htmlArticle.htmlFields');
+    });
   });
 });

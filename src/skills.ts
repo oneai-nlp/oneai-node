@@ -32,7 +32,7 @@ export const skills = {
   sentiments: (): Skill => ({ apiName: 'sentiments' }),
 
   htmlToArticle: (): Skill => ({
-    apiName: 'extract-html',
+    apiName: 'html-extract-article',
     textField: 'htmlArticle',
     labelsField: 'htmlFields',
   }),
@@ -95,6 +95,8 @@ export const skills = {
 
 export interface OutputFields {
     summary?: Output
+    htmlArticle?: Output
+    htmlFields?: Label[]
     origins?: Label[]
     emotions?: Label[]
     proofread?: Output
