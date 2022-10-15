@@ -68,7 +68,7 @@ export class ApiClient {
   ): Promise<any> {
     const apiKey = this.validateApiKey(params);
     try {
-      return axios({
+      return await axios({
         url: `${this.params.baseURL}/${path}`,
         method: 'POST',
         headers: {
