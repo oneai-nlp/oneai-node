@@ -36,6 +36,7 @@ describe('Pipeline', () => {
 
       expect(output).to.have.property('htmlArticle');
       expect(output).to.have.deep.nested.property('htmlArticle.htmlFields');
+      expect(output).to.have.deep.nested.property('htmlArticle.topics');
     });
   });
 });
