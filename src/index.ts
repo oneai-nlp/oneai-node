@@ -13,10 +13,6 @@ import { ApiClientParams } from './api/client';
 import Logger from './logging';
 import ClusteringApiClient from './api/clustering';
 
-type OneAIClientParams = ApiClientParams & {
-  loggingEnabled: boolean,
-};
-
 class OneAI {
 /**
  * A Language Skill is a package of trained NLP models.
@@ -32,20 +28,19 @@ class OneAI {
 
   private clusteringApiClient: ClusteringApiClient;
 
-  private logger: Logger;
+  logger: Logger;
 
-  static defaultParams: OneAIClientParams = {
+  static defaultParams: ApiClientParams = {
     apiKey: '',
     timeout: 60,
     baseURL: 'https://api.oneai.com',
-    loggingEnabled: true,
   };
 
-  params: OneAIClientParams;
+  params: ApiClientParams;
 
   constructor(
     apiKey?: string,
-    params?: Partial<OneAIClientParams>,
+    params?: Partial<ApiClientParams>,
   ) {
     this.params = {
       ...OneAI.defaultParams,
@@ -53,7 +48,7 @@ class OneAI {
       ...apiKey !== undefined && { apiKey },
     };
 
-    this.logger = new Logger(this.params.loggingEnabled);
+    this.logger = new Logger();
     this.pipelineApiClient = new PipelineApiClient(this.params, this.logger);
     this.Pipeline = createPipelineClass(this.pipelineApiClient);
 

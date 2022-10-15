@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { TextContent } from '../src/classes';
@@ -72,8 +73,12 @@ describe('Pipeline', () => {
       constants.conversation,
       constants.document,
       constants.conversation,
+      constants.urlInput,
     ];
-    const output = await pipeline.runBatch(inputs);
+    const output = await pipeline.runBatch(inputs, {
+      onOutput: (i: any, o: any) => {},
+      onError: (i: any, e: any) => {},
+    });
     expect(output.outputs.length).to.equal(4);
   });
 });

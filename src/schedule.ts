@@ -62,31 +62,29 @@ export async function batchProcessing<TInput, TOutput>(
     let { value, done } = inputDist.next();
     let timeStart = Date.now();
     while (!done) {
-      if (value !== undefined) {
-        const [index, input] = value;
-        try {
-          const output = await processingFn(input);
-          if (onOutput) onOutput(input, output);
-          response.outputs.push({
-            index,
-            input,
-            output,
-          });
-        } catch (error: any) {
-          logger?.error(`Input ${index}:`);
-          logger?.error(error?.message);
-          if (onError) onError(input, error);
-          response.errors.push({
-            index,
-            input,
-            error,
-          });
-        } finally {
-          const timeDelta = Date.now() - timeStart;
-          timeTotal += timeDelta;
-          timeStart += timeDelta;
-          logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
-        }
+      const [index, input] = value!;
+      try {
+        const output = await processingFn(input);
+        if (onOutput) onOutput(input, output);
+        response.outputs.push({
+          index,
+          input,
+          output,
+        });
+      } catch (error: any) {
+        logger?.error(`Input ${index}:`);
+        logger?.error(error?.message);
+        if (onError) onError(input, error);
+        response.errors.push({
+          index,
+          input,
+          error,
+        });
+      } finally {
+        const timeDelta = Date.now() - timeStart;
+        timeTotal += timeDelta;
+        timeStart += timeDelta;
+        logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
       }
       ({ value, done } = inputDist.next());
     }

@@ -12,8 +12,9 @@ describe('audio', () => {
     oneai.skills.sentiments(),
   );
 
-  function testFile(input: string, sync: boolean) {
+  function testFile(input: string, sync: boolean, logging: boolean = true) {
     return async () => {
+      oneai.logger.enabled = logging;
       const output = await pipeline.runFile(input, { sync }); // true by default
 
       expect(output).to.have.property('transcription');
@@ -28,7 +29,7 @@ describe('audio', () => {
 
   describe('mp3', () => {
     it('sync', testFile(constants.mp3Path, true));
-    it('async', testFile(constants.mp3Path, false));
+    it('async', testFile(constants.mp3Path, false, false));
   });
 
   describe('wav', () => {
