@@ -29,5 +29,5 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - env:
+      env:
           API_KEY: ${{ secrets.API_KEY }}
