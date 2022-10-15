@@ -1,63 +1,85 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-param-reassign */
+// https://drive.google.com/drive/u/0/folders/1L_apLy2bakDweL-PWcay807_rJdxQxyR
 function parseSpeakerLine(line) {
-// capture opening timestamp - "[00:00]"", "1:10" ...
+  let text = line.trim();
+  // capture opening timestamp - "[00:00]"", "1:10" ...
   const value = {
     weak: true,
     preTime: false,
     speaker: '',
     speaker_end: 0,
     time: false,
+    timestamp: undefined,
+    timestamp_full_match_string: undefined,
     separator: false,
     hasText: false,
-    text: null,
+    text: undefined,
   };
 
-  let text = line;
-  let match = text.match(/^\s*\[?[0-9]+:[0-9]+\]?\s*/);
-  if (match != null) {
-    text = text.substring(match[0].length);
-    value.preTime = true;
-    value.weak = false;
-  }
-  // capture STRONG pattern - either timestamp or separator
-  const matchArea = text.substring(0, Math.min(text.length, 35));
-  match = matchArea.match(/\s{1,10}\[?[0-9]{1,2}:[0-9]{1,2}\]?\s*|\s{0,5}[:|-]/);
-
-  if (match == null) { // if STRONG NOT FOUND
-    // check if speaker only, in all caps - WEAK PATTERN
-    match = matchArea.match(/^[A-Z_-]{3,20}$/);
-    // console.log(matchArea);
-    // console.log(match);
-    if (match == null) return null; // not a valid format - FAIL
-    value.weak = true;
-    [value.speaker] = match;
-    value.speaker_end = text.length;
-    value.hasText = false;
-  } else {
-    value.weak = false;
-    value.hasText = match.index + match[0].length < text.length;
-    value.text = value.hasText ? text.substring(match.index + match[0].length).trim() : null;
-    value.speaker = text.substring(0, match.index);
-    value.speaker_end = match.index + match[0].length;
-    // Check type of strong pattern
-    // if only separator was found (only speaker, no timestamp)
-    if (match[0].match(/[:|-]$/) != null) {
-      value.separator = true;
+  /// /////////////////////////////////////////////////
+  // extracting timestamp from text
+  let matchArea = text.substring(0, Math.min(text.length, 40));
+  let colonPos = matchArea.indexOf(':');
+  let timestampFound = getTimestamp(matchArea, value);
+  let signatureEndPos = 0;
+  if (timestampFound) {
+    // validate timestamp position
+    // if (value.timestamp_position > 40) return false; // too far into the text
+    if (colonPos !== -1 && colonPos < value.timestamp_position) {
+      timestampFound = false;
+      value.time = false;
+      value.timestamp = undefined;
     } else {
-      text = text.substring(match.index + match[0].length);
-      // look for another separator
-      match = text.match(/^\s*[:|-]/);
-      if (match != null) {
-        value.separator = true;
-        value.speaker_end = match.index + match[0].length;
-        value.hasText = value.hasText && (match.index + match[0].length < text.length);
-        value.text = value.hasText ? text.substring(match.index + match[0].length).trim() : null;
-      }
-      value.time = true;
+      // check if pre/after
+      if (value.timestamp_position === 0) { value.preTime = true; }
+
+      // remove timestamp from text for further processing
+      text = text.replace(value.timestamp_full_match_string, '');
+      matchArea = matchArea.replace(value.timestamp_full_match_string, '');
+      signatureEndPos = value.timestamp_full_match_string.length;
     }
   }
-  // text= text.substring(match[0].length);
 
-  // console.log(match)
+  /// /////////////////////////////////////////////////
+  // check if speaker only, in all caps - WEAK PATTERN
+  const match = (timestampFound)
+    ? text.match(/^[ A-Za-z_-]{3,20}$/) // include lowercase
+    : text.match(/^[ A-Z_-]{3,20}$/);
+
+  if (match != null) {
+    value.weak = !timestampFound;
+    value.speaker = match[0].trim();
+    // end position for speaker signature area (for highlighting),
+    // use match[0].length to include whitespace
+    value.speaker_end = match[0].length + signatureEndPos;
+    value.hasText = false;
+    return value;
+  }
+
+  // update colon position after timestamp removal
+  if (timestampFound) colonPos = matchArea.indexOf(':');
+  if (colonPos === -1 && !timestampFound) return null; // failed to fing signature
+
+  if (colonPos === -1) { // only timestamp
+    if (text.length !== 0) return null; // if text after timestamp, fail
+    value.weak = true; // weak only if no timestamp is found
+    value.speaker = 'Speaker';
+    value.speaker_end = signatureEndPos;
+    value.hasText = false;
+  }
+
+  value.separator = true;
+
+  // if no whitespace after speaker, fail same line text
+  const textPos = colonPos + 1;
+  value.hasText = textPos < text.trimEnd().length - 1;
+  if (value.hasText && ' \t\n\r\v'.indexOf(text[textPos]) === -1) { return null; }
+
+  value.weak = false;
+  value.text = value.hasText ? text.substring(textPos).trim() : null;
+  value.speaker = text.substring(0, colonPos).trim();
+  value.speaker_end = signatureEndPos + colonPos;
   return value;
 }
 
@@ -70,7 +92,45 @@ function comp(a, b) {
     && a.separator === b.separator && a.preTime === b.preTime;
 }
 
-// version 1.4.2
+function indexOfGroup(match, n) {
+  let ix = match.index;
+  for (let i = 1; i < n; i++) {
+    if (match[i]) ix += match[i].length;
+  }
+  return ix;
+}
+
+function getTimestamp(text, value) {
+  let match = null;
+
+  // match preceding timestamp "[3:07 PM, 3/15/2022] Adam Hanft: Helps"
+  match = text.match(/(^\s*\[?\s*)([0-9:,\sPAM/]{4,23})(\]?)\s*/);
+  if (match != null && (match[3] || match[0].indexOf('/') !== -1)) { // match found + either  [ ] or /2/
+    value.preTime = true;
+    value.weak = false;
+    value.time = true;
+    value.timestamp = match[2].trim();
+    value.timestamp_position = indexOfGroup(match, 2);
+    value.timestamp_full_match_string = match[0];
+    return true;
+  }
+
+  //                  optinal      [        timestamp                 ]  \s*
+  match = text.match(/(^\s*)?(\[?)(\d{1,2}:\d{1,2})(:\d{1,2})?(\.\d*)?(\]?\s*)/);
+  if (match != null) { // && match[0] != ":"
+    value.weak = false;
+    value.time = true;
+    value.timestamp_position = match.index;
+    value.timestamp_full_match_string = match[0];
+    // capture timestamp without non-captured groups
+    value.timestamp = text.substring(indexOfGroup(match, 3), indexOfGroup(match, 6)).trim();
+    return true;
+  }
+
+  return false;
+}
+
+// version 1.6.1
 // strict=true enforces the same speaker format pattern across all lines/
 // struct=false only enforces that all lines HAVE a valid speaker pattern
 export default function parseConversation(text, strict = false) {
@@ -84,7 +144,7 @@ export default function parseConversation(text, strict = false) {
     dataArray.shift(); // remove first empty line in array
     for (let i = 0; i < dataArray.length; i += 1) {
       result.push({
-        speaker: 'SPEAKER',
+        speaker: 'Speaker',
         utterance: dataArray[i].trim().replace('\n', ' '),
       });
     }
@@ -105,7 +165,7 @@ export default function parseConversation(text, strict = false) {
     // parse first line to ascertain structure
     if (waitForTextLine) {
       previousObject.utterance = line.trim();
-      previousObject.text_line = i;
+      // previousObject.text_line = i;
       waitForTextLine = false;
       return;
     }
@@ -129,9 +189,10 @@ export default function parseConversation(text, strict = false) {
     previousObject = {
       speaker: currentLineInfo.speaker,
       utterance: currentLineInfo.text || '',
-      speaker_line: i,
-      text_line: i,
-      speaker_length: currentLineInfo.speaker_end,
+      timestamp: currentLineInfo.timestamp,
+      // speaker_line: i,
+      // text_line: i,
+      // speaker_length: currentLineInfo.speaker_end,
     };
     result.push(previousObject);
     waitForTextLine = !currentLineInfo.hasText;
