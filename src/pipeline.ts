@@ -59,7 +59,7 @@ abstract class _Pipeline {
   ): Promise<BatchResponse<T, Output>> {
     return batchProcessing(
       inputs,
-      this.run,
+      (input: T) => this.run(input, params),
       params?.maxConcurrentRequests || 2,
       params?.onOutput,
       params?.onError,
