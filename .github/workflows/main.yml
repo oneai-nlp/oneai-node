@@ -31,3 +31,5 @@ jobs:
     - run: npm test
       env:
           API_KEY: ${{ secrets.API_KEY }}
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@1.1.3
