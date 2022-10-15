@@ -1,7 +1,8 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
-const constants = require('./constants.json');
-const oneai = require('./testClient');
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
+import { TextContent } from '../src/classes';
+import constants from './constants.json';
+import oneai from './testClient';
 
 describe('Pipeline', () => {
   const pipeline = new oneai.Pipeline(
@@ -13,7 +14,7 @@ describe('Pipeline', () => {
   );
 
   describe('single input', () => {
-    function testInput(input) {
+    function testInput(input: TextContent) {
       return async () => {
         const output = await pipeline.run(input);
 

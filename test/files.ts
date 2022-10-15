@@ -1,7 +1,6 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
-const constants = require('./constants.json');
-const oneai = require('./testClient');
+import { expect } from 'chai';
+import constants from './constants.json';
+import oneai from './testClient';
 
 describe('audio', () => {
   const pipeline = new oneai.Pipeline(
@@ -13,7 +12,7 @@ describe('audio', () => {
     oneai.skills.emotions(),
   );
 
-  function testFile(input, sync) {
+  function testFile(input: string, sync: boolean) {
     return async () => {
       const output = await pipeline.runFile(input, { sync }); // true by default
 

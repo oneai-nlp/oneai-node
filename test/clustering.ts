@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-syntax */
-const { describe, it } = require('mocha');
-const { expect } = require('chai');
-const oneai = require('./testClient');
+import { expect } from 'chai';
+import oneai from './testClient';
 
 describe('Clustering', () => {
   it('collection', async () => {

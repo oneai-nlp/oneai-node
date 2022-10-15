@@ -86,7 +86,13 @@ class OneAI {
 
   parsing: {
     parseConversation: (input: string) => ConversationContent,
-    toSRT: (output: Output) => string,
+    toSRT: (
+      output: Output,
+      params?: {
+        maxLengthWords?: number,
+        maxLengthCharacters?: number,
+      },
+    ) => string,
   } = {
       parseConversation,
       toSRT,

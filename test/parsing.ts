@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-expressions */
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
-const { conversationParsingTests } = require('./constants.json');
-const transcriptionOutput = require('./transcriptionOutput.json');
-const oneai = require('./testClient');
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
+import { conversationParsingTests } from './constants.json';
+import transcriptionOutput from './transcriptionOutput.json';
+import oneai from './testClient';
 
 describe('parseConversation', () => {
   conversationParsingTests.forEach((test, index) => {
     it(`test ${index} - ${test.desc}`, () => {
-      let parsed;
+      let parsed: any;
       try {
         parsed = oneai.parsing.parseConversation(test.text);
       } catch (e) {
@@ -30,7 +30,7 @@ describe('parseConversation', () => {
 
 describe('subtitle', () => {
   it('srt', () => {
-    const parsed = oneai.parsing.toSRT(transcriptionOutput, { maxLengthCharacters: 30 });
+    const parsed = oneai.parsing.toSRT(transcriptionOutput as any, { maxLengthCharacters: 30 });
     console.log(parsed);
   });
 });
