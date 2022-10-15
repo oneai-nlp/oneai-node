@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   AsyncApiResponse,
   AsyncApiTask,
-  ConversationContent, Input, isFileContent, Label, Output, Skill, _Input,
+  ConversationContent, Input, isFileContent, Label, Output, Skill, TextContent, _Input,
 } from '../classes';
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
@@ -52,6 +52,12 @@ const buildLabel = (label: any) => ({
   data: label.data || {},
 } as Label);
 
+function buildTextContent(contents: any): TextContent {
+  return (contents.length > 1 || 'speaker' in contents[0])
+    ? (contents as ConversationContent)
+    : contents[0].utterance as string;
+}
+
 export function buildOutput(
   steps: Skill[],
   output: any,
@@ -74,11 +80,7 @@ export function buildOutput(
     skills: Skill[],
   ): Output {
     const source = output.output[outputIndex];
-    const result: Output = {
-      text: (source.contents.length > 1 || 'speaker' in source.contents[0])
-        ? (source.contents as ConversationContent)
-        : source.contents[0].utterance as string,
-    };
+    const result: Output = { text: buildTextContent(source.contents) };
     const labels: Label[] = source.labels.map(buildLabel);
 
     skills.some((skill, i) => {
@@ -103,7 +105,7 @@ export function buildOutput(
   // Skills that didn't generate output. In this case the API will skip these Skills,
   // so we need to create filler objects to match the expected structure
   const [currentSkills, nextSkills] = splitPipeline(steps, generator);
-  const result: Output = { text: output.input_text };
+  const result: Output = { text: buildTextContent(output.input) };
 
   currentSkills.forEach((skill) => {
     if (skill.textField) {
