@@ -7,9 +7,9 @@ describe('audio', () => {
     oneai.skills.transcribe({ timestamp_per_word: true }),
     oneai.skills.splitBySentence(),
     oneai.skills.splitByTopic(),
-    oneai.skills.summarize(),
-    oneai.skills.names(),
-    oneai.skills.emotions(),
+    oneai.skills.proofread(),
+    oneai.skills.numbers(),
+    oneai.skills.sentiments(),
   );
 
   function testFile(input: string, sync: boolean) {
@@ -19,9 +19,10 @@ describe('audio', () => {
       expect(output).to.have.property('transcription');
       expect(output).to.have.deep.nested.property('transcription.sentences');
       expect(output).to.have.deep.nested.property('transcription.segments');
-      expect(output).to.have.deep.nested.property('transcription.summary');
-      expect(output).to.have.deep.nested.property('transcription.summary.names');
-      expect(output).to.have.deep.nested.property('transcription.summary.emotions');
+      expect(output).to.have.deep.nested.property('transcription.proofread');
+      expect(output).to.have.deep.nested.property('transcription.proofread.replacements');
+      expect(output).to.have.deep.nested.property('transcription.proofread.numbers');
+      expect(output).to.have.deep.nested.property('transcription.proofread.sentiments');
     };
   }
 

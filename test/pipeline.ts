@@ -6,11 +6,18 @@ import oneai from './testClient';
 
 describe('Pipeline', () => {
   const pipeline = new oneai.Pipeline(
-    oneai.skills.topics(),
-    oneai.skills.numbers(),
-    oneai.skills.summarize(),
     oneai.skills.names(),
+    oneai.skills.keywords(),
+    oneai.skills.summarize(),
+    oneai.skills.topics(),
     oneai.skills.emotions(),
+    oneai.skills.highlights(),
+    oneai.skills.headline(),
+    oneai.skills.subheading(),
+    oneai.skills.pricing(),
+    oneai.skills.salesInsights(),
+    oneai.skills.actionItems(),
+    oneai.skills.detectLanguage(),
   );
 
   describe('single input', () => {
@@ -18,11 +25,18 @@ describe('Pipeline', () => {
       return async () => {
         const output = await pipeline.run(input);
 
-        expect(output).to.have.property('topics');
-        expect(output).to.have.property('numbers');
+        expect(output).to.have.property('names');
+        expect(output).to.have.property('keywords');
         expect(output).to.have.property('summary');
-        expect(output).to.have.deep.nested.property('summary.names');
+        expect(output).to.have.deep.nested.property('summary.topics');
         expect(output).to.have.deep.nested.property('summary.emotions');
+        expect(output).to.have.deep.nested.property('summary.highlights');
+        expect(output).to.have.deep.nested.property('summary.headline');
+        expect(output).to.have.deep.nested.property('summary.subheading');
+        expect(output).to.have.deep.nested.property('summary.pricing');
+        expect(output).to.have.deep.nested.property('summary.salesInsights');
+        expect(output).to.have.deep.nested.property('summary.actionItems');
+        expect(output).to.have.deep.nested.property('summary.language');
       };
     }
 
@@ -34,7 +48,18 @@ describe('Pipeline', () => {
 
       expect(output).to.have.property('htmlArticle');
       expect(output).to.have.deep.nested.property('htmlArticle.htmlFields');
-      expect(output).to.have.deep.nested.property('htmlArticle.topics');
+      expect(output).to.have.deep.nested.property('htmlArticle.keywords');
     });
+  });
+
+  describe('batch', async () => {
+    const inputs = [
+      constants.document,
+      constants.conversation,
+      constants.document,
+      constants.conversation,
+    ];
+    const output = await pipeline.runBatch(inputs);
+    expect(output.outputs.length).to.equal(4);
   });
 });
