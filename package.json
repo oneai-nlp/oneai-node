@@ -70,6 +70,7 @@
         "extends": "@istanbuljs/nyc-config-typescript",
         "check-coverage": true,
         "all": true,
+        "lines": 75,
         "include": [
             "src/**/*.ts"
         ],
