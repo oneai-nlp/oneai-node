@@ -1,10 +1,7 @@
 const { expect } = require('chai');
 const { describe, it } = require('mocha');
-// const { apiKey } = require('./credentials.json');
 const constants = require('./constants.json');
-const { OneAI } = require('../lib/src/index');
-
-const oneai = new OneAI(process.env.API_KEY);
+const oneai = require('./testClient');
 
 describe('audio', () => {
   const pipeline = new oneai.Pipeline(

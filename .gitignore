@@ -2,3 +2,4 @@ node_modules
 lib
 .vscode/settings.json
 test/credentials.json
+.env

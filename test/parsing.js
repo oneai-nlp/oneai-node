@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-expressions */
 const { expect } = require('chai');
 const { describe, it } = require('mocha');
-const OneAI = require('../lib/src/index');
 const { conversationParsingTests } = require('./constants.json');
 const transcriptionOutput = require('./transcriptionOutput.json');
-
-const oneai = new OneAI();
+const oneai = require('./testClient');
 
 describe('parseConversation', () => {
   conversationParsingTests.forEach((test, index) => {
