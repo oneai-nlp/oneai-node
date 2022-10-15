@@ -31,6 +31,7 @@ jobs:
     - run: npm test
       env:
           API_KEY: ${{ secrets.API_KEY }}
+    - run: npm run report
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@1.1.3
       with:

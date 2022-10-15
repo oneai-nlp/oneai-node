@@ -3,3 +3,5 @@ lib
 .vscode/settings.json
 test/credentials.json
 .env
+.nyc_output
+coverage
