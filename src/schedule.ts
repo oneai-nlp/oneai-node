@@ -18,6 +18,7 @@ export async function polling(
     response = await pollingFn(task);
 
     logger.debugNoNewline(`Processing file ${task.name} - status ${response.status} - ${timeFormat(Date.now() - timeStart)}`);
+    /* istanbul ignore if */
     if (response.status === 'FAILED') throw response.result;
     await new Promise((f) => setTimeout(f, 1000 * interval));
   }
