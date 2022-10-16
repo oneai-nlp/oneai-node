@@ -152,6 +152,7 @@ export class Cluster {
     params?: ClusteringApiParams,
   ): AsyncGenerator<Phrase, void, undefined> {
     const urlParams = buildClusteringQueryParams(params);
+    /* istanbul ignore next */
     yield* this.collection.client.getPaginated(
       `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
       'phrases',
@@ -215,6 +216,7 @@ export abstract class _Collection {
     params?: ClusteringApiParams,
   ): Paginated<Cluster> {
     const urlParams = buildClusteringQueryParams(params);
+    /* istanbul ignore next */
     yield* this.client.getPaginated(
       `${this.id}/clusters?${urlParams}`,
       'clusters',
@@ -232,7 +234,9 @@ export abstract class _Collection {
   ): Promise<Cluster[]> {
     const urlParams = new URLSearchParams({
       text: query,
-      ...params?.threshold && { 'similarity-threshold': params.threshold.toString() },
+      .../* istanbul ignore next */(
+        params?.threshold && { 'similarity-threshold': params.threshold.toString() }
+      ),
     });
 
     const { data } = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
@@ -269,6 +273,7 @@ export const createCollectionClass = (
     params?: ClusteringApiParams,
   ): Paginated<Collection> {
     const urlParams = buildClusteringQueryParams(params);
+    /* istanbul ignore next */
     yield* client.getPaginated(
       `?${urlParams}`,
       'collections',

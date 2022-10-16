@@ -93,7 +93,7 @@ export async function batchProcessing<TInput, TOutput>(
   const workers = [...Array(concurrentReqs).keys()].map(() => batchWorker());
   return Promise.all(workers).then(() => {
     const size = response.outputs.length + response.errors.length;
-    logger?.debugNoNewline(`Processed ${size} - ${timeFormat(timeTotal / size)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
+    logger?.debugNoNewline(`Processed ${size} inputs - ${timeFormat(timeTotal / size)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
     return response;
   });
 }

@@ -63,9 +63,18 @@ describe('Clustering', () => {
     });
 
     it('get items', async () => {
-      const item = (await phrase.getItems({ limit: 1 }).next()).value!;
+      const item = (await phrase.getItems().next()).value!;
       expect(item).to.have.property('phrase');
       expect(item.toJSON().id).to.equal(item.id);
+    });
+
+    it('empty collection', async () => {
+      let iter = 0;
+      for await (const c of new oneai.clustering.Collection('empty-collection-keep-empty').getClusters()) {
+        console.log(c);
+        iter++;
+      }
+      expect(iter).to.equal(0);
     });
   });
 });
