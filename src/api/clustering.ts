@@ -26,7 +26,7 @@ export default class ClusteringApiClient extends ApiClient {
 
     while (page === 0 || nodes.length > 0) {
       const { data } = await this.get(`${url}${page++}`, params);
-      nodes = (field in data) ? data[field].map(mapFn) : [];
+      nodes = (field in data && Array.isArray(data[field])) ? data[field].map(mapFn) : [];
 
       for (const node of nodes) {
         yield node;
