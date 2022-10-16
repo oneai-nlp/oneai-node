@@ -1,17 +1,24 @@
 /* eslint-disable no-unused-expressions */
 import chai from 'chai';
 import chaiFs from 'chai-fs';
-import { conversationParsingTests } from './constants.json';
+import { conversationParsingTests, conversationLineTests } from './constants.json';
 import transcriptionOutput from './transcriptionOutput.json';
 import oneai from './testClient';
 import { OneAIError } from '../src/errors';
+import { comp4Test, parseSpeakerLine } from '../src/parsing/conversation';
 
 chai.use(chaiFs);
 const { expect } = chai;
 
-describe('parseConversation', () => {
+describe('parse conversation', () => {
+  conversationLineTests.forEach((test, index) => {
+    it(`test 1.${index} - ${test.input}`, () => {
+      const parsed = parseSpeakerLine(test.input);
+      expect(parsed).to.satisfy((p: any) => comp4Test(p, test.output));
+    });
+  });
   conversationParsingTests.forEach((test, index) => {
-    it(`test ${index} - ${test.desc}`, () => {
+    it(`test 2.${index} - ${test.desc}`, () => {
       let parsed: any;
       try {
         parsed = oneai.parsing.parseConversation(test.text);
@@ -19,15 +26,12 @@ describe('parseConversation', () => {
         parsed = { error: e };
       }
 
-      it('test 1', () => {
-        expect(parsed).to.not.be.null;
-        if (test.elements > 0) {
-          expect(parsed?.error).to.not.be.null;
-          expect(parsed?.utterances?.length).to.not.equal(test.elements);
-        } else {
-          expect(parsed?.error).to.be.null;
-        }
-      });
+      if (test.elements > 0) {
+        expect(parsed?.error).to.be.undefined;
+        expect(parsed?.length).to.equal(test.elements);
+      } else {
+        expect(parsed?.error).to.not.be.undefined;
+      }
     });
   });
 });

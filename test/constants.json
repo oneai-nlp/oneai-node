@@ -35,22 +35,22 @@
         },
         {
             "desc": "missing pattern in utterance 3",
-            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nline 4.\nSPEAKER:line 5.\n\n\n",
+            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nline 3-2.\nSPEAKER: line 4.\n\n\n",
             "elements": 4
         },
         {
             "desc": "varying pattern, TIME+SEPARATOR appears in single utterance",
-            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nAGENT 10:23: line 4.\nSPEAKER:line 5.\n\n\n",
+            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nAGENT 10:23: line 4.\nSPEAKER: line 5.\n\n\n",
             "elements": 5
         },
         {
             "desc": "varying pattern, time appears in single utterance",
-            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nAGENT 10:23 line 4.\nSPEAKER:line 5.\n\n\n",
+            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nAGENT 10:23\nline 4.\nSPEAKER: line 5.\n\n\n",
             "elements": 5
         },
         {
             "desc": "missing last content line in strong pattern",
-            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nAGENT 10:23 line 4.\nSPEAKER:",
+            "text": "SPEAKER: line 1.\nAGENT: number 2 line.\nSPEAKER: number 3 line.\nAGENT 10:23\nline 4.\nSPEAKER:",
             "elements": 4
         },
         {
@@ -107,6 +107,253 @@
             "desc": "SRT",
             "text": "1\n00:05:00,400 --> 00:05:15,300\nThis is an example of\na subtitle.\n\n2\n00:05:16,400 --> 00:05:25,300\nThis is an example of\na subtitle - 2nd subtitle.",
             "elements": 2
+        },
+        {
+            "desc": "Whitespace after speaker separator",
+            "text": "OBI-WAN:\nWe've got to split them up.\n\nANAKIN: \nBreak left, fly through the guns on that tower.\n\nOBI-WAN: \nEasy for you to say . . . why am I always the bait?",
+            "elements": 3
+        },
+        {
+            "desc": "URL",
+            "text": "https://en.wikipedia.org/wiki/%22Hello,_World!%22_program",
+            "elements": 0
         }
-    ]
+    ],
+    "conversationLineTests": [
+        {
+            "input": "USER:",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": false,
+                "separator": true,
+                "hasText": false,
+                "text": null
+            }
+        },
+        {
+            "input": "USER :",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": false,
+                "separator": true,
+                "hasText": false,
+                "text": null
+            }
+        },
+        {
+            "input": "USER :asd",
+            "output": null
+        },
+        {
+            "input": "USER : asd",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": false,
+                "separator": true,
+                "hasText": true,
+                "text": "asd"
+            }
+        },
+        {
+            "input": "USER 00:00 ",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": true,
+                "separator": false,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": "USER     :4:01/asdfilj 0:0",
+            "output": null
+        },
+        {
+            "input": "USER     : 4:01/asdfilj 0:0",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": false,
+                "separator": true,
+                "hasText": true,
+                "text": "4:01/asdfilj 0:0"
+            }
+        },
+        {
+            "input": "USER [00:00]",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": true,
+                "separator": false,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": "USER [00:00]:",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "USER",
+                "time": true,
+                "separator": true,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": "Prospect  0:00",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "Prospect",
+                "time": true,
+                "separator": false,
+                "hasText": false,
+                "text": null,
+                "timestamp": "0:00"
+            }
+        },
+        {
+            "input": "[00:00] USER:",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "USER",
+                "time": true,
+                "separator": true,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": "[00:00:00] USER:",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "USER",
+                "time": true,
+                "separator": true,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00:00"
+            }
+        },
+        {
+            "input": "[00:00:00.123] USER:",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "USER",
+                "time": true,
+                "separator": true,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00:00.123"
+            }
+        },
+        {
+            "input": "[00:00] USER:  asdfasdfa asd f asdf asd fasdf ",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "USER",
+                "time": true,
+                "separator": true,
+                "hasText": true,
+                "text": "asdfasdfa asd f asdf asd fasdf",
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": " 00:00 USER  :  asdfasdfa asd f asdf asd fasdf ",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "USER",
+                "time": true,
+                "separator": true,
+                "hasText": true,
+                "text": "asdfasdfa asd f asdf asd fasdf",
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": " 00:00 USER  :",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "USER",
+                "time": false,
+                "separator": true,
+                "hasText": false,
+                "text": null,
+                "timestamp": "00:00"
+            }
+        },
+        {
+            "input": "AGENT 10:23  line 4.",
+            "output": null
+        },
+        {
+            "input": "AGENT -  line 4.",
+            "output": null
+        },
+        {
+            "input": "AGENT",
+            "output": {
+                "weak": true,
+                "preTime": false,
+                "speaker": "AGENT",
+                "time": false,
+                "separator": false,
+                "hasText": false,
+                "text": null
+            }
+        },
+        {
+            "input": "ANAKIN: ",
+            "output": {
+                "weak": false,
+                "preTime": false,
+                "speaker": "ANAKIN",
+                "time": false,
+                "separator": true,
+                "hasText": false,
+                "text": null
+            }
+        },
+        {
+            "input": "[3:07 PM, 3/15/2022] Adam Hanft: Helps",
+            "output": {
+                "weak": false,
+                "preTime": true,
+                "speaker": "Adam Hanft",
+                "time": false,
+                "separator": true,
+                "hasText": true,
+                "text": "Helps",
+                "timestamp": "3:07 PM, 3/15/2022"
+            }
+        },
+        {
+            "input": "https://en.wikipedia.org/wiki/%22Hello,_World!%22_program",
+            "output": null
+        }
+    ]    
 }

@@ -1,7 +1,8 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 // https://drive.google.com/drive/u/0/folders/1L_apLy2bakDweL-PWcay807_rJdxQxyR
-function parseSpeakerLine(line) {
+export function parseSpeakerLine(line) {
   let text = line.trim();
   // capture opening timestamp - "[00:00]"", "1:10" ...
   const value = {
@@ -92,6 +93,18 @@ function comp(a, b) {
     && a.separator === b.separator && a.preTime === b.preTime;
 }
 
+export function comp4Test(a, b) {
+  if ((a == null) !== (b == null)) return false;
+  if (a == null) return b == null;
+  return a.speaker == b.speaker
+    && a.hasText == b.hasText
+    && a.separator == b.separator
+    && a.preTime == b.preTime
+    && a.text == b.text
+    && a.weak == b.weak
+    && (!(a.timestamp || b.timestamp) || a.timestamp == b.timestamp);
+}
+
 function indexOfGroup(match, n) {
   let ix = match.index;
   for (let i = 1; i < n; i++) {
@@ -133,7 +146,7 @@ function getTimestamp(text, value) {
 // version 1.6.1
 // strict=true enforces the same speaker format pattern across all lines/
 // struct=false only enforces that all lines HAVE a valid speaker pattern
-export default function parseConversation(text, strict = false) {
+export function parseConversation(text, strict = false) {
   const result = [];
 
   // Trying to parse as SRT format
@@ -189,7 +202,7 @@ export default function parseConversation(text, strict = false) {
     previousObject = {
       speaker: currentLineInfo.speaker,
       utterance: currentLineInfo.text || '',
-      timestamp: currentLineInfo.timestamp,
+      ...(currentLineInfo.timestamp && { timestamp: currentLineInfo.timestamp }),
       // speaker_line: i,
       // text_line: i,
       // speaker_length: currentLineInfo.speaker_end,

@@ -6,7 +6,7 @@ import {
   Cluster, createCollectionClass, Item, Phrase,
 } from './clustering';
 import { skills } from './skills';
-import parseConversation from './parsing/conversation';
+import { parseConversation } from './parsing/conversation';
 import toSRT from './parsing/srt';
 import PipelineApiClient from './api/pipeline';
 import { ApiClientParams } from './api/client';
