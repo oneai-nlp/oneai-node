@@ -14,12 +14,13 @@ export default class PipelineApiClient extends ApiClient {
     skills: Skill[],
     params?: ApiReqParams,
   ): Promise<Output> {
-    const { data } = await this.post(
+    const response = await this.post(
       this.rootPath,
       buildRequest(input, skills, true),
       params,
     );
-    return buildOutput(skills, data);
+
+    return buildOutput(skills, response.data, response.headers);
   }
 
   async postAsyncFile(
@@ -44,11 +45,11 @@ export default class PipelineApiClient extends ApiClient {
     task: AsyncApiTask,
     params?: ApiReqParams,
   ): Promise<AsyncApiResponse> {
-    const { data } = await this.get(
+    const response = await this.get(
       `${this.rootPath}/async/tasks/${task.id}`,
       params,
     );
 
-    return buildAsyncApiResponse(task, data);
+    return buildAsyncApiResponse(task, response.data, response.headers);
   }
 }

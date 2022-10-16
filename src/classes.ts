@@ -134,6 +134,14 @@ export interface Label {
 
 export interface Output extends Input, OutputFields {
   text: TextContent
+  requestId?: string
+  stats?: {
+    concurrencyWaitTime?: number,
+    totalRunningJobs?: number,
+    totalWaitingJobs?: number,
+    wordCount?: number,
+    transcriptionSecondsCount?: number,
+  }
   [key: string]: (Output | Label[] | TextContent | any)
 }
 

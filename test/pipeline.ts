@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
@@ -24,6 +25,14 @@ describe('Pipeline', () => {
 
     const output = await pipeline.run(constants.document);
 
+    expect(output.text).to.not.be.undefined;
+    expect(output.requestId).to.not.be.undefined;
+    expect(output.stats).to.not.be.undefined;
+    expect(output.stats?.concurrencyWaitTime).to.not.be.undefined;
+    expect(output.stats?.totalRunningJobs).to.not.be.undefined;
+    expect(output.stats?.totalWaitingJobs).to.not.be.undefined;
+    expect(output.stats?.wordCount).to.not.be.undefined;
+    expect(output.stats?.transcriptionSecondsCount).to.not.be.undefined;
     expect(output).to.have.property('names');
     expect(output).to.have.property('keywords');
     expect(output).to.have.property('summary');

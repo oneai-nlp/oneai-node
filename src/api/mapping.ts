@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   AsyncApiResponse,
   AsyncApiTask,
-  ConversationContent, Input, isFileContent, Label, Output, Skill, TextContent, _Input,
+  ConversationContent, Input, isFileContent, Label, Output, Skill, _Input,
 } from '../classes';
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
@@ -52,15 +52,26 @@ const buildLabel = (label: any) => ({
   data: label.data || {},
 } as Label);
 
-function buildTextContent(contents: any): TextContent {
-  return (contents.length > 1 || 'speaker' in contents[0])
-    ? (contents as ConversationContent)
-    : contents[0].utterance as string;
+function buildOutputBase(contents: any, stats?: any, headers?: any): Output {
+  return {
+    text: (contents.length > 1 || 'speaker' in contents[0])
+      ? (contents as ConversationContent)
+      : contents[0].utterance as string,
+    requestId: headers?.['x-oneai-request-id'],
+    stats: (headers !== undefined) ? {
+      concurrencyWaitTime: stats?.concurrency_wait_time,
+      totalRunningJobs: stats?.total_running_jobs,
+      totalWaitingJobs: stats?.total_waiting_jobs,
+      wordCount: parseInt(headers?.['x-oneai-word-count'], 10),
+      transcriptionSecondsCount: parseInt(headers?.['x-oneai-transcribe-seconds-count'], 10),
+    } : undefined,
+  };
 }
 
 export function buildOutput(
   steps: Skill[],
   output: any,
+  headers: any,
 ): Output {
   function splitPipeline(skills: Skill[], i: number): Skill[][] {
     // split pipeline at a generator Skill
@@ -80,7 +91,7 @@ export function buildOutput(
     skills: Skill[],
   ): Output {
     const source = output.output[outputIndex];
-    const result: Output = { text: buildTextContent(source.contents) };
+    const result: Output = buildOutputBase(source.contents, output.stats, headers);
     const labels: Label[] = source.labels.map(buildLabel);
 
     skills.some((skill, i) => {
@@ -105,7 +116,7 @@ export function buildOutput(
   // Skills that didn't generate output. In this case the API will skip these Skills,
   // so we need to create filler objects to match the expected structure
   const [currentSkills, nextSkills] = splitPipeline(steps, generator);
-  const result: Output = { text: buildTextContent(output.input) };
+  const result: Output = buildOutputBase(output.input, output.stats, headers);
 
   currentSkills.forEach((skill) => {
     if (skill.textField) {
@@ -138,10 +149,14 @@ export function buildError(error: any): any {
   return error;
 }
 
-export function buildAsyncApiResponse(task: AsyncApiTask, response: any) : AsyncApiResponse {
+export function buildAsyncApiResponse(
+  task: AsyncApiTask,
+  response: any,
+  headers: any,
+) : AsyncApiResponse {
   let result;
   if (response.status === 'COMPLETED') {
-    result = buildOutput(task.skills, response.result);
+    result = buildOutput(task.skills, response.result, headers);
   } else if (response.status === 'FAILED') {
     result = buildError(response.result);
   }
