@@ -72,14 +72,11 @@
     "license": "MIT",
     "nyc": {
         "extends": "@istanbuljs/nyc-config-typescript",
-        "check-coverage": true,
         "all": true,
-        "lines": 75,
         "include": [
             "src/**/*.ts"
         ],
         "reporter": [
-            "html",
             "lcov",
             "text",
             "text-summary"

@@ -72,8 +72,7 @@ export async function batchProcessing<TInput, TOutput>(
           output,
         });
       } catch (error: any) {
-        logger?.error(`Input ${index}:`);
-        logger?.error(error?.message);
+        logger?.error(`\nInput ${index}: ${error?.message}`);
         if (onError) onError(input, error);
         response.errors.push({
           index,
@@ -84,7 +83,7 @@ export async function batchProcessing<TInput, TOutput>(
         const timeDelta = Date.now() - timeStart;
         timeTotal += timeDelta;
         timeStart += timeDelta;
-        logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
+        logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
       }
       ({ value, done } = inputDist.next());
     }

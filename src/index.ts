@@ -84,7 +84,7 @@ class OneAI {
   static OneAI = OneAI;
 
   public toString(): string {
-    const apiKeyString = (this.params.apiKey) ? this.params.apiKey.substring(0, 8) + '*'.repeat(this.params.apiKey.length - 8) : undefined;
+    const apiKeyString = (this.params.apiKey?.length >= 8) ? this.params.apiKey.substring(0, 8) + '*'.repeat(this.params.apiKey.length - 8) : undefined;
     return `One AI Client - API Key ${apiKeyString}`;
   }
 }

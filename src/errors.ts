@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export class OneAIError extends Error {
   statusCode: number;
 

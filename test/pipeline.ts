@@ -89,5 +89,6 @@ describe('Pipeline', () => {
       onError: (i: any, e: any) => {},
     });
     expect(output.outputs.length).to.equal(4);
+    expect(output.errors.length).to.equal(1);
   });
 });

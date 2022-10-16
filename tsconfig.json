@@ -9,10 +9,11 @@
       "allowJs": true,
       "downlevelIteration": true,
       "resolveJsonModule": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "removeComments": false
     },
     "include": ["src"],
-    "exclude": ["node_modules", "**/__tests__/*"],
+    "exclude": ["node_modules", "test"],
     "ts-node": {
       "files": true
     }
