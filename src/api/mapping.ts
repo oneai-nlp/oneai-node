@@ -89,15 +89,18 @@ export function buildOutput(
   function build(
     outputIndex: number,
     skills: Skill[],
+    includeStats: boolean,
   ): Output {
     const source = output.output[outputIndex];
-    const result: Output = buildOutputBase(source.contents, output.stats, headers);
+    const result: Output = (includeStats)
+      ? buildOutputBase(source.contents, output.stats, headers)
+      : buildOutputBase(source.contents);
     const labels: Label[] = source.labels.map(buildLabel);
 
     skills.some((skill, i) => {
       if (skill.textField) {
         const [, nextSkills] = splitPipeline(skills, i);
-        result[skill.textField] = build(outputIndex + 1, nextSkills);
+        result[skill.textField] = build(outputIndex + 1, nextSkills, false);
         return true;
       }
       result[skill.labelsField || skill.apiName] = labels.filter(
@@ -110,7 +113,7 @@ export function buildOutput(
   }
 
   const generator = (output.output[0].text_generated_by_step_id || 0) - 1;
-  if (generator < 0) return build(0, steps);
+  if (generator < 0) return build(0, steps, true);
 
   // edge case- first Skill is a generator, or a generator preceded by
   // Skills that didn't generate output. In this case the API will skip these Skills,
@@ -120,7 +123,7 @@ export function buildOutput(
 
   currentSkills.forEach((skill) => {
     if (skill.textField) {
-      result[skill.textField] = build(0, nextSkills);
+      result[skill.textField] = build(0, nextSkills, false);
     } else {
       result[skill.labelsField || skill.apiName] = [];
     }
