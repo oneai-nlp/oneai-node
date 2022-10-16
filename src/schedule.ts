@@ -57,6 +57,8 @@ export async function batchProcessing<TInput, TOutput>(
     for (const input of inputs) yield [index++, input];
   }());
 
+  const lgr = (logger !== undefined) ? logger : new Logger(false);
+
   let timeTotal = 0;
   async function batchWorker() {
     let { value, done } = inputDist.next();
@@ -72,7 +74,7 @@ export async function batchProcessing<TInput, TOutput>(
           output,
         });
       } catch (error: any) {
-        logger?.error(`\nInput ${index}: ${error?.message}`);
+        lgr.error(`\nInput ${index}: ${error?.message}`);
         if (onError) onError(input, error);
         response.errors.push({
           index,
@@ -83,17 +85,17 @@ export async function batchProcessing<TInput, TOutput>(
         const timeDelta = Date.now() - timeStart;
         timeTotal += timeDelta;
         timeStart += timeDelta;
-        logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
+        lgr.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
       }
       ({ value, done } = inputDist.next());
     }
   }
 
-  logger?.debug(`Starting processing batch with ${concurrentReqs} workers`);
+  lgr.debug(`Starting processing batch with ${concurrentReqs} workers`);
   const workers = [...Array(concurrentReqs).keys()].map(() => batchWorker());
   return Promise.all(workers).then(() => {
     const size = response.outputs.length + response.errors.length;
-    logger?.debugNoNewline(`Processed ${size} inputs - ${timeFormat(timeTotal / size)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
+    lgr.debugNoNewline(`Processed ${size} inputs - ${timeFormat(timeTotal / size)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
     return response;
   });
 }

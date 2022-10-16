@@ -90,6 +90,7 @@ export class Phrase {
     params?: ClusteringApiParams,
   ): AsyncGenerator<Item, void, undefined> {
     const urlParams = buildClusteringQueryParams(params);
+    /* istanbul ignore next */
     yield* this.cluster.collection.client.getPaginated(
       `${this.cluster.collection.id}/phrases/${this.id}/items?${urlParams}`,
       'items',
