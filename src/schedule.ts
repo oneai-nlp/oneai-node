@@ -84,7 +84,7 @@ export async function batchProcessing<TInput, TOutput>(
         const timeDelta = Date.now() - timeStart;
         timeTotal += timeDelta;
         timeStart += timeDelta;
-        logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed`);
+        logger?.debugNoNewline(`Input ${index} - ${timeFormat(timeDelta)}/input - ${timeFormat(timeTotal)} total - ${response.outputs.length} successful - ${response.errors.length} failed\n`);
       }
       ({ value, done } = inputDist.next());
     }
