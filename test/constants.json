@@ -20,7 +20,7 @@
         }
     ],
     "urlInput": "https://techcrunch.com/2022/05/30/one-ai-raises-8m-to-curate-business-specific-nlp-models/",
-    "wavPath": "./test/topics.wav",
+    "wavPath": "./test/testAudio.wav",
     "mp3Path": "./test/testAudio.mp3",
     "conversationParsingTests": [
         {

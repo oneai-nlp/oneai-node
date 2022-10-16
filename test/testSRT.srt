@@ -1,0 +1,71 @@
+1
+00:00:00,110 --> 00:00:01,610
+The topics language skill takes
+
+2
+00:00:01,670 --> 00:00:03,050
+a body of text, whether they are
+
+3
+00:00:03,170 --> 00:00:05,030
+news reports, articles, emails,
+
+4
+00:00:05,090 --> 00:00:06,710
+or conversations, and extracts
+
+5
+00:00:06,830 --> 00:00:08,510
+a set of relevant topics.
+
+6
+00:00:08,810 --> 00:00:10,010
+Place your text here.
+
+7
+00:00:10,490 --> 00:00:12,110
+Next, drag the topic skill to
+
+8
+00:00:12,170 --> 00:00:13,010
+the pipeline.
+
+9
+00:00:17,030 --> 00:00:18,470
+Now run the pipeline.
+
+10
+00:00:18,650 --> 00:00:20,090
+The extracted topics will appear
+
+11
+00:00:20,210 --> 00:00:21,470
+in the output box to the right
+
+12
+00:00:21,710 --> 00:00:22,490
+above your text.
+
+13
+00:00:22,670 --> 00:00:24,170
+They're also listed at the bottom.
+
+14
+00:00:24,530 --> 00:00:25,970
+The generated code appears in
+
+15
+00:00:26,030 --> 00:00:27,290
+the box on the bottom left in
+
+16
+00:00:27,290 --> 00:00:28,730
+the framework of your choice.
+
+17
+00:00:29,030 --> 00:00:30,410
+Copy it here and paste it into
+
+18
+00:00:30,530 --> 00:00:31,310
+your project.
