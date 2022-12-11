@@ -1,5 +1,6 @@
-import { stderr, stdout } from 'process';
 import * as readline from 'readline';
+
+const { stderr, stdout } = process;
 
 export default class Logger {
   enabled: boolean;

@@ -1,20 +1,28 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "module": "commonjs",
-      "declaration": true,
-      "outDir": "./lib",
-      "strict": true,
-      "lib": ["ES2015", "DOM"],
-      "allowJs": true,
-      "downlevelIteration": true,
-      "resolveJsonModule": true,
-      "esModuleInterop": true,
-      "removeComments": false
-    },
-    "include": ["src"],
-    "exclude": ["node_modules", "test"],
-    "ts-node": {
-      "files": true
-    }
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true,
+    "lib": [
+      "ES2015",
+      "DOM"
+    ],
+    "allowJs": true,
+    "downlevelIteration": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": false
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "test"
+  ],
+  "ts-node": {
+    "files": true
+  }
 }

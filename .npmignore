@@ -2,6 +2,11 @@ node_modules
 src
 .env
 .nyc_output
+.github
 coverage
 src/api/.uuid
 .gitignore
+test
+.eslintignore
+.eslintrc.json
+tsconfig.json
