@@ -64,7 +64,7 @@ export class ApiClientAxios implements ApiClient {
   ): Promise<ApiResponse> {
     const apiKey = this.validateApiKey(params);
     try {
-      return axios({
+      return await axios({ // await to throw error if necessary
         url: `${this.params.baseURL}/${path}`,
         method: 'GET',
         headers: {
@@ -87,7 +87,7 @@ export class ApiClientAxios implements ApiClient {
   ): Promise<ApiResponse> {
     const apiKey = this.validateApiKey(params);
     try {
-      return axios({
+      return await axios({ // await to throw error if necessary
         url: `${this.params.baseURL}/${path}`,
         method: 'POST',
         headers: {
