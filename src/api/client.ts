@@ -29,15 +29,19 @@ export interface ApiClient {
 
 export class ApiClientAxios implements ApiClient {
   private static readonly uuid = (() => {
-    const filePath = `${__dirname}/.uuid`;
-    let result = '';
-    if (fs.existsSync(filePath)) {
-      result = fs.readFileSync(filePath, 'utf8');
-    } else {
-      result = uuidv4().replace(/-/g, '');
-      fs.writeFileSync(filePath, result);
+    try {
+      const filePath = `${__dirname}/.uuid`;
+      let result = '';
+      if (fs.existsSync(filePath)) {
+        result = fs.readFileSync(filePath, 'utf8');
+      } else {
+        result = uuidv4().replace(/-/g, '');
+        fs.writeFileSync(filePath, result);
+      }
+      return result;
+    } catch (e) {
+      return 'UUID_DISABLED';
     }
-    return result;
   })();
 
   private agent: string = `node-sdk/${version}/${ApiClientAxios.uuid}`;
