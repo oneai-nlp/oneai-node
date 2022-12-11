@@ -1,20 +1,30 @@
 import {
   Skill, Input, FileContent, _Input, Output, AsyncApiTask, AsyncApiResponse,
 } from '../classes';
+import Logger from '../logging';
 import { ApiClient, ApiReqParams } from './client';
 import {
   buildAsyncApiResponse, buildOutput, buildRequest,
 } from './mapping';
 
-export default class PipelineApiClient extends ApiClient {
+export default class PipelineApiClient {
+  private client: ApiClient;
+
+  logger: Logger;
+
   rootPath = 'api/v0/pipeline';
+
+  constructor(client: ApiClient) {
+    this.client = client;
+    this.logger = client.logger;
+  }
 
   async postPipeline(
     input: Input,
     skills: Skill[],
     params?: ApiReqParams,
   ): Promise<Output> {
-    const response = await this.post(
+    const response = await this.client.post(
       this.rootPath,
       buildRequest(input, skills, true),
       params,
@@ -29,7 +39,7 @@ export default class PipelineApiClient extends ApiClient {
     params?: ApiReqParams,
   ): Promise<AsyncApiTask> {
     const request = buildRequest(input, skills, false);
-    const { data } = await this.post(
+    const { data } = await this.client.post(
       `${this.rootPath}/async/file?pipeline=${encodeURIComponent(request)}`,
       input.text.buffer,
       params,
@@ -45,7 +55,7 @@ export default class PipelineApiClient extends ApiClient {
     task: AsyncApiTask,
     params?: ApiReqParams,
   ): Promise<AsyncApiResponse> {
-    const response = await this.get(
+    const response = await this.client.get(
       `${this.rootPath}/async/tasks/${task.id}`,
       params,
     );

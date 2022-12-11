@@ -157,7 +157,7 @@ export function buildAsyncApiResponse(
   task: AsyncApiTask,
   response: any,
   headers: any,
-) : AsyncApiResponse {
+): AsyncApiResponse {
   let result;
   if (response.status === 'COMPLETED') {
     result = buildOutput(task.skills, response.result, headers);

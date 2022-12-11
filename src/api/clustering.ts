@@ -4,11 +4,17 @@ import { Paginated } from '../clustering';
 import { ApiClient, ApiReqParams } from './client';
 import { buildClusteringItems } from './mapping';
 
-export default class ClusteringApiClient extends ApiClient {
+export default class ClusteringApiClient {
+  private client: ApiClient;
+
   rootPath = 'clustering/v1/collections';
 
+  constructor(client: ApiClient) {
+    this.client = client;
+  }
+
   async get(path: string, params?: ApiReqParams): Promise<any> {
-    return super.get(`${this.rootPath}/${path}`, params);
+    return this.client.get(`${this.rootPath}/${path}`, params);
   }
 
   async* getPaginated<T>(
@@ -44,7 +50,7 @@ export default class ClusteringApiClient extends ApiClient {
       forceClusterId?: number,
     },
   ): Promise<any> {
-    const { data } = await this.post(
+    const { data } = await this.client.post(
       `${this.rootPath}/${path}`,
       buildClusteringItems(items, params?.forceNewClusters, params?.forceClusterId),
       params,

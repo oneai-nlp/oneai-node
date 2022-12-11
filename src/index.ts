@@ -9,7 +9,7 @@ import { skills } from './skills';
 import { parseConversation } from './parsing/conversation';
 import toSRT from './parsing/srt';
 import PipelineApiClient from './api/pipeline';
-import { ApiClientParams } from './api/client';
+import { ApiClient, ApiClientAxios, ApiClientParams } from './api/client';
 import Logger from './logging';
 import ClusteringApiClient from './api/clustering';
 
@@ -23,6 +23,8 @@ class OneAI {
   readonly skills = skills;
 
   static skills = skills;
+
+  private apiClientBase: ApiClient;
 
   private pipelineApiClient: PipelineApiClient;
 
@@ -40,7 +42,7 @@ class OneAI {
 
   constructor(
     apiKey?: string,
-    params?: Partial<ApiClientParams>,
+    params?: Partial<ApiClientParams & { client: ApiClient }>,
   ) {
     this.params = {
       ...OneAI.defaultParams,
@@ -49,10 +51,11 @@ class OneAI {
     };
 
     this.logger = new Logger();
-    this.pipelineApiClient = new PipelineApiClient(this.params, this.logger);
+    this.apiClientBase = params?.client ?? new ApiClientAxios(this.params, this.logger);
+    this.pipelineApiClient = new PipelineApiClient(this.apiClientBase);
     this.Pipeline = createPipelineClass(this.pipelineApiClient);
 
-    this.clusteringApiClient = new ClusteringApiClient(this.params, this.logger);
+    this.clusteringApiClient = new ClusteringApiClient(this.apiClientBase);
     const Collection = createCollectionClass(this.clusteringApiClient);
     this.clustering = {
       Item,

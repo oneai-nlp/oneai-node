@@ -27,7 +27,23 @@ export interface ApiClientParams {
 
 export type ApiReqParams = Partial<ApiClientParams>;
 
-export class ApiClient {
+export interface ApiClient {
+  params: ApiClientParams;
+  logger: Logger;
+
+  get(
+    path: string,
+    params?: ApiReqParams,
+  ): Promise<any>;
+
+  post(
+    path: string,
+    data: any,
+    params?: ApiReqParams,
+  ): Promise<any>;
+}
+
+export class ApiClientAxios implements ApiClient {
   private agent: string = `node-sdk/${version}/${uuid}`;
 
   params: ApiClientParams;

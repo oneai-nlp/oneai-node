@@ -4,3 +4,4 @@ lib
 .env
 .nyc_output
 coverage
+src/api/.uuid
