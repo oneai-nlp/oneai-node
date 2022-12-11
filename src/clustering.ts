@@ -240,7 +240,7 @@ export abstract class _Collection {
       ),
     });
 
-    const { data } = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
+    const data = await this.client.get(`${this.id}/clusters/find?${urlParams}`, params);
     return data.map((cluster: any) => Cluster.fromJSON(this, cluster)) || [];
   }
 

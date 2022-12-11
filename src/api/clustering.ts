@@ -35,7 +35,7 @@ export default class ClusteringApiClient {
     const url = `${path}${path.includes('?') ? '&' : '?'}page=`;
 
     while (page === 0 || nodes.length > 0) {
-      const { data } = await this.get(`${url}${page++}`, params);
+      const data = await this.get(`${url}${page++}`, params);
       nodes = (field in data && Array.isArray(data[field])) ? data[field].map(mapFn) : [];
 
       for (const node of nodes) {
@@ -54,7 +54,7 @@ export default class ClusteringApiClient {
       forceClusterId?: number,
     },
   ): Promise<any> {
-    const { data } = await this.client.post(
+    const data = await this.client.post(
       `${this.rootPath}/${path}`,
       JSON.stringify(buildClusteringItems(items, params?.forceNewClusters, params?.forceClusterId)),
       params,

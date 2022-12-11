@@ -58,7 +58,7 @@ export class ApiClientAxios implements ApiClient {
   ): Promise<any> {
     const apiKey = this.validateApiKey(params);
     try {
-      return axios({
+      const response = await axios({
         url: `${this.params.baseURL}/${path}`,
         method: 'GET',
         headers: {
@@ -69,6 +69,7 @@ export class ApiClientAxios implements ApiClient {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });
+      return response.data;
     } catch (error) {
       throw buildError(error);
     }
@@ -81,7 +82,7 @@ export class ApiClientAxios implements ApiClient {
   ): Promise<any> {
     const apiKey = this.validateApiKey(params);
     try {
-      return await axios({
+      const response = await axios({
         url: `${this.params.baseURL}/${path}`,
         method: 'POST',
         headers: {
@@ -94,6 +95,7 @@ export class ApiClientAxios implements ApiClient {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });
+      return response.data;
     } catch (error) {
       throw buildError(error);
     }
