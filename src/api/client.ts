@@ -22,7 +22,7 @@ export interface ApiClient {
 
   post(
     path: string,
-    data: any,
+    data: string | Buffer,
     params?: ApiReqParams,
   ): Promise<any>;
 }
@@ -76,7 +76,7 @@ export class ApiClientAxios implements ApiClient {
 
   async post(
     path: string,
-    data: any,
+    data: string | Buffer,
     params?: ApiReqParams,
   ): Promise<any> {
     const apiKey = this.validateApiKey(params);

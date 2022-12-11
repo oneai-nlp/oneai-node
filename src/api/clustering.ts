@@ -56,7 +56,7 @@ export default class ClusteringApiClient {
   ): Promise<any> {
     const { data } = await this.client.post(
       `${this.rootPath}/${path}`,
-      buildClusteringItems(items, params?.forceNewClusters, params?.forceClusterId),
+      JSON.stringify(buildClusteringItems(items, params?.forceNewClusters, params?.forceClusterId)),
       params,
     );
     return data;
