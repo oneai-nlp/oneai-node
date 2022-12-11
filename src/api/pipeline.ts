@@ -39,7 +39,7 @@ export default class PipelineApiClient {
     params?: ApiReqParams,
   ): Promise<AsyncApiTask> {
     const request = buildRequest(input, skills, false);
-    const data = await this.client.post(
+    const { data } = await this.client.post(
       `${this.rootPath}/async/file?pipeline=${encodeURIComponent(request)}`,
       input.text.buffer,
       params,

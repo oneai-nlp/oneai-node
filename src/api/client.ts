@@ -12,19 +12,25 @@ export interface ApiClientParams {
 
 export type ApiReqParams = Partial<ApiClientParams>;
 
+export interface ApiResponse {
+  status: number;
+  data: any;
+  headers?: Record<string, string>;
+}
+
 export interface ApiClient {
   params: ApiClientParams;
 
   get(
     path: string,
     params?: ApiReqParams,
-  ): Promise<any>;
+  ): Promise<ApiResponse>;
 
   post(
     path: string,
     data: string | Buffer,
     params?: ApiReqParams,
-  ): Promise<any>;
+  ): Promise<ApiResponse>;
 }
 
 export class ApiClientAxios implements ApiClient {
@@ -55,10 +61,10 @@ export class ApiClientAxios implements ApiClient {
   async get(
     path: string,
     params?: ApiReqParams,
-  ): Promise<any> {
+  ): Promise<ApiResponse> {
     const apiKey = this.validateApiKey(params);
     try {
-      const response = await axios({
+      return axios({
         url: `${this.params.baseURL}/${path}`,
         method: 'GET',
         headers: {
@@ -69,7 +75,6 @@ export class ApiClientAxios implements ApiClient {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });
-      return response.data;
     } catch (error) {
       throw buildError(error);
     }
@@ -79,10 +84,10 @@ export class ApiClientAxios implements ApiClient {
     path: string,
     data: string | Buffer,
     params?: ApiReqParams,
-  ): Promise<any> {
+  ): Promise<ApiResponse> {
     const apiKey = this.validateApiKey(params);
     try {
-      const response = await axios({
+      return axios({
         url: `${this.params.baseURL}/${path}`,
         method: 'POST',
         headers: {
@@ -95,7 +100,6 @@ export class ApiClientAxios implements ApiClient {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });
-      return response.data;
     } catch (error) {
       throw buildError(error);
     }
