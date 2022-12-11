@@ -5,20 +5,6 @@ import { version } from '../../package.json';
 import { buildError } from './mapping';
 import Logger from '../logging';
 
-export const uuid = (() => {
-  const filePath = `${__dirname}/.uuid`;
-  let result = '';
-  if (fs.existsSync(filePath)) {
-    result = fs.readFileSync(filePath, 'utf8');
-  } else {
-    result = uuidv4().replace(/-/g, '');
-    fs.writeFileSync(filePath, result);
-  }
-  return result;
-})();
-
-export const agent = `node-sdk/${version}/${uuid}`;
-
 export interface ApiClientParams {
   apiKey: string;
   baseURL: string;
@@ -44,7 +30,19 @@ export interface ApiClient {
 }
 
 export class ApiClientAxios implements ApiClient {
-  private agent: string = `node-sdk/${version}/${uuid}`;
+  private static readonly uuid = (() => {
+    const filePath = `${__dirname}/.uuid`;
+    let result = '';
+    if (fs.existsSync(filePath)) {
+      result = fs.readFileSync(filePath, 'utf8');
+    } else {
+      result = uuidv4().replace(/-/g, '');
+      fs.writeFileSync(filePath, result);
+    }
+    return result;
+  })();
+
+  private agent: string = `node-sdk/${version}/${ApiClientAxios.uuid}`;
 
   params: ApiClientParams;
 
