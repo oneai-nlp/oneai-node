@@ -3,7 +3,6 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { version } from '../../package.json';
 import { buildError } from './mapping';
-import Logger from '../logging';
 
 export interface ApiClientParams {
   apiKey: string;
@@ -15,7 +14,6 @@ export type ApiReqParams = Partial<ApiClientParams>;
 
 export interface ApiClient {
   params: ApiClientParams;
-  logger: Logger;
 
   get(
     path: string,
@@ -46,11 +44,8 @@ export class ApiClientAxios implements ApiClient {
 
   params: ApiClientParams;
 
-  logger: Logger;
-
-  constructor(params: ApiClientParams, logger: Logger) {
+  constructor(params: ApiClientParams) {
     this.params = params;
-    this.logger = logger;
   }
 
   async get(

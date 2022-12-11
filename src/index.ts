@@ -51,11 +51,11 @@ class OneAI {
     };
 
     this.logger = new Logger();
-    this.apiClientBase = params?.client ?? new ApiClientAxios(this.params, this.logger);
-    this.pipelineApiClient = new PipelineApiClient(this.apiClientBase);
+    this.apiClientBase = params?.client ?? new ApiClientAxios(this.params);
+    this.pipelineApiClient = new PipelineApiClient(this.apiClientBase, this.logger);
     this.Pipeline = createPipelineClass(this.pipelineApiClient);
 
-    this.clusteringApiClient = new ClusteringApiClient(this.apiClientBase);
+    this.clusteringApiClient = new ClusteringApiClient(this.apiClientBase, this.logger);
     const Collection = createCollectionClass(this.clusteringApiClient);
     this.clustering = {
       Item,

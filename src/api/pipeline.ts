@@ -10,13 +10,13 @@ import {
 export default class PipelineApiClient {
   private client: ApiClient;
 
-  logger: Logger;
+  logger?: Logger;
 
   rootPath = 'api/v0/pipeline';
 
-  constructor(client: ApiClient) {
+  constructor(client: ApiClient, logger?: Logger) {
     this.client = client;
-    this.logger = client.logger;
+    this.logger = logger;
   }
 
   async postPipeline(

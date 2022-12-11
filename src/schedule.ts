@@ -10,19 +10,19 @@ export async function polling(
   task: AsyncApiTask,
   pollingFn: (task: AsyncApiTask) => Promise<AsyncApiResponse>,
   interval: number,
-  logger: Logger,
+  logger?: Logger,
 ): Promise<Output> {
   let response: Partial<AsyncApiResponse> = { status: 'RUNNING' };
   const timeStart = Date.now();
   while (response.status !== 'COMPLETED') {
     response = await pollingFn(task);
 
-    logger.debugNoNewline(`Processing file ${task.name} - status ${response.status} - ${timeFormat(Date.now() - timeStart)}`);
+    logger?.debugNoNewline(`Processing file ${task.name} - status ${response.status} - ${timeFormat(Date.now() - timeStart)}`);
     /* istanbul ignore if */
     if (response.status === 'FAILED') throw response.result;
     await new Promise((f) => setTimeout(f, 1000 * interval));
   }
-  logger.debugNoNewline(`Processing of file ${task.name} complete - took ${timeFormat(Date.now() - timeStart)} total\n`);
+  logger?.debugNoNewline(`Processing of file ${task.name} complete - took ${timeFormat(Date.now() - timeStart)} total\n`);
   return response.result as Output;
 }
 

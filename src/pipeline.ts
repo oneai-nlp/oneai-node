@@ -38,9 +38,9 @@ abstract class _Pipeline {
     if (params?.sync) return this.run(input, params);
 
     // todo: extend to non-file inputs
-    this.client.logger.debug(`Uploading file ${input.text.filePath}`);
+    this.client.logger?.debug(`Uploading file ${input.text.filePath}`);
     const task = await this.client.postAsyncFile(input, this.steps, params);
-    this.client.logger.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
+    this.client.logger?.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
     return polling(
       task,
       (t: AsyncApiTask) => this.client.getTaskStatus.call(this.client, t),

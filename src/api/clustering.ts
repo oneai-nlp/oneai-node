@@ -1,16 +1,20 @@
 /* eslint-disable no-await-in-loop */
 import { _Input } from '../classes';
 import { Paginated } from '../clustering';
+import Logger from '../logging';
 import { ApiClient, ApiReqParams } from './client';
 import { buildClusteringItems } from './mapping';
 
 export default class ClusteringApiClient {
   private client: ApiClient;
 
+  private logger?: Logger;
+
   rootPath = 'clustering/v1/collections';
 
-  constructor(client: ApiClient) {
+  constructor(client: ApiClient, logger?: Logger) {
     this.client = client;
+    this.logger = logger;
   }
 
   async get(path: string, params?: ApiReqParams): Promise<any> {
