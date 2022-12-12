@@ -127,7 +127,7 @@ export interface Label {
   outputSpans: Span[]
   inputSpans: Span[]
   value: number | string
-  data: object
+  data: Record<string, any>
   timestamp?: number
   timestampEnd?: number
 }
