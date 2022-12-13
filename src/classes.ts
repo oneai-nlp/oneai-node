@@ -16,6 +16,7 @@ export type File = {
 export type Conversation = {
   speaker: string,
   utterance: string,
+  timestamp?: number,
 }[];
 
 export type TextContent = string | Conversation | File;

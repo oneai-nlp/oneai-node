@@ -56,7 +56,10 @@ const buildLabel = (label: any) => ({
 function buildOutputBase(contents: any, stats?: any, headers?: any): Output {
   return {
     text: (contents.length > 1 || 'speaker' in contents[0])
-      ? (contents as Conversation)
+      ? contents.map((utterance: any) => ({
+        ...utterance,
+        ...utterance.timestamp && { timestamp: timestampToMilliseconds(utterance.timestamp) },
+      })) as Conversation
       : contents[0].utterance as string,
     requestId: headers?.['x-oneai-request-id'],
     stats: (headers !== undefined) ? {
