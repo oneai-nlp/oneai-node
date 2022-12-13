@@ -101,7 +101,6 @@ export {
   Label, Skill, File, Conversation, TextContent,
   Input, Span, Output, AsyncApiTask, AsyncApiResponse,
 } from './classes';
-export { Logger };
-export { OneAI };
+export { Logger, OneAI, skills };
 
 export default OneAI;
