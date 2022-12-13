@@ -12,28 +12,28 @@ export interface ApiClientParams {
 
 export type ApiReqParams = Partial<ApiClientParams>;
 
-export interface ApiResponse {
+export interface HttpResponse {
   status: number;
   data: any;
   headers?: Record<string, string>;
 }
 
-export interface ApiClient {
+export interface HttpApiClient {
   params: ApiClientParams;
 
   get(
     path: string,
     params?: ApiReqParams,
-  ): Promise<ApiResponse>;
+  ): Promise<HttpResponse>;
 
   post(
     path: string,
     data: string | Buffer,
     params?: ApiReqParams,
-  ): Promise<ApiResponse>;
+  ): Promise<HttpResponse>;
 }
 
-export class ApiClientAxios implements ApiClient {
+export class ApiClientAxios implements HttpApiClient {
   private static readonly uuid = (() => {
     try {
       const filePath = `${__dirname}/.uuid`;
@@ -61,7 +61,7 @@ export class ApiClientAxios implements ApiClient {
   async get(
     path: string,
     params?: ApiReqParams,
-  ): Promise<ApiResponse> {
+  ): Promise<HttpResponse> {
     const apiKey = this.validateApiKey(params);
     try {
       return await axios({ // await to throw error if necessary
@@ -84,7 +84,7 @@ export class ApiClientAxios implements ApiClient {
     path: string,
     data: string | Buffer,
     params?: ApiReqParams,
-  ): Promise<ApiResponse> {
+  ): Promise<HttpResponse> {
     const apiKey = this.validateApiKey(params);
     try {
       return await axios({ // await to throw error if necessary

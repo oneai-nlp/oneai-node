@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as dotenv from 'dotenv';
-import OneAI from '../src/index';
+import { OneAI } from '../src/index';
 
 describe('client', () => {
   it('init', () => {

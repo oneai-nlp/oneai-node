@@ -2,17 +2,17 @@
 import { _Input } from '../classes';
 import { Paginated } from '../clustering';
 import Logger from '../logging';
-import { ApiClient, ApiReqParams } from './client';
+import { HttpApiClient, ApiReqParams } from './client';
 import { buildClusteringItems } from './mapping';
 
 export default class ClusteringApiClient {
-  private client: ApiClient;
+  private client: HttpApiClient;
 
   private logger?: Logger;
 
   rootPath = 'clustering/v1/collections';
 
-  constructor(client: ApiClient, logger?: Logger) {
+  constructor(client: HttpApiClient, logger?: Logger) {
     this.client = client;
     this.logger = logger;
   }

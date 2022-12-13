@@ -9,16 +9,16 @@ export interface Skill {
   labelsField?: string
 }
 
-export type FileContent = {
+export type File = {
   filePath: string,
   buffer: Buffer,
 };
-export type ConversationContent = {
+export type Conversation = {
   speaker: string,
   utterance: string,
 }[];
 
-export type TextContent = string | ConversationContent | FileContent;
+export type TextContent = string | Conversation | File;
 
 export type inputType = 'article' | 'conversation';
 export type encoding = 'utf8' | 'base64';
@@ -37,7 +37,7 @@ export function isInput(object: any): object is Input {
   return typeof object === 'object' && 'text' in object;
 }
 
-export function isFileContent(object: any): object is FileContent {
+export function isFileContent(object: any): object is File {
   return typeof object === 'object' && 'filePath' in object && 'buffer' in object;
 }
 
@@ -109,7 +109,7 @@ export function wrapContent<T extends TextContent>(
   };
 }
 
-interface Span {
+export interface Span {
   start: number,
   end: number,
   section: number,

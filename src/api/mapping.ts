@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
   AsyncApiResponse,
   AsyncApiTask,
-  ConversationContent, Input, isFileContent, Label, Output, Skill, _Input,
+  Conversation, Input, isFileContent, Label, Output, Skill, _Input,
 } from '../classes';
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
@@ -56,7 +56,7 @@ const buildLabel = (label: any) => ({
 function buildOutputBase(contents: any, stats?: any, headers?: any): Output {
   return {
     text: (contents.length > 1 || 'speaker' in contents[0])
-      ? (contents as ConversationContent)
+      ? (contents as Conversation)
       : contents[0].utterance as string,
     requestId: headers?.['x-oneai-request-id'],
     stats: (headers !== undefined) ? {

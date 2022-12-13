@@ -1,20 +1,20 @@
 import {
-  Skill, Input, FileContent, _Input, Output, AsyncApiTask, AsyncApiResponse,
+  Skill, Input, File, _Input, Output, AsyncApiTask, AsyncApiResponse,
 } from '../classes';
 import Logger from '../logging';
-import { ApiClient, ApiReqParams } from './client';
+import { HttpApiClient, ApiReqParams } from './client';
 import {
   buildAsyncApiResponse, buildOutput, buildRequest,
 } from './mapping';
 
 export default class PipelineApiClient {
-  private client: ApiClient;
+  private client: HttpApiClient;
 
   logger?: Logger;
 
   rootPath = 'api/v0/pipeline';
 
-  constructor(client: ApiClient, logger?: Logger) {
+  constructor(client: HttpApiClient, logger?: Logger) {
     this.client = client;
     this.logger = logger;
   }
@@ -34,7 +34,7 @@ export default class PipelineApiClient {
   }
 
   async postAsyncFile(
-    input: _Input<FileContent>,
+    input: _Input<File>,
     skills: Skill[],
     params?: ApiReqParams,
   ): Promise<AsyncApiTask> {

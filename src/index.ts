@@ -1,6 +1,6 @@
 import createPipelineClass from './pipeline';
 import {
-  ConversationContent, Output,
+  Conversation, Output,
 } from './classes';
 import {
   Cluster, createCollectionClass, Item, Phrase,
@@ -9,7 +9,9 @@ import { skills } from './skills';
 import { parseConversation } from './parsing/conversation';
 import toSRT from './parsing/srt';
 import PipelineApiClient from './api/pipeline';
-import { ApiClient, ApiClientAxios, ApiClientParams } from './api/client';
+import {
+  HttpApiClient, ApiClientAxios, ApiClientParams,
+} from './api/client';
 import Logger from './logging';
 import ClusteringApiClient from './api/clustering';
 
@@ -24,7 +26,7 @@ class OneAI {
 
   static skills = skills;
 
-  private apiClientBase: ApiClient;
+  private apiClientBase: HttpApiClient;
 
   private pipelineApiClient: PipelineApiClient;
 
@@ -42,7 +44,7 @@ class OneAI {
 
   constructor(
     apiKey?: string,
-    params?: Partial<ApiClientParams & { client: ApiClient }>,
+    params?: Partial<ApiClientParams & { client: HttpApiClient }>,
   ) {
     this.params = {
       ...OneAI.defaultParams,
@@ -71,7 +73,7 @@ class OneAI {
   clustering;
 
   parsing: {
-    parseConversation: (input: string) => ConversationContent,
+    parseConversation: (input: string) => Conversation,
     toSRT: (
       output: Output,
       params?: {
@@ -91,4 +93,15 @@ class OneAI {
     return `One AI Client - API Key ${apiKeyString}`;
   }
 }
-export = OneAI;
+
+export {
+  HttpApiClient, ApiClientParams, ApiReqParams, HttpResponse,
+} from './api/client';
+export {
+  Label, Skill, File, Conversation, TextContent,
+  Input, Span, Output, AsyncApiTask, AsyncApiResponse,
+} from './classes';
+export { Logger };
+export { OneAI };
+
+export default OneAI;
