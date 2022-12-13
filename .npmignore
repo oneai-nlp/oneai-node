@@ -10,4 +10,3 @@ test
 .eslintignore
 .eslintrc.json
 tsconfig.json
-package.json
