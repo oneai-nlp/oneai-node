@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-expressions */
 import chai from 'chai';
 import chaiFs from 'chai-fs';
+import fs from 'fs';
 import { conversationParsingTests, conversationLineTests } from './constants.json';
 import transcriptionOutput from './transcriptionOutput.json';
 import oneai from './testClient';
 import { OneAIError } from '../src/errors';
-import { comp4Test, parseSpeakerLine } from '../src/parsing/conversation';
+import { comp4Test, parseSpeakerLine, parseConversation } from '../src/parsing/conversation';
 
 chai.use(chaiFs);
 const { expect } = chai;
@@ -33,6 +34,12 @@ describe('parse conversation', () => {
         expect(parsed?.error).to.not.be.undefined;
       }
     });
+  });
+
+  it('full conversation', () => {
+    const rawConv = fs.readFileSync('./test/testConv.txt', 'utf8');
+    const parsed = parseConversation(rawConv);
+    console.log(parsed);
   });
 });
 

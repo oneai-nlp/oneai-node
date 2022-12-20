@@ -101,6 +101,7 @@ export {
   Label, Skill, File, Conversation, TextContent,
   Input, Span, Output, AsyncApiTask, AsyncApiResponse,
 } from './classes';
-export { Logger, OneAI, skills };
-
-export default OneAI;
+export {
+  // eslint-disable-next-line no-restricted-exports
+  Logger, skills, OneAI, OneAI as default,
+};
