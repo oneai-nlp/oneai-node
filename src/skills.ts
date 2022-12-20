@@ -91,6 +91,10 @@ export const skills = {
   pricing: (): Skill => ({
     apiName: 'business-entities', labelsField: 'pricing',
   }),
+
+  emailInsights: (): Skill => ({
+    apiName: 'service-email-insights', labelsField: 'emailInsights',
+  }),
 };
 
 export interface OutputFields {
@@ -119,4 +123,5 @@ export interface OutputFields {
     headline?: Label[]
     subheading?: Label[]
     pricing?: Label[]
+    emailInsights?: Label[]
 }
