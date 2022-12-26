@@ -8,7 +8,12 @@ import {
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
 
-export function buildRequest(input: Input, skills: Skill[], includeText: boolean): string {
+export function buildRequest(
+  input: Input,
+  skills: Skill[],
+  includeText: boolean,
+  multilingual: boolean,
+): string {
   const fixedInput = (isFileContent(input.text) && includeText)
     ? {
       text: input.text.buffer.toString(input.encoding),
@@ -22,6 +27,7 @@ export function buildRequest(input: Input, skills: Skill[], includeText: boolean
     output_type: 'json',
     encoding: fixedInput.encoding,
     content_type: fixedInput.contentType,
+    multilingual,
     steps: skills.map((skill) => ({
       skill: skill.apiName,
       params: skill.params,

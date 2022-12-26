@@ -8,6 +8,7 @@ export interface ApiClientParams {
   apiKey: string;
   baseURL: string;
   timeout: number;
+  multilingual: boolean;
 }
 
 export type ApiReqParams = Partial<ApiClientParams>;
