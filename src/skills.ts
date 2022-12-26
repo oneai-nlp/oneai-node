@@ -69,7 +69,7 @@ export const skills = {
     apiName: 'sales-insights', labelsField: 'salesInsights',
   }),
 
-  transcribe: (params?: { timestamp_per_word?: boolean }): Skill => ({
+  transcribe: (params?: { timestamp_per_word?: boolean, engine?: 'defualt' | 'whisper' }): Skill => ({
     apiName: 'transcribe',
     textField: 'transcription',
     labelsField: 'words',
