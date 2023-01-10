@@ -103,6 +103,7 @@ export {
   Input, Span, Output, AsyncApiTask, AsyncApiResponse,
 } from './classes';
 export {
-  // eslint-disable-next-line no-restricted-exports
-  Logger, skills, OneAI, OneAI as default,
+  Logger, skills, OneAI,
 };
+
+export default OneAI;
