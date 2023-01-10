@@ -16,57 +16,61 @@ export const skills = {
     return skill;
   },
 
-  emotions: (): Skill => ({ apiName: 'emotions' }),
+  emotions: (params?: {}): Skill => ({ apiName: 'emotions', params }),
 
-  keywords: (): Skill => ({ apiName: 'keywords' }),
+  keywords: (params?: {}): Skill => ({ apiName: 'keywords', params }),
 
   /** @deprecated since v. 0.0.9- use `splitBySentence` instead */
-  sentences: (): Skill => ({ apiName: 'sentences' }),
+  sentences: (params?: {}): Skill => ({ apiName: 'sentences', params }),
 
-  highlights: (): Skill => ({ apiName: 'highlights' }),
+  highlights: (params?: {}): Skill => ({ apiName: 'highlights', params }),
 
-  topics: (): Skill => ({
-    apiName: 'article-topics', labelsField: 'topics',
+  topics: (params?: {}): Skill => ({
+    apiName: 'article-topics', labelsField: 'topics', params,
   }),
 
-  sentiments: (): Skill => ({ apiName: 'sentiments' }),
+  sentiments: (params?: {}): Skill => ({ apiName: 'sentiments', params }),
 
-  htmlToArticle: (): Skill => ({
+  htmlToArticle: (params?: {}): Skill => ({
     apiName: 'html-extract-article',
     textField: 'htmlArticle',
     labelsField: 'htmlFields',
+    params,
   }),
-  htmlAllText: (): Skill => ({
+  htmlAllText: (params?: {}): Skill => ({
     apiName: 'html-extract-text',
     textField: 'htmlText',
     labelsField: 'htmlFields',
+    params,
   }),
 
-  proofread: (): Skill => ({
+  proofread: (params?: {}): Skill => ({
     apiName: 'enhance',
     textField: 'proofread',
     labelsField: 'replacements',
+    params,
   }),
 
-  actionItems: (): Skill => ({
-    apiName: 'action-items', labelsField: 'actionItems',
+  actionItems: (params?: {}): Skill => ({
+    apiName: 'action-items', labelsField: 'actionItems', params,
   }),
 
-  anonymize: (): Skill => ({
+  anonymize: (params?: {}): Skill => ({
     apiName: 'anonymize',
     labelsField: 'anonymizations',
+    params,
   }),
 
-  names: (): Skill => ({ apiName: 'names' }),
-  numbers: (): Skill => ({ apiName: 'numbers' }),
+  names: (params?: {}): Skill => ({ apiName: 'names', params }),
+  numbers: (params?: {}): Skill => ({ apiName: 'numbers', params }),
 
-  splitBySentence: (): Skill => ({ apiName: 'sentences' }),
-  splitByTopic: (): Skill => ({
-    apiName: 'dialogue-segmentation', labelsField: 'segments',
+  splitBySentence: (params?: {}): Skill => ({ apiName: 'sentences', params }),
+  splitByTopic: (params?: {}): Skill => ({
+    apiName: 'dialogue-segmentation', labelsField: 'segments', params,
   }),
 
-  salesInsights: (): Skill => ({
-    apiName: 'sales-insights', labelsField: 'salesInsights',
+  salesInsights: (params?: {}): Skill => ({
+    apiName: 'sales-insights', labelsField: 'salesInsights', params,
   }),
 
   transcribe: (params?: { timestamp_per_word?: boolean, engine?: 'defualt' | 'whisper' }): Skill => ({
@@ -76,24 +80,24 @@ export const skills = {
     params,
   }),
 
-  detectLanguage: (): Skill => ({
-    apiName: 'detect-language', labelsField: 'language',
+  detectLanguage: (params?: {}): Skill => ({
+    apiName: 'detect-language', labelsField: 'language', params,
   }),
 
-  headline: (): Skill => ({
-    apiName: 'headline', labelsField: 'headline',
+  headline: (params?: {}): Skill => ({
+    apiName: 'headline', labelsField: 'headline', params,
   }),
 
-  subheading: (): Skill => ({
-    apiName: 'subheading', labelsField: 'subheading',
+  subheading: (params?: {}): Skill => ({
+    apiName: 'subheading', labelsField: 'subheading', params,
   }),
 
-  pricing: (): Skill => ({
-    apiName: 'business-entities', labelsField: 'pricing',
+  pricing: (params?: {}): Skill => ({
+    apiName: 'business-entities', labelsField: 'pricing', params,
   }),
 
-  emailInsights: (): Skill => ({
-    apiName: 'service-email-insights', labelsField: 'emailInsights',
+  emailInsights: (params?: {}): Skill => ({
+    apiName: 'service-email-insights', labelsField: 'emailInsights', params,
   }),
 };
 
