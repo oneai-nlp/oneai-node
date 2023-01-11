@@ -69,6 +69,11 @@ const extensions: Record<string, ExtInfo> = {
     type: 'conversation',
     isBinary: true,
   },
+  '.mp4': {
+    contentType: 'audio/mpeg',
+    type: 'conversation',
+    isBinary: true,
+  },
   '.wav': {
     contentType: 'audio/wav',
     type: 'conversation',
