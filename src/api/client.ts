@@ -4,11 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { version } from '../../package.json';
 import { buildError } from './mapping';
 
+type ISO639 = 'en' | 'es' | 'fr' | 'de' | 'it' | 'pt' | 'ja' | 'ko' | 'zh' | 'ar' | 'ru' | 'tr' | 'nl' | 'pl' | 'sv' | 'da' | 'fi' | 'no' | 'cs' | 'el' | 'hu' | 'ro' | 'sk' | 'sl' | 'bg' | 'et' | 'lv' | 'lt' | 'he' | string;
+
+export interface MultilingualParams {
+  enabled: boolean;
+  allowed_input_languages?: (ISO639 | 'ALL')[];
+  translate_output_to?: ISO639;
+  expected_langauges?: ISO639[];
+  override_language_detection?: boolean;
+}
+
 export interface ApiClientParams {
   apiKey: string;
   baseURL: string;
   timeout: number;
-  multilingual: boolean;
+  multilingual: boolean | MultilingualParams;
 }
 
 export type ApiReqParams = Partial<ApiClientParams>;

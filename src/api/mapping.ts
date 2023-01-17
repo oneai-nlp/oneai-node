@@ -7,12 +7,13 @@ import {
 } from '../classes';
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
+import { MultilingualParams } from './client';
 
 export function buildRequest(
   input: Input,
   skills: Skill[],
   includeText: boolean,
-  multilingual: boolean,
+  multilingual: boolean | MultilingualParams,
 ): string {
   const fixedInput = (isFileContent(input.text) && includeText)
     ? {
