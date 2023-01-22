@@ -26,7 +26,7 @@ export default class PipelineApiClient {
   ): Promise<Output> {
     const response = await this.client.post(
       this.rootPath,
-      buildRequest(input, skills, true, params?.multilingual || false),
+      buildRequest(input, skills, true, params?.multilingual || this.client.params.multilingual),
       params,
     );
 
@@ -38,7 +38,12 @@ export default class PipelineApiClient {
     skills: Skill[],
     params?: ApiReqParams,
   ): Promise<AsyncApiTask> {
-    const request = buildRequest(input, skills, false, params?.multilingual || false);
+    const request = buildRequest(
+      input,
+      skills,
+      false,
+      params?.multilingual || this.client.params.multilingual,
+    );
     const { data } = await this.client.post(
       `${this.rootPath}/async/file?pipeline=${encodeURIComponent(request)}`,
       input.text.buffer,
