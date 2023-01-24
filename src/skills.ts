@@ -99,6 +99,14 @@ export const skills = {
   emailInsights: (params?: {}): Skill => ({
     apiName: 'service-email-insights', labelsField: 'emailInsights', params,
   }),
+
+  clustering: (params?: {
+    collection?: string,
+    user_metadata?: Record<string, any>,
+    input_skill?: string,
+  }): Skill => ({
+    apiName: 'clustering', labelsField: 'clusters', params,
+  }),
 };
 
 export interface OutputFields {
