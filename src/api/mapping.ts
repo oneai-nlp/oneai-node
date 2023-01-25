@@ -31,7 +31,10 @@ export function buildRequest(
     multilingual,
     steps: skills.map((skill) => ({
       skill: skill.apiName,
-      params: skill.params,
+      params: {
+        ...(skill.params !== undefined && skill.params),
+        ...(skill.apiName === 'clustering' && input.metadata !== undefined && { user_metadata: input.metadata }),
+      },
     })),
   }, (_, value) => value ?? undefined);
 }
