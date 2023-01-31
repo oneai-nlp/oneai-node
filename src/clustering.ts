@@ -284,4 +284,16 @@ export const createCollectionClass = (
       params?.limit,
     );
   }
+
+  static async getTaskStatus(
+    taskId: string,
+    params?: ClusteringApiParams,
+  ): Promise<{status: string, content?: any}> {
+    const urlParams = buildClusteringQueryParams(params);
+    /* istanbul ignore next */
+    return client.get(
+      `status/${taskId}?${urlParams}`,
+      params,
+    );
+  }
 };

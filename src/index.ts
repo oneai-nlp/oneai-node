@@ -66,6 +66,7 @@ class OneAI {
       Cluster,
       Collection,
       getCollections: Collection.getCollections,
+      getTaskStatus: Collection.getTaskStatus,
     };
   }
 
