@@ -23,14 +23,14 @@ export class Item {
 
   distance: number;
 
-  phrase: Phrase;
+  phrase?: Phrase;
 
   constructor(
     id: number,
     text: string,
     createdAt: Date,
     distance: number,
-    phrase: Phrase,
+    phrase?: Phrase,
   ) {
     this.id = id;
     this.text = text;
@@ -46,11 +46,11 @@ export class Item {
       text: this.text,
       createdAt: this.createdAt,
       distance: this.distance,
-      phraseId: this.phrase.id,
+      phraseId: this.phrase?.id,
     };
   }
 
-  static fromJSON(phrase: Phrase, item: any): Item {
+  static fromJSON(phrase: Phrase | undefined, item: any): Item {
     return new Item(
       item.id,
       item.original_text,
@@ -158,6 +158,20 @@ export class Cluster {
       `${this.collection.id}/clusters/${this.id}/phrases?${urlParams}`,
       'phrases',
       (phrase) => Phrase.fromJSON(this, phrase),
+      params?.limit,
+      params,
+    );
+  }
+
+  async* getItems(
+    params?: ClusteringApiParams,
+  ): AsyncGenerator<Item, void, undefined> {
+    const urlParams = buildClusteringQueryParams(params);
+    /* istanbul ignore next */
+    yield* this.collection.client.getPaginated(
+      `${this.collection.id}/clusters/${this.id}/items?${urlParams}`,
+      'items',
+      (item) => Item.fromJSON(undefined, item),
       params?.limit,
       params,
     );
