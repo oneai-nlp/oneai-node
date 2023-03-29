@@ -2,9 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
+import OneAI from '../src';
 import { TextContent } from '../src/classes';
 import constants from './constants.json';
-import oneai from './testClient';
+import oneaiClient from './testClient';
+
+const oneai: OneAI = oneaiClient;
 
 describe('Pipeline', () => {
   it('skills', async () => {
