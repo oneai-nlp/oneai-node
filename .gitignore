@@ -5,3 +5,4 @@ lib
 .nyc_output
 coverage
 src/api/.uuid
+.vscode
