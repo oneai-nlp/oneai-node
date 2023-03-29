@@ -23,10 +23,9 @@ export function buildRequest(
       type: input.type,
     } : input;
   return JSON.stringify({
-    ...(includeText && { input: fixedInput.text }),
+    ...(includeText && { input: fixedInput.text, encoding: fixedInput.encoding }),
     input_type: fixedInput.type,
     output_type: 'json',
-    encoding: fixedInput.encoding,
     content_type: fixedInput.contentType,
     multilingual,
     steps: skills.map((skill) => ({
