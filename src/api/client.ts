@@ -10,7 +10,7 @@ export interface MultilingualParams {
   enabled: boolean;
   allowed_input_languages?: (ISO639 | 'ALL')[];
   translate_output_to?: ISO639;
-  expected_langauges?: ISO639[];
+  expected_languages?: ISO639[];
   override_language_detection?: boolean;
 }
 
