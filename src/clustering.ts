@@ -195,7 +195,11 @@ export class Cluster {
     yield* this.collection.client.getPaginated(
       `${this.collection.id}/clusters/${this.id}/items?${urlParams}`,
       'items',
-      (item) => Item.fromJSON(undefined, item),
+      (item) => Item.fromJSON(Phrase.fromJSON(this, {
+        phrase_id: item.phrase.id,
+        text: item.phrase.text,
+        cluster: item.cluster,
+      }), item),
       params?.limit,
       params,
     );
