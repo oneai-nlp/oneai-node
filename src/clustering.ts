@@ -14,6 +14,26 @@ export type ClusteringApiParams = ApiReqParams & {
   itemMetadata?: string,
 };
 
+export type CollectionAccessParams = {
+  query: boolean,
+  list_clusters: boolean,
+  list_phrases: boolean,
+  list_items: boolean,
+  add_items: boolean,
+  edit_clusters: boolean,
+  discoverable: boolean,
+};
+
+const DEFAULT_ACCESS_PARAMS: CollectionAccessParams = {
+  query: true,
+  list_clusters: true,
+  list_phrases: true,
+  list_items: true,
+  add_items: true,
+  edit_clusters: true,
+  discoverable: true,
+};
+
 export class Item {
   id: number;
 
@@ -225,6 +245,24 @@ export abstract class _Collection {
   constructor(id: string, params?: ApiReqParams) {
     this.id = id;
     this.params = params;
+  }
+
+  async create(params?: {
+    access?: CollectionAccessParams,
+    domain?: 'curation' | 'survey' | 'reviews' | 'service' | 'classify',
+    clusterDistanceThreshold?: number,
+    phraseDistanceThreshold?: number,
+  }): Promise<any> {
+    return this.client.post(`${this.id}/create`, {
+      access: params?.access || DEFAULT_ACCESS_PARAMS,
+      domain: params?.domain || 'curation',
+      cluster_distance_threshold: params?.clusterDistanceThreshold,
+      phrase_distance_threshold: params?.phraseDistanceThreshold,
+    });
+  }
+
+  async delete(): Promise<any> {
+    return this.client.delete(this.id);
   }
 
   async* getClusters(

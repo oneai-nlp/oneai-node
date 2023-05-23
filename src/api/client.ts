@@ -42,6 +42,11 @@ export interface HttpApiClient {
     data: string | Buffer,
     params?: ApiReqParams,
   ): Promise<HttpResponse>;
+
+  delete(
+    path: string,
+    params?: ApiReqParams,
+  ): Promise<HttpResponse>;
 }
 
 export class ApiClientAxios implements HttpApiClient {
@@ -107,6 +112,28 @@ export class ApiClientAxios implements HttpApiClient {
           'Content-Type': 'application/json',
         },
         data,
+        timeout: (params?.timeout || this.params.timeout) * 1000,
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
+      });
+    } catch (error) {
+      throw buildError(error);
+    }
+  }
+
+  async delete(
+    path: string,
+    params?: ApiReqParams,
+  ): Promise<HttpResponse> {
+    const apiKey = this.validateApiKey(params);
+    try {
+      return await axios({ // await to throw error if necessary
+        url: `${this.params.baseURL}/${path}`,
+        method: 'DELETE',
+        headers: {
+          'api-key': apiKey,
+          'User-Agent': this.agent,
+        },
         timeout: (params?.timeout || this.params.timeout) * 1000,
         maxBodyLength: Infinity,
         maxContentLength: Infinity,

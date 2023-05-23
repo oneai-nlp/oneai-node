@@ -4,6 +4,16 @@ import { Cluster, Phrase, _Collection } from '../src/clustering';
 import oneai from './testClient';
 
 describe('Clustering', () => {
+  describe('create collection', () => {
+    const collection = new oneai.clustering.Collection('test-collection-create-delete');
+    collection.create();
+  });
+
+  describe('delete collection', () => {
+    const collection = new oneai.clustering.Collection('test-collection-create-delete');
+    collection.delete();
+  });
+
   describe('add items', () => {
     const collection = new oneai.clustering.Collection('test-collection');
     const items = [

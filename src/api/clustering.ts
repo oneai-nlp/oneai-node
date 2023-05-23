@@ -61,4 +61,12 @@ export default class ClusteringApiClient {
     );
     return data;
   }
+
+  async post(path: string, body: any, params?: ApiReqParams): Promise<any> {
+    return this.client.post(`${this.rootPath}/${path}`, body, params);
+  }
+
+  async delete(path: string, params?: ApiReqParams): Promise<any> {
+    return this.client.delete(`${this.rootPath}/${path}`, params);
+  }
 }
