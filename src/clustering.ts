@@ -14,7 +14,7 @@ export type ClusteringApiParams = ApiReqParams & {
   itemMetadata?: string,
 };
 
-export type CollectionUserAccess = {
+export interface CollectionUserAccess {
   query: boolean,
   list_clusters: boolean,
   list_phrases: boolean,
@@ -22,7 +22,7 @@ export type CollectionUserAccess = {
   add_items: boolean,
   edit_clusters: boolean,
   discoverable: boolean,
-};
+}
 
 export type CollectionAccessParams = Record<string | 'all', CollectionUserAccess>;
 

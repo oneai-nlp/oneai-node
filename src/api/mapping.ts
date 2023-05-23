@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
   AsyncApiResponse,
   AsyncApiTask,
-  Conversation, Input, isFileContent, Label, Output, Skill, _Input,
+  Conversation, Input, isFile, Label, Output, Skill, _Input, isCSV,
 } from '../model/pipeline';
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
@@ -15,15 +15,20 @@ export function buildRequest(
   includeText: boolean,
   multilingual: boolean | MultilingualParams,
 ): string {
-  const fixedInput = (isFileContent(input.text) && includeText)
+  const fixedInput = (isFile(input.text) && includeText)
     ? {
+      ...input,
       text: input.text.buffer.toString(input.encoding),
-      encoding: input.encoding,
-      contentType: input.contentType,
-      type: input.type,
     } : input;
   return JSON.stringify({
     ...(includeText && { input: fixedInput.text, encoding: fixedInput.encoding }),
+    ...(isCSV(fixedInput) && {
+      csv_params: {
+        columns: fixedInput.columns,
+        skip_rows: fixedInput.skipRows,
+        max_rows: fixedInput.maxRows,
+      },
+    }),
     input_type: fixedInput.type,
     output_type: 'json',
     content_type: fixedInput.contentType,

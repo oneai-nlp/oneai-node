@@ -1,3 +1,4 @@
+import fs from 'fs';
 import * as path from 'path';
 import type { OutputFields } from '../skills';
 import { OneAIError } from '../errors';
@@ -19,6 +20,24 @@ export type Conversation = {
   timestamp?: number,
 }[];
 
+export type CSVColumn =
+  /** The text input to be processed  */
+  'input' |
+  /** Input timestamp */
+  'timestamp' |
+  /** Input translation */
+  'input_translated' |
+  /** Custom Metadata */
+  string |
+  /** Skip column */
+  false;
+
+export interface CSV extends File {
+  columns: CSVColumn[],
+  skipRows?: number,
+  maxRows?: number,
+}
+
 export type TextContent = string | Conversation | File;
 
 export type inputType = 'article' | 'conversation';
@@ -38,8 +57,12 @@ export function isInput(object: any): object is Input {
   return typeof object === 'object' && 'text' in object;
 }
 
-export function isFileContent(object: any): object is File {
+export function isFile(object: any): object is File {
   return typeof object === 'object' && 'filePath' in object && 'buffer' in object;
+}
+
+export function isCSV(object: any): object is CSV {
+  return typeof object === 'object' && 'columns' in object;
 }
 
 interface ExtInfo {
@@ -96,13 +119,16 @@ export function wrapContent<T extends TextContent>(
       type: 'article',
     };
   }
-  if (isFileContent(content)) {
+  if (isFile(content)) {
     const ext = path.extname(content.filePath);
     if (!(ext in extensions)) throw new Error(`Unsupported file type: ${ext}`);
     const { contentType, type, isBinary } = extensions[ext];
 
     return {
-      text: content,
+      text: (content.buffer !== undefined) ? content : {
+        ...(content as File),
+        buffer: fs.readFileSync(content.filePath),
+      } as T,
       encoding: (isBinary) ? 'base64' : 'utf8',
       contentType,
       type,
