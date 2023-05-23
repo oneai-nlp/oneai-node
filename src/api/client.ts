@@ -117,6 +117,7 @@ export class ApiClientAxios implements HttpApiClient {
         maxContentLength: Infinity,
       });
     } catch (error) {
+      console.log(error);
       throw buildError(error);
     }
   }

@@ -1,17 +1,20 @@
 /* eslint-disable no-restricted-syntax */
 import { expect } from 'chai';
+import { step } from 'mocha-steps';
 import { Cluster, Phrase, _Collection } from '../src/clustering';
 import oneai from './testClient';
 
 describe('Clustering', () => {
-  describe('create collection', () => {
-    const collection = new oneai.clustering.Collection('test-collection-create-delete');
-    collection.create();
-  });
+  describe('create delete collection', () => {
+    step('create collection', async () => {
+      const collection = new oneai.clustering.Collection('test-collection-create-delete');
+      await collection.create();
+    });
 
-  describe('delete collection', () => {
-    const collection = new oneai.clustering.Collection('test-collection-create-delete');
-    collection.delete();
+    step('delete collection', async () => {
+      const collection = new oneai.clustering.Collection('test-collection-create-delete');
+      await collection.delete();
+    });
   });
 
   describe('add items', () => {
