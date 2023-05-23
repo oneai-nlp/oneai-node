@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import OneAI from '../src';
-import { TextContent } from '../src/classes';
+import { TextContent } from '../src/model/pipeline';
 import constants from './constants.json';
 import oneaiClient from './testClient';
 
