@@ -4,7 +4,7 @@ import {
   AsyncApiResponse,
   AsyncApiTask,
   Conversation, Input, isFileContent, Label, Output, Skill, _Input,
-} from '../classes';
+} from '../model/pipeline';
 import { ClusteringApiParams } from '../clustering';
 import { httpStatusErrorType } from '../errors';
 import { MultilingualParams } from './client';

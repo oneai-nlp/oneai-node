@@ -4,7 +4,7 @@ import PipelineApiClient from './api/pipeline';
 import {
   AsyncApiTask,
   Input, Output, Skill, TextContent, wrapContent,
-} from './classes';
+} from './model/pipeline';
 import { batchProcessing, BatchResponse, polling } from './schedule';
 
 abstract class _Pipeline {

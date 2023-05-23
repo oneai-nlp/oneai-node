@@ -1,7 +1,7 @@
 import createPipelineClass from './pipeline';
 import {
   Conversation, Output,
-} from './classes';
+} from './model/pipeline';
 import {
   Cluster, createCollectionClass, Item, Phrase,
 } from './clustering';
@@ -102,7 +102,7 @@ export {
 export {
   Label, Skill, File, Conversation, TextContent,
   Input, Span, Output, AsyncApiTask, AsyncApiResponse,
-} from './classes';
+} from './model/pipeline';
 export {
   Logger, skills, OneAI,
 };

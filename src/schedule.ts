@@ -2,7 +2,7 @@
 /* eslint-disable no-await-in-loop */
 import {
   Output, AsyncApiResponse, AsyncApiTask,
-} from './classes';
+} from './model/pipeline';
 import { OneAIError } from './errors';
 import Logger, { timeFormat } from './logging';
 

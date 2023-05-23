@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { _Input } from '../classes';
+import { _Input } from '../model/pipeline';
 import { Paginated } from '../clustering';
 import Logger from '../logging';
 import { HttpApiClient, ApiReqParams } from './client';

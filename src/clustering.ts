@@ -2,7 +2,7 @@
 import { ApiReqParams } from './api/client';
 import ClusteringApiClient from './api/clustering';
 import { buildClusteringQueryParams } from './api/mapping';
-import { _Input } from './classes';
+import { _Input } from './model/pipeline';
 
 export type Paginated<T> = AsyncGenerator<T, void>
 

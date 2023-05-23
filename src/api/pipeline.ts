@@ -1,6 +1,6 @@
 import {
   Skill, Input, File, _Input, Output, AsyncApiTask, AsyncApiResponse,
-} from '../classes';
+} from '../model/pipeline';
 import Logger from '../logging';
 import { HttpApiClient, ApiReqParams } from './client';
 import {

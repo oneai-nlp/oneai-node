@@ -1,6 +1,6 @@
 import * as path from 'path';
-import type { OutputFields } from './skills';
-import { OneAIError } from './errors';
+import type { OutputFields } from '../skills';
+import { OneAIError } from '../errors';
 
 export interface Skill {
   apiName: string

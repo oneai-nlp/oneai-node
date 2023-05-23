@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import { Output } from '../classes';
+import { Output } from '../model/pipeline';
 import { OneAIError } from '../errors';
 
 let srtFromJSON: any;

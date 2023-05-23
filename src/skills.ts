@@ -1,4 +1,4 @@
-import type { Skill, Output, Label } from './classes';
+import type { Skill, Output, Label } from './model/pipeline';
 
 export const skills = {
   summarize: (
