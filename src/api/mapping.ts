@@ -157,6 +157,7 @@ export function buildOutput(
 }
 
 export function buildError(error: any): any {
+  console.log(error.response.data);
   if (axios.isAxiosError(error) && error.response !== undefined) {
     return new httpStatusErrorType[error.response.status.toString()](
       error.response.data?.status_code || error.response.status,

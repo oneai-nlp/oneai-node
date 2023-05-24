@@ -112,6 +112,11 @@ const extensions: Record<string, ExtInfo> = {
     type: 'article',
     isBinary: false,
   },
+  '.pdf': {
+    contentType: 'text/pdf',
+    type: 'article',
+    isBinary: true,
+  },
 };
 
 function prepFileInput(input: _Input<File>): _Input<File> {

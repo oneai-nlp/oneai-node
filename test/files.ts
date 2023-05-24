@@ -56,4 +56,13 @@ describe('text', () => {
     expect(outputs[0].numbers).to.have.lengthOf(1);
     expect(outputs[0].numbers[0]).to.have.property('value');
   });
+
+  it('pdf', async () => {
+    const pipeline = new oneai.Pipeline(
+      oneai.skills.pdfExtractText(),
+    );
+
+    const { pdfText } = await pipeline.run({ filePath: constants.pdfPath });
+    console.log(pdfText);
+  });
 });

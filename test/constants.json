@@ -22,6 +22,7 @@
     "wavPath": "./test/testAudio.wav",
     "mp3Path": "./test/testAudio.mp3",
     "csvPath": "./test/testCSV.csv",
+    "pdfPath": "./test/testPDF.pdf",
     "conversationParsingTests": [
         {
             "desc": "consistent 'SPEAKER  0:00' format",

@@ -107,6 +107,10 @@ export const skills = {
   }): Skill => ({
     apiName: 'clustering', labelsField: 'clusters', params,
   }),
+
+  pdfExtractText: (params?: {}): Skill => ({
+    apiName: 'pdf-extract-text', textField: 'pdfText', params,
+  }),
 };
 
 export interface OutputFields {
@@ -137,4 +141,5 @@ export interface OutputFields {
     pricing?: Label[]
     emailInsights?: Label[]
     outputs?: Output[]
+    pdfText?: Output
 }
