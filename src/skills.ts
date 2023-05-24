@@ -136,4 +136,5 @@ export interface OutputFields {
     subheading?: Label[]
     pricing?: Label[]
     emailInsights?: Label[]
+    outputs?: Output[]
 }

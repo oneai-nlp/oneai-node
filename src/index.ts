@@ -39,6 +39,8 @@ class OneAI {
     timeout: 60,
     baseURL: 'https://api.oneai.com',
     multilingual: false,
+    sync: true,
+    interval: 1,
   };
 
   params: ApiClientParams;

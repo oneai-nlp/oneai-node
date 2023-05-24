@@ -12,7 +12,7 @@ export interface Skill {
 
 export type File = {
   filePath: string,
-  buffer: Buffer,
+  buffer?: Buffer,
 };
 export type Conversation = {
   speaker: string,
@@ -58,7 +58,7 @@ export function isInput(object: any): object is Input {
 }
 
 export function isFile(object: any): object is File {
-  return typeof object === 'object' && 'filePath' in object && 'buffer' in object;
+  return typeof object === 'object' && 'filePath' in object;
 }
 
 export function isCSV(object: any): object is CSV {
@@ -107,33 +107,44 @@ const extensions: Record<string, ExtInfo> = {
     type: 'article',
     isBinary: false,
   },
+  '.csv': {
+    contentType: 'text/csv',
+    type: 'article',
+    isBinary: false,
+  },
 };
+
+function prepFileInput(input: _Input<File>): _Input<File> {
+  const ext = path.extname(input.text.filePath);
+  if (!(ext in extensions)) throw new Error(`Unsupported file type: ${ext}`);
+  const { contentType, type, isBinary } = extensions[ext];
+
+  return {
+    encoding: (isBinary) ? 'base64' : 'utf8',
+    contentType,
+    type,
+    ...input,
+    text: (input.text.buffer !== undefined) ? input.text : {
+      ...(input.text as File),
+      buffer: fs.readFileSync(input.text.filePath),
+    },
+  };
+}
 
 export function wrapContent<T extends TextContent>(
   content: _Input<T> | T,
 ): _Input<T> {
-  if (isInput(content)) return content;
   if (typeof content === 'string') {
     return {
       text: content,
       type: 'article',
     };
   }
-  if (isFile(content)) {
-    const ext = path.extname(content.filePath);
-    if (!(ext in extensions)) throw new Error(`Unsupported file type: ${ext}`);
-    const { contentType, type, isBinary } = extensions[ext];
-
-    return {
-      text: (content.buffer !== undefined) ? content : {
-        ...(content as File),
-        buffer: fs.readFileSync(content.filePath),
-      } as T,
-      encoding: (isBinary) ? 'base64' : 'utf8',
-      contentType,
-      type,
-    };
+  if (isInput(content)) {
+    if (isFile(content.text)) return prepFileInput(content as _Input<File>) as _Input<T>;
+    return content;
   }
+  if (isFile(content)) return prepFileInput({ text: content }) as _Input<T>;
   return {
     text: content,
     type: 'conversation',

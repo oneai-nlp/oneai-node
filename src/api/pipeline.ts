@@ -1,5 +1,5 @@
 import {
-  Skill, Input, File, _Input, Output, AsyncApiTask, AsyncApiResponse,
+  Skill, Input, File, _Input, Output, AsyncApiTask, AsyncApiResponse, isFile,
 } from '../model/pipeline';
 import Logger from '../logging';
 import { HttpApiClient, ApiReqParams } from './client';
@@ -23,34 +23,48 @@ export default class PipelineApiClient {
     input: Input,
     skills: Skill[],
     params?: ApiReqParams,
-  ): Promise<Output> {
+  ): Promise<Output | AsyncApiTask> {
+    // sync is true by default
+    const sync = params?.sync !== false;
+    // handle async file upload
+    if (isFile(input.text) && params?.sync !== true) {
+      return this.postFile(input as _Input<File>, skills, params);
+    }
     const response = await this.client.post(
-      this.rootPath,
+      this.rootPath + (sync ? '' : '/async'),
       buildRequest(input, skills, true, params?.multilingual || this.client.params.multilingual),
       params,
     );
 
-    return buildOutput(skills, response.data, response.headers);
+    return sync ? buildOutput(skills, response.data, response.headers) : {
+      id: response.data.task_id,
+      name: '',
+      skills,
+    };
   }
 
-  async postAsyncFile(
+  async postFile(
     input: _Input<File>,
     skills: Skill[],
     params?: ApiReqParams,
-  ): Promise<AsyncApiTask> {
+  ): Promise<Output | AsyncApiTask> {
+    // sync is false by default
+    const sync = params?.sync === true;
     const request = buildRequest(
       input,
       skills,
       false,
       params?.multilingual || this.client.params.multilingual,
     );
-    const { data } = await this.client.post(
-      `${this.rootPath}/async/file?pipeline=${encodeURIComponent(request)}`,
-      input.text.buffer,
+    if (!sync) this.logger?.debug(`Uploading file ${input.text.filePath}`);
+    const response = await this.client.post(
+      `${this.rootPath}${sync ? '' : '/async'}/file?pipeline=${encodeURIComponent(request)}`,
+      input.text.buffer!,
       params,
     );
-    return {
-      id: data.task_id,
+    if (!sync) this.logger?.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
+    return sync ? buildOutput(skills, response.data, response.headers) : {
+      id: response.data.task_id,
       name: input.text.filePath,
       skills,
     };

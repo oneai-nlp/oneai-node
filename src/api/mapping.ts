@@ -18,15 +18,15 @@ export function buildRequest(
   const fixedInput = (isFile(input.text) && includeText)
     ? {
       ...input,
-      text: input.text.buffer.toString(input.encoding),
+      text: input.text.buffer!.toString(input.encoding),
     } : input;
   return JSON.stringify({
     ...(includeText && { input: fixedInput.text, encoding: fixedInput.encoding }),
-    ...(isCSV(fixedInput) && {
+    ...(isCSV(fixedInput.text) && {
       csv_params: {
-        columns: fixedInput.columns,
-        skip_rows: fixedInput.skipRows,
-        max_rows: fixedInput.maxRows,
+        columns: fixedInput.text.columns,
+        skip_rows: fixedInput.text.skipRows,
+        max_rows: fixedInput.text.maxRows,
       },
     }),
     input_type: fixedInput.type,
@@ -127,6 +127,13 @@ export function buildOutput(
       return false;
     });
 
+    return result;
+  }
+
+  // handle output lists
+  if ('outputs' in output) {
+    const result = buildOutputBase([{ utterance: '' }], output.stats, headers);
+    result.outputs = output.outputs.map((o: any) => buildOutput(steps, o, {}));
     return result;
   }
 

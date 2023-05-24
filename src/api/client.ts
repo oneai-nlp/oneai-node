@@ -19,6 +19,8 @@ export interface ApiClientParams {
   baseURL: string;
   timeout: number;
   multilingual: boolean | MultilingualParams;
+  sync: boolean;
+  interval: number;
 }
 
 export type ApiReqParams = Partial<ApiClientParams>;

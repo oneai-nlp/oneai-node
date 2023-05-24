@@ -36,3 +36,24 @@ describe('audio', () => {
     it('async', testFile(constants.wavPath, false));
   });
 });
+
+describe('text', () => {
+  it('csv', async () => {
+    const pipeline = new oneai.Pipeline(
+      oneai.skills.numbers(),
+    );
+
+    const input = {
+      filePath: constants.csvPath,
+      columns: ['input', 'timestamp', false, 'input_translated', false, 'metadata'],
+      skipRows: 1,
+      maxRows: 3,
+    };
+    const { outputs } = await pipeline.run(input, { multilingual: true });
+    expect(outputs).to.have.lengthOf(1);
+    expect(outputs[0]).to.have.property('text');
+    expect(outputs[0]).to.have.property('numbers');
+    expect(outputs[0].numbers).to.have.lengthOf(1);
+    expect(outputs[0].numbers[0]).to.have.property('value');
+  });
+});
