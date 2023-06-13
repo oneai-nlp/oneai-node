@@ -194,7 +194,7 @@ export interface Output extends Input, OutputFields {
 }
 
 export interface AsyncApiTask {
-  id: string,
+  requestId: string,
   name: string,
   skills: Skill[],
 }

@@ -37,7 +37,7 @@ export default class PipelineApiClient {
     );
 
     return sync ? buildOutput(skills, response.data, response.headers) : {
-      id: response.data.task_id,
+      requestId: response.data.task_id,
       name: '',
       skills,
     };
@@ -64,7 +64,7 @@ export default class PipelineApiClient {
     );
     if (!sync) this.logger?.debugNoNewline(`Upload of file ${input.text.filePath} complete\n`);
     return sync ? buildOutput(skills, response.data, response.headers) : {
-      id: response.data.task_id,
+      requestId: response.data.task_id,
       name: input.text.filePath,
       skills,
     };
@@ -75,7 +75,7 @@ export default class PipelineApiClient {
     params?: ApiReqParams,
   ): Promise<AsyncApiResponse> {
     const response = await this.client.get(
-      `${this.rootPath}/async/tasks/${task.id}`,
+      `${this.rootPath}/async/tasks/${task.requestId}`,
       params,
     );
 

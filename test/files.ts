@@ -37,6 +37,31 @@ describe('audio', () => {
   });
 });
 
+describe('polling', () => {
+  const pipeline = new oneai.Pipeline(
+    oneai.skills.transcribe({ timestamp_per_word: true }),
+    oneai.skills.splitBySentence(),
+    oneai.skills.splitByTopic(),
+    oneai.skills.proofread(),
+    oneai.skills.numbers(),
+    oneai.skills.sentiments(),
+  );
+  it('separate', async () => {
+    const { requestId } = await pipeline.runFile(constants.wavPath, { polling: false });
+    const { status } = await pipeline.taskStatus(requestId);
+    expect(status).to.be.oneOf(['COMPLETED', 'RUNNING']);
+    const output = await pipeline.awaitTask(requestId);
+
+    expect(output).to.have.property('transcription');
+    expect(output).to.have.deep.nested.property('transcription.sentences');
+    expect(output).to.have.deep.nested.property('transcription.segments');
+    expect(output).to.have.deep.nested.property('transcription.proofread');
+    expect(output).to.have.deep.nested.property('transcription.proofread.replacements');
+    expect(output).to.have.deep.nested.property('transcription.proofread.numbers');
+    expect(output).to.have.deep.nested.property('transcription.proofread.sentiments');
+  });
+});
+
 describe('text', () => {
   it('csv', async () => {
     const pipeline = new oneai.Pipeline(

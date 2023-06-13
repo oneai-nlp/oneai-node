@@ -1,6 +1,8 @@
+/* eslint-disable no-dupe-class-members */
 import { ApiReqParams } from './api/client';
 import PipelineApiClient from './api/pipeline';
 import {
+  AsyncApiResponse,
   AsyncApiTask,
   Input, Output, Skill, TextContent, isInput, wrapContent,
 } from './model/pipeline';
@@ -18,7 +20,22 @@ abstract class _Pipeline {
   async run(
     text: TextContent | Input,
     params?: ApiReqParams,
-  ): Promise<Output> {
+    ): Promise<Output>;
+
+  // polling disabled - return task ID
+  async run(
+      text: TextContent | Input,
+      params: ApiReqParams & {
+        polling: false,
+      },
+    ): Promise<AsyncApiTask>;
+
+  async run(
+    text: TextContent | Input,
+    params?: ApiReqParams & {
+      polling?: boolean,
+    },
+  ): Promise<Output | AsyncApiTask> {
     const input = wrapContent(text);
     const response = await this.client.postPipeline(
       input,
@@ -26,7 +43,7 @@ abstract class _Pipeline {
       params,
     );
 
-    return isInput(response) ? response as Output
+    return isInput(response) || params?.polling === false ? response
       : polling(
         response as AsyncApiTask,
         (t: AsyncApiTask) => this.client.getTaskStatus.call(this.client, t),
@@ -37,8 +54,22 @@ abstract class _Pipeline {
 
   async runFile(
     filePath: string,
+    params: ApiReqParams & {
+      polling: false,
+    },
+  ): Promise<AsyncApiTask>;
+
+  async runFile(
+    filePath: string,
     params?: ApiReqParams,
-  ): Promise<Output> {
+  ): Promise<Output>;
+
+  async runFile(
+    filePath: string,
+    params?: ApiReqParams & {
+      polling?: boolean,
+    },
+  ): Promise<Output | AsyncApiTask> {
     return this.run({ filePath }, params);
   }
 
@@ -56,6 +87,21 @@ abstract class _Pipeline {
       params?.maxConcurrentRequests || 2,
       params?.onOutput,
       params?.onError,
+      this.client.logger,
+    );
+  }
+
+  async taskStatus(task: AsyncApiTask | string): Promise<AsyncApiResponse> {
+    const taskObj = (typeof task === 'string') ? { requestId: task, name: '', skills: this.steps } : task;
+    return this.client.getTaskStatus(taskObj);
+  }
+
+  async awaitTask(task: AsyncApiTask | string, params?: ApiReqParams): Promise<Output> {
+    const taskObj = (typeof task === 'string') ? { requestId: task, name: '', skills: this.steps } : task;
+    return polling(
+      taskObj,
+      (t: AsyncApiTask) => this.client.getTaskStatus.call(this.client, t),
+      params?.interval || 1,
       this.client.logger,
     );
   }
