@@ -109,4 +109,4 @@ export {
   Logger, skills, OneAI,
 };
 
-export default OneAI;
+export default OneAI.OneAI;
