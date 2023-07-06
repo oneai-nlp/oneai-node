@@ -48,7 +48,7 @@ You will need a valid API key for all requests. Register and create a key for yo
 
 #### Example
 ```node
-import OneAI from 'oneai';
+import { OneAI } from 'oneai';
 
 oneai = new OneAI('<YOUR-API-KEY>');
 
