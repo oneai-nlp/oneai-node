@@ -73,7 +73,7 @@ export const skills = {
     apiName: 'sales-insights', labelsField: 'salesInsights', params,
   }),
 
-  transcribe: (params?: { timestamp_per_word?: boolean, engine?: 'defualt' | 'whisper' }): Skill => ({
+  transcribe: (params?: { timestamp_per_word?: boolean, engine?: 'default' | 'whisper' | 'deepgram' }): Skill => ({
     apiName: 'transcribe',
     textField: 'transcription',
     labelsField: 'words',

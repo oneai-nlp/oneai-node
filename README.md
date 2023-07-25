@@ -21,12 +21,13 @@ One AI provides natural language processing for Node.js. Some use cases include:
 
 Example of summarizing a Zoom meeting:
 ```node
-const conversation = new oneai.Conversation(
-   boringMeeting
-);
+const conversation = [
+   { speaker: "Mario", utterance: "We need to increase our coin collection rate" },
+   { speaker: "Luigi", utterance: "Agreed, Mario, let's invest in more power-ups" },
+   // boring meeting...
+];
 
 const pipeline = new oneai.Pipeline(
-   oneai.skills.transcribe(),
    oneai.skills.summarize(),
 );
 
